@@ -1,7 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import "expo-dev-client";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import CounterScreen from './src/screens/CounterScreen';
 
 export default function App() {
 
@@ -10,18 +10,8 @@ export default function App() {
   });  
 
   return (
-    <View style={styles.container}>
-      <Text>Hola mundo!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F7EAC8" }}>
+      <CounterScreen />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
