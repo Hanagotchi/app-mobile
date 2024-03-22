@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1029732192625",
+    "project_id": "hanagotchi",
+    "storage_bucket": "hanagotchi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029732192625:android:58e70e348e7c45290ea6d0",
+        "android_client_info": {
+          "package_name": "com.fiuba.hanagotchiapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1029732192625-9sj54r87ag48aeb8keabuodcr8fh9m6r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiuba.hanagotchiapp",
+            "certificate_hash": "9044422ea00252c1c56de976f05ffed2c2cd0745"
+          }
+        },
+        {
+          "client_id": "1029732192625-u0m8ufim3lndntr7ig66qme29u523ui4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiuba.hanagotchiapp",
+            "certificate_hash": "c861e287b927410114fd603b2387c01259ea3c8f"
+          }
+        },
+        {
+          "client_id": "1029732192625-gisom6p85duv00p5pic8d5e9p9gp89qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjWVtR1IXoV5h1nq_JauksbcwFC2CV394"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1029732192625-4h2umbjkpbq1dl8iksakki19qs3h1okv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
