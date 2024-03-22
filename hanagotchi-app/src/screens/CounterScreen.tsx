@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import Button from '../components/Button';
 
 const CounterScreen: React.FC = () => {
@@ -31,14 +31,14 @@ const style = StyleSheet.create({
   },
   title: {
     fontSize: 45,
-    fontFamily: "IBMPlexMono_600SemiBold",
+    fontFamily: "IBMPlexMono_Italic",
     textAlign: 'center',
     color: '#4F4C4F',
     padding: 20
   },
   description: {
     fontSize: 20,
-    fontFamily: "IBMPlexMono_600SemiBold",
+    fontFamily: "Roboto",
     textAlign: 'center',
     color: '#4F4C4F',
     padding: 20,

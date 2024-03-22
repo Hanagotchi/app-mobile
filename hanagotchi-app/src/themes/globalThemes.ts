@@ -1,3 +1,4 @@
+const BACKGROUND_COLOR = "#F7EAC8";
 const PRIMARY_COLOR = '#689278';
 const PRIMARY_COLOR_DARK = '#3D5948';
 const PRIMARY_COLOR_LIGHT = '#C4DECE';
@@ -10,6 +11,7 @@ const ERROR_LIGHT = '#E9B5B5';
 
 export const globalTheme = {
     pallete: {
+        background: BACKGROUND_COLOR,
         primary: {
             main: PRIMARY_COLOR,
             dark: PRIMARY_COLOR_DARK,

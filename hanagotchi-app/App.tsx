@@ -2,6 +2,7 @@ import { SafeAreaView } from 'react-native';
 import "expo-dev-client";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import CounterScreen from './src/screens/CounterScreen';
+import { globalTheme } from './src/themes/globalThemes';
 
 export default function App() {
 
@@ -10,7 +11,7 @@ export default function App() {
   });  
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#F7EAC8" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: globalTheme.pallete.background }}>
       <CounterScreen />
     </SafeAreaView>
   );
