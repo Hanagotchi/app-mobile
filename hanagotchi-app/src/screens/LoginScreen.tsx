@@ -18,8 +18,13 @@ const LoginScreen: React.FC = () => {
                     <Text style={{...style.subtitle, color: BROWN_LIGHT}}>Tu nuevo mejor amigo</Text>
                 </View>
                 <ImageBackground source={loginBackground} style={style.background} />
-                <Button mode="contained" uppercase style={style.button} onPress={() => console.log("Press!!")}>
-                    Iniciar sesion
+                <Button 
+                    mode="contained" 
+                    uppercase style={style.button} 
+                    onPress={() => console.log("Press!!")}
+                    labelStyle={{fontSize: 17}}
+                >
+                    Iniciar sesión
                 </Button>
             </View>
         </SafeAreaView>
@@ -63,10 +68,10 @@ const style = StyleSheet.create({
         fontStyle: "italic",
       },
     button: {
-      paddingHorizontal: 20,
-      paddingVertical: 3,
-      borderRadius: 10,
-      width: "50%",
+        borderRadius: 10,
+        width: "50%",
+        height: 50,
+        justifyContent: "center",
     },
   })
   
