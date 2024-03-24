@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { View, StyleSheet, SafeAreaView, ImageBackground } from "react-native";
 import { Button, Text, useTheme } from 'react-native-paper';
 import loginBackground from "../assets/loginBackground.png";
 import { BROWN_LIGHT } from "../themes/globalThemes";
+import useAuth from "../hooks/useAuth";
 
-
-const LoginScreen: React.FC = () => {
-    const [count, setCount] = useState<number>(1);
+const LoginScreen: React.FC = ({navigation}) => {
     const theme = useTheme();
+    const {signIn} = useAuth();
+
     
+    const handleSignIn = async () => {
+        await signIn()
+        console.log("qwewqewqe")
+        navigation.navigate("Home");
+    }
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
@@ -21,7 +27,7 @@ const LoginScreen: React.FC = () => {
                 <Button 
                     mode="contained" 
                     uppercase style={style.button} 
-                    onPress={() => console.log("Press!!")}
+                    onPress={handleSignIn}
                     labelStyle={{fontSize: 17}}
                 >
                     Iniciar sesión

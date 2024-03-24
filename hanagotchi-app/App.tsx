@@ -1,8 +1,10 @@
 import "expo-dev-client";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { theme } from './src/themes/globalThemes';
-import LoginScreen from './src/screens/LoginScreen';
 import { ThemeProvider } from 'react-native-paper';
+import { AuthProvider } from "./src/contexts/AuthContext";
+import Navigator from "./src/navigation/Navigator";
+
 
 export default function App() {
 
@@ -12,8 +14,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}> 
-        <LoginScreen />
+      <AuthProvider>
+        <Navigator />
+      </AuthProvider>
     </ThemeProvider>
-
   );
 }
