@@ -1,55 +1,74 @@
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from "react";
 import * as SecureStore from 'expo-secure-store';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 const DUMMY_USER_TOKEN = "dummyUserToken";
 
 export type AuthContextProps = {
-    userToken: string | null;
+    loggedIn: boolean;
     signIn: () => void;
     signOut: () => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-    userToken: null,
+    loggedIn: false,
     signIn: () => {},
     signOut: () => {}
 });
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
-    const [userToken, setUserToken] = useState<string | null>(null)
+
+    const [userToken, setUserToken] = useState<string | null>(null);
+    const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
     useEffect(() => {
-        const fetchUserToken = async () => {
-            let receiveUserToken = null;
-            try {
-                receiveUserToken = await SecureStore.getItemAsync('userToken');
-            } catch (e) {
-                console.log("OPA");
-            }
-            setUserToken(receiveUserToken);
-        };
+        // Configure GoogleSignIn with webClientId
+        GoogleSignin.configure({
+            webClientId: '1029732192625-gisom6p85duv00p5pic8d5e9p9gp89qp.apps.googleusercontent.com',
+            offlineAccess: true, // allows GoogleSignin.signIn() to return the auth_code for the api
+        });  
 
-        fetchUserToken();
+        // Get if user is logged in
+        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn());
+        validateSignIn();
     }, [])
 
-
     const signIn = async () => {
-        await SecureStore.setItemAsync("userToken", DUMMY_USER_TOKEN);
+
+        // Check if your device supports Google Play
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+        // Get the users ID token
+        const { idToken } = await GoogleSignin.signIn();
+        await SecureStore.setItemAsync("userToken", idToken!);
         setUserToken(DUMMY_USER_TOKEN);
+
+        // Create a Google credential with the token
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+        // Sign-in the user with the credential
+        const userCredential = auth().signInWithCredential(googleCredential);
+        setLoggedIn(true);
+        return userCredential
     };
 
     const signOut = async () => {
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
+        await auth().signOut()
+        setLoggedIn(false);
         await SecureStore.deleteItemAsync("userToken");
         setUserToken(null);
     };
 
-    const auth: AuthContextProps = {
-        userToken: userToken,
+    const authValues: AuthContextProps = {
+        loggedIn: loggedIn,
         signIn: signIn,
         signOut: signOut,
     };
 
-    return <AuthContext.Provider value={auth}>
+    return <AuthContext.Provider value={authValues}>
         {children}
     </AuthContext.Provider>
 }

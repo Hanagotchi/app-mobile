@@ -6,13 +6,13 @@ import { BROWN_LIGHT } from "../themes/globalThemes";
 import useAuth from "../hooks/useAuth";
 
 const LoginScreen: React.FC = ({navigation}) => {
+
     const theme = useTheme();
     const {signIn} = useAuth();
 
     
     const handleSignIn = async () => {
         await signIn()
-        console.log("qwewqewqe")
         navigation.navigate("Home");
     }
 

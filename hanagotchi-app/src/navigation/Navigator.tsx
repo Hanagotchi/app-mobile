@@ -7,16 +7,16 @@ import LandingScreen from "../screens/LandingScreen";
 
 const Navigator: React.FC = () => {
     const Stack = createNativeStackNavigator();
-    const {userToken} = useAuth();
+    const {loggedIn} = useAuth();
 
     useEffect(() => {
-      console.log(userToken)
-    }, [userToken])
+        console.log(loggedIn ? "Signed in" : "Signed out");
+    }, [loggedIn])
 
     return (
     <NavigationContainer>
         <Stack.Navigator>
-            {userToken === null ? (
+            {!loggedIn ? (
                 <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
             ) : (
                 <Stack.Screen name="Home" component={LandingScreen} />
