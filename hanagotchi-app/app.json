@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "hanagotchi-app",
+    "slug": "hanagotchi-app",
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin"
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/IBMPlexMono-Bold.ttf",
+            "./assets/fonts/IBMPlexMono-BoldItalic.ttf",
+            "./assets/fonts/IBMPlexMono-ExtraLight.ttf",
+            "./assets/fonts/IBMPlexMono-ExtraLightItalic.ttf",
+            "./assets/fonts/IBMPlexMono-Italic.ttf",
+            "./assets/fonts/IBMPlexMono-Light.ttf",
+            "./assets/fonts/IBMPlexMono-LightItalic.ttf",
+            "./assets/fonts/IBMPlexMono-Medium.ttf",
+            "./assets/fonts/IBMPlexMono-MediumItalic.ttf",
+            "./assets/fonts/IBMPlexMono-Regular.ttf",
+            "./assets/fonts/IBMPlexMono-SemiBold.ttf",
+            "./assets/fonts/IBMPlexMono-SemiBoldItalic.ttf",
+            "./assets/fonts/IBMPlexMono-Thin.ttf",
+            "./assets/fonts/IBMPlexMono-ThinItalic.ttf"
+          ]
+        }
+      ]
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.fiuba.hanagotchiapp"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "owner": "hanagotchi",
+    "extra": {
+      "eas": {
+        "projectId": "714d8fe6-843b-42a0-8157-6f050cb1cd26"
+      }
+    }
+  }
+}
