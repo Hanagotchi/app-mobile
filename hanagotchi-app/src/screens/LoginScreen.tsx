@@ -11,13 +11,13 @@ const LoginScreen: React.FC = () => {
     
 
     return (
-        <SafeAreaView style={{...style.container, backgroundColor: theme.colors.background}}>
-            <View style={style.header}>
-                <Text style={{...style.title, color: theme.colors.onSecondary}}>HANAGOTCHI</Text>
-                <Text style={{...style.subtitle, color: BROWN_LIGHT}}>Tu nuevo mejor amigo</Text>
-            </View>
-            <ImageBackground source={loginBackground} style={style.background} />
-            <View style={style.footer}>
+        <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+            <View style={style.container}>
+                <View>
+                    <Text style={{...style.title, color: theme.colors.onSecondary}}>HANAGOTCHI</Text>
+                    <Text style={{...style.subtitle, color: BROWN_LIGHT}}>Tu nuevo mejor amigo</Text>
+                </View>
+                <ImageBackground source={loginBackground} style={style.background} />
                 <Button mode="contained" uppercase style={style.button} onPress={() => console.log("Press!!")}>
                     Iniciar sesion
                 </Button>
@@ -28,10 +28,12 @@ const LoginScreen: React.FC = () => {
 
 const style = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: "center",
-    },
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: "center",
+        gap: 40,
+        marginTop: 35,
+      },
     background: {
         width: 400,
         height: 400,
