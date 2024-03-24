@@ -1,21 +1,31 @@
-const BACKGROUND_COLOR = "#F7EAC8";
-const PRIMARY_COLOR = '#689278';
-const PRIMARY_COLOR_DARK = '#3D5948';
-const PRIMARY_COLOR_LIGHT = '#C4DECE';
-const SECONDARY_COLOR = '#E8DECF';
-const SECONDARY_COLOR_DARK = '#DBD5CC';
-const SECONDARY_COLOR_LIGHT = '#FEF7ED';
-const ERROR_COLOR = '#BB3D3C';
-const ERROR_DARK = '#892322';
-const ERROR_LIGHT = '#E9B5B5';
+import {
+    MD3LightTheme as DefaultTheme, MD3Theme,
+} from 'react-native-paper';
 
-export const globalTheme = {
+export const BACKGROUND_COLOR = "#FEF7ED";
+export const GREEN = '#689278';
+export const GREEN_DARK = '#3D5948';
+export const GREEN_LIGHT = '#C4DECE';
+export const BEIGE = '#E8DECF';
+export const BEIGE_DARK = '#DBD5CC';
+export const BEIGE_LIGHT = '#FEF7ED';
+export const BROWN = '#694F31';
+export const BROWN_DARK = '#41311F';
+export const BROWN_LIGHT = '#AC957B';
+export const RED = '#BB3D3C';
+export const RED_DARK = '#892322';
+export const RED_LIGHT = '#E9B5B5';
+export const DARK_TEXT = "#4F4C4F";
+export const BLACK = "#1C1B1C";
+export const GREY = "#4F4C4F";
+
+/* export const globalTheme = {
     pallete: {
         background: BACKGROUND_COLOR,
         primary: {
-            main: PRIMARY_COLOR,
-            dark: PRIMARY_COLOR_DARK,
-            light: PRIMARY_COLOR_LIGHT,
+            main: GREEN,
+            dark: GREEN_DARK,
+            light: GREEN_LIGHT,
         },
         secondary: {
             main: SECONDARY_COLOR,
@@ -49,9 +59,25 @@ export const globalTheme = {
                 big: 21,
             },
             color: {
-                dark: "#4F4C4F",
-                light: "#FEF7ED"
+                dark: DARK_TEXT,
+                light: SECONDARY_COLOR_LIGHT
             }
         }
     }
+} */
+
+export const theme: MD3Theme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        background: BACKGROUND_COLOR,
+        primary: GREEN,
+        onPrimary: BEIGE_LIGHT,
+        secondary: BEIGE_DARK,
+        onSecondary: DARK_TEXT,
+        tertiary: BROWN_LIGHT,
+        onTertiary: BEIGE_LIGHT,
+        error: RED,
+        onError: BEIGE_LIGHT
+    },
 }

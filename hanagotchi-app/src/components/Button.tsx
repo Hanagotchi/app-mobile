@@ -1,6 +1,7 @@
-import { PropsWithChildren } from "react";
+/* import { PropsWithChildren } from "react";
 import { GestureResponderEvent, Pressable, StyleSheet, Text } from "react-native"
-import { globalTheme } from "../themes/globalThemes";
+import { useTheme } from "react-native-paper";
+
 
 type Props = PropsWithChildren & {
     label: string;
@@ -23,8 +24,9 @@ const Button: React.FC<Props> = ({
     children
 }) => {
 
-    let backgroundColor: string = globalTheme.pallete[color ?? "primary"].main;
-    let pressedBackgroundColor: string = globalTheme.pallete[color ?? "primary"].dark;
+    const theme = useTheme()
+    let backgroundColor: string = theme.colors[color ?? "primary"];
+    let pressedBackgroundColor: string = theme.colors[color ?? "primary"];
 
     const commonStyle = StyleSheet.create({
         common: {
@@ -66,4 +68,4 @@ const Button: React.FC<Props> = ({
 
 
 
-export default Button;
+export default Button; */
