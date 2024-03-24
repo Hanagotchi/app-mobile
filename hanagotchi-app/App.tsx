@@ -1,10 +1,12 @@
 import "expo-dev-client";
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { theme } from './src/themes/globalThemes';
 import { ThemeProvider } from 'react-native-paper';
 import { AuthProvider } from "./src/contexts/AuthContext";
 import Navigator from "./src/navigation/Navigator";
+import * as SplashScreen from 'expo-splash-screen';
 
+SplashScreen.preventAutoHideAsync();
+setTimeout(SplashScreen.hideAsync, 2000);
 
 export default function App() {
   return (

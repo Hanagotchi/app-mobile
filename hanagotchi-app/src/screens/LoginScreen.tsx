@@ -12,8 +12,12 @@ const LoginScreen: React.FC = ({navigation}) => {
 
     
     const handleSignIn = async () => {
-        await signIn()
-        navigation.navigate("Home");
+        try {
+            await signIn();
+            navigation.navigate("Home");
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     return (
