@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { HanagotchiApiProvider } from "./src/contexts/HanagotchiServiceContext";
 
 SplashScreen.preventAutoHideAsync();
-setTimeout(SplashScreen.hideAsync, 2000);
+setTimeout(SplashScreen.hideAsync, 4000);
 
 export default function App() {
   return (
