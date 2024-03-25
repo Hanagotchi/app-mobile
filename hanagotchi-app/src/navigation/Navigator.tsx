@@ -25,10 +25,10 @@ const MainScreens: React.FC = () => {
     return (
         <Tab.Navigator>
             <Tab.Group screenOptions={{headerShown: false}}>
-                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{bgColor: "blue"}}/>
-                <Tab.Screen name="Logs" component={EmptyScreen} initialParams={{bgColor: "green"}}/>
-                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{bgColor: "red"}}/>
-                <Tab.Screen name="Settings" component={SettingsScreen} />
+                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{bgColor: "blue"}} options={{tabBarLabel: "Home"}} />
+                <Tab.Screen name="Logs" component={EmptyScreen} initialParams={{bgColor: "green"}} options={{tabBarLabel: "Bitácoras"}} />
+                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{bgColor: "red"}} options={{tabBarLabel: "Red social"}} />
+                <Tab.Screen name="Settings" component={SettingsScreen} options={{tabBarLabel: "Configuración"}} />
             </Tab.Group>
         </Tab.Navigator>
     );

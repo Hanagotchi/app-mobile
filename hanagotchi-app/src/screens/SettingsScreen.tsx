@@ -20,8 +20,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
         navigation.navigate("Login");
     }
 
-    return <SafeAreaView>
-        <Text>Holaaaa</Text>
+    return <SafeAreaView style={style.container}>
         <Button 
             mode="contained" 
             uppercase style={style.button} 
@@ -34,6 +33,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 }
 
 const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: "center",
+        paddingBottom: 20,
+    },
     button: {
         borderRadius: 10,
         width: "50%",
