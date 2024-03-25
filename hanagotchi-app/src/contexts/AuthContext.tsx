@@ -1,9 +1,7 @@
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from "react";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import * as SecureStore from 'expo-secure-store';
-
-const DUMMY_USER_TOKEN = "dummyUserToken";
+import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 
 export type AuthContextProps = {
     loggedIn: boolean;
@@ -19,6 +17,7 @@ export const AuthContext = createContext<AuthContextProps>({
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
+    const hanagotchiApi = useHanagotchiApi();
 
     useEffect(() => {
         /* Configure GoogleSignIn with webClientId */
@@ -39,6 +38,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
 
         // Get the users ID token
         const { idToken, serverAuthCode } = await GoogleSignin.signIn();
+        await hanagotchiApi.logIn(serverAuthCode ?? "null");
 
         // Create a Google credential with the token
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
