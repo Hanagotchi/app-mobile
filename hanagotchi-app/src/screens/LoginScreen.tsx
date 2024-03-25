@@ -4,8 +4,19 @@ import { Button, Text, useTheme } from 'react-native-paper';
 import loginBackground from "../assets/loginBackground.png";
 import { BROWN_LIGHT } from "../themes/globalThemes";
 import useAuth from "../hooks/useAuth";
+import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
-const LoginScreen: React.FC = ({navigation}) => {
+//type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Login">
+type LoginScreenProps = CompositeScreenProps<
+    NativeStackScreenProps<RootStackParamsList, "Login">,
+    BottomTabScreenProps<MainTabParamsList>
+>;
+
+
+const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
     const theme = useTheme();
     const {signIn} = useAuth();
@@ -14,7 +25,7 @@ const LoginScreen: React.FC = ({navigation}) => {
     const handleSignIn = async () => {
         try {
             await signIn();
-            navigation.navigate("Home");
+            navigation.navigate("Home", {bgColor: "blue"});
         } catch (e) {
             console.log(e);
         }

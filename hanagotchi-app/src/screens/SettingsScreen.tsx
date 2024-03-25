@@ -1,8 +1,18 @@
 import { SafeAreaView, StyleSheet, Text } from "react-native"
 import { Button } from "react-native-paper";
 import useAuth from "../hooks/useAuth";
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { CompositeScreenProps } from '@react-navigation/native';
 
-const LandingScreen: React.FC = ({navigation}) => {
+
+type SettingsScreenProps = CompositeScreenProps<
+    BottomTabScreenProps<MainTabParamsList, "Settings">,
+    NativeStackScreenProps<RootStackParamsList>
+>;
+
+const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
 
     const handleSignOut = async () => {
@@ -32,4 +42,4 @@ const style = StyleSheet.create({
     },
 })
 
-export default LandingScreen;
+export default SettingsScreen;
