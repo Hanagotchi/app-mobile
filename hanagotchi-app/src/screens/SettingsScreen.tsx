@@ -1,11 +1,11 @@
 import { SafeAreaView, StyleSheet, Text } from "react-native"
-import { Button } from "react-native-paper";
 import useAuth from "../hooks/useAuth";
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
+import LoaderButton from "../components/LoaderButton";
 
 
 type SettingsScreenProps = CompositeScreenProps<
@@ -24,14 +24,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
     return <SafeAreaView style={style.container}>
         {/* <Text>{`Usuario: ${user.email ?? null}`}</Text> */}
-        <Button 
+        <LoaderButton 
             mode="contained" 
             uppercase style={style.button} 
             onPress={handleSignOut}
             labelStyle={{fontSize: 17}}
         >
             Cerrar sesión
-        </Button>
+        </LoaderButton>
     </SafeAreaView>
 }
 

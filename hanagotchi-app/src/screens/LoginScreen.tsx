@@ -1,5 +1,5 @@
-import { View, StyleSheet, SafeAreaView, ImageBackground, ToastAndroid } from "react-native";
-import { Button, Text, useTheme } from 'react-native-paper';
+import { View, StyleSheet, SafeAreaView, ImageBackground } from "react-native";
+import { Text, useTheme } from 'react-native-paper';
 import loginBackground from "../assets/loginBackground.png";
 import { BROWN_LIGHT } from "../themes/globalThemes";
 import useAuth from "../hooks/useAuth";
@@ -7,8 +7,8 @@ import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator"
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { AxiosError } from "axios";
 import { handleError } from "../common/errorHandling";
+import LoaderButton from "../components/LoaderButton";
 
 //type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Login">
 type LoginScreenProps = CompositeScreenProps<
@@ -28,7 +28,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             navigation.navigate("Home", {bgColor: "blue"});
         } catch (err) {
             handleError(err as Error);
-        }
+        } 
     }
 
     return (
@@ -39,14 +39,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
                     <Text style={{...style.subtitle, color: BROWN_LIGHT}}>Tu nuevo mejor amigo</Text>
                 </View>
                 <ImageBackground source={loginBackground} style={style.background} />
-                <Button 
+                <LoaderButton 
                     mode="contained" 
                     uppercase style={style.button} 
                     onPress={handleSignIn}
                     labelStyle={{fontSize: 17}}
                 >
                     Iniciar sesión
-                </Button>
+                </LoaderButton>
             </View>
         </SafeAreaView>
     )
