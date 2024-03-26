@@ -36,3 +36,4 @@ yarn-error.*
 
 .env
 src/environment/loader.ts
+%ProgramData%/

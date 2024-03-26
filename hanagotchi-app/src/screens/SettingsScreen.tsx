@@ -15,7 +15,7 @@ type SettingsScreenProps = CompositeScreenProps<
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
-    const user = JSON.parse(SecureStore.getItem("user")!);
+    //const user = JSON.parse(SecureStore.getItem("user")!);
 
     const handleSignOut = async () => {
         await signOut();
@@ -23,7 +23,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        <Text>{`Usuario: ${user.email}`}</Text>
+        {/* <Text>{`Usuario: ${user.email ?? null}`}</Text> */}
         <Button 
             mode="contained" 
             uppercase style={style.button} 

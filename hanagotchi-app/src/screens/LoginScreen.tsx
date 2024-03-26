@@ -1,4 +1,4 @@
-import { View, StyleSheet, SafeAreaView, ImageBackground } from "react-native";
+import { View, StyleSheet, SafeAreaView, ImageBackground, ToastAndroid } from "react-native";
 import { Button, Text, useTheme } from 'react-native-paper';
 import loginBackground from "../assets/loginBackground.png";
 import { BROWN_LIGHT } from "../themes/globalThemes";
@@ -7,13 +7,14 @@ import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator"
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { AxiosError } from "axios";
+import { handleError } from "../common/errorHandling";
 
 //type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Login">
 type LoginScreenProps = CompositeScreenProps<
     NativeStackScreenProps<RootStackParamsList, "Login">,
     BottomTabScreenProps<MainTabParamsList>
 >;
-
 
 const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
 
@@ -25,8 +26,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
         try {
             await signIn();
             navigation.navigate("Home", {bgColor: "blue"});
-        } catch (e) {
-            console.log(e);
+        } catch (err) {
+            handleError(err as Error);
         }
     }
 
