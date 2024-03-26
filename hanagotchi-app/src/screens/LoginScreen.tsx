@@ -1,4 +1,3 @@
-import { useEffect, useReducer, useState } from "react";
 import { View, StyleSheet, SafeAreaView, ImageBackground } from "react-native";
 import { Button, Text, useTheme } from 'react-native-paper';
 import loginBackground from "../assets/loginBackground.png";

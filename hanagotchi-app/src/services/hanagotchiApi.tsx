@@ -1,7 +1,22 @@
 import { AxiosInstance } from "axios";
+import { LoginResponse, LoginResponseSchema } from "../models/hanagotchiApi";
+import { User } from "../models/User";
 
 export interface HanagotchiApi {
-    logIn: (authCode: string) => void;
+    logIn: (authCode: string) => Promise<LoginResponse>;
+}
+
+const DUMMY_USER: User = {
+    id: 0,
+    email: "alumno@fi.uba.ar",
+    name: "John Doe",
+    gender: null,
+    photo: null,
+}
+
+const MOCK_LOGIN_RESPONSE: LoginResponse = {
+    status: 200,
+    message: DUMMY_USER,
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -12,7 +27,8 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     // TODO
-    async logIn(authCode: string) {
-        console.log(`Request LOG IN to Hanagothci API with auth code: ${authCode}`);
+    async logIn(authCode: string): Promise<LoginResponse> {
+        const { data } = await this.axiosInstance.post("/login", {auth_code: authCode});
+        return LoginResponseSchema.parse(data);
     }
 }

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
