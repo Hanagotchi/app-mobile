@@ -12,7 +12,7 @@ npx install -g expo-cli
 npm install -g eas-cli
 ```
 
-Dentro de la carpeta FiuFit ejecutar:
+Dentro de la carpeta hanagotchi-app ejecutar:
 
 ```shell
 npm install 
