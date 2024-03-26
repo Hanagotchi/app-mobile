@@ -18,7 +18,7 @@ const LoaderButton: React.FC<ButtonProps> = (props) => {
         setIsLoading(false);
     }
 
-    return <Button {...props} loading={isLoading} onPress={handleOnPress}>
+    return <Button {...props} loading={isLoading} onPress={handleOnPress} onLongPress={handleOnLongPress}>
         {props.children}
     </Button>
 }
