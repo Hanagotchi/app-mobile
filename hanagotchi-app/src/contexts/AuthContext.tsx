@@ -3,6 +3,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { LoginResponse } from "../models/hanagotchiApi";
+import env from "../environment/loader";
 
 export type AuthContextProps = {
     loggedIn: boolean;
@@ -23,7 +24,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
     useEffect(() => {
         /* Configure GoogleSignIn with webClientId */
         GoogleSignin.configure({
-            webClientId: '1029732192625-4h2umbjkpbq1dl8iksakki19qs3h1okv.apps.googleusercontent.com',
+            webClientId: env.googleWebClientId,
             offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
         });  
 
@@ -40,6 +41,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
         // Get the users ID token
         const { idToken, serverAuthCode } = await GoogleSignin.signIn();
         const {message}: LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
+        SecureStore.setItemAsync("user", JSON.stringify(message));
 
         // Create a Google credential with the token
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
@@ -54,6 +56,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
         // await GoogleSignin.revokeAccess();
         await GoogleSignin.signOut();
         await auth().signOut()
+        SecureStore.deleteItemAsync("user");
         setLoggedIn(false);
     };
 

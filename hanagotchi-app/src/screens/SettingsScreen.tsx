@@ -5,6 +5,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
+import * as SecureStore from "expo-secure-store";
 
 
 type SettingsScreenProps = CompositeScreenProps<
@@ -14,6 +15,7 @@ type SettingsScreenProps = CompositeScreenProps<
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
+    const user = JSON.parse(SecureStore.getItem("user")!);
 
     const handleSignOut = async () => {
         await signOut();
@@ -21,6 +23,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
+        <Text>{`Usuario: ${user.email}`}</Text>
         <Button 
             mode="contained" 
             uppercase style={style.button} 
