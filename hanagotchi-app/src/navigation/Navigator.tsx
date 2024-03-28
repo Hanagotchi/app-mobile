@@ -3,9 +3,9 @@ import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/na
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, View } from "react-native";
-import { BEIGE, BEIGE_LIGHT, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
+import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
 import { Entypo, Ionicons   } from '@expo/vector-icons';
 
 const EmptyScreen: React.FC = ({route}) => {
@@ -17,25 +17,41 @@ const HomeIcon = (props: {
     focused: boolean;
     color: string;
     size: number;
-}) => <Entypo name="home" size={props.size} color={props.focused ? GREEN : BEIGE} />;
+}) => <Entypo name="home" size={props.size} color={props.color} />;
 
 const LogIcon = (props: {
     focused: boolean;
     color: string;
     size: number;
-}) => <Entypo name="book" size={props.size} color={props.focused ? GREEN : BEIGE} />;
+}) => <Entypo name="book" size={props.size} color={props.color} />;
 
 const SocialIcon = (props: {
     focused: boolean;
     color: string;
     size: number;
-}) => <Entypo name="leaf" size={props.size} color={props.focused ? GREEN : BEIGE} />;
+}) => <Entypo name="leaf" size={props.size} color={props.color} />;
 
 const SettingsIcon = (props: {
     focused: boolean;
     color: string;
     size: number;
-}) => <Ionicons name="settings" size={props.size} color={props.focused ? GREEN : BEIGE} />;
+}) => <Ionicons name="settings" size={props.size} color={props.color} />;
+
+const styles = StyleSheet.create({
+    bottomTab: {
+        backgroundColor: BEIGE_LIGHT,
+        borderTopColor: BEIGE,
+        borderTopWidth: 1
+    }
+})
+
+const screenOptions: BottomTabNavigationOptions = {
+    tabBarStyle: styles.bottomTab,
+    headerShown: false,
+    tabBarActiveTintColor: GREEN,
+    tabBarInactiveTintColor: BEIGE_DARK,
+    tabBarLabelStyle: {fontWeight: "bold"}
+};
 
 export type MainTabParamsList = {
     Home: {bgColor: string},
@@ -48,10 +64,8 @@ const MainScreens: React.FC = () => {
     const Tab = createBottomTabNavigator<MainTabParamsList>();
 
     return (
-        <Tab.Navigator screenOptions={{
-            tabBarStyle: styles.bottomTab
-        }}>
-            <Tab.Group screenOptions={{headerShown: false}}>
+        <Tab.Navigator screenOptions={screenOptions}>
+            <Tab.Group>
                 <Tab.Screen name="Home" component={EmptyScreen} initialParams={{bgColor: "blue"}} options={{
                     tabBarLabel: "Home",
                     tabBarIcon: HomeIcon,
@@ -94,18 +108,5 @@ const Navigator: React.FC = () => {
     </NavigationContainer>
   )
 }
-
-const styles = StyleSheet.create({
-    bottomTab: {
-        backgroundColor: BEIGE_LIGHT,
-        borderTopColor: BEIGE,
-        borderTopWidth: 3
-    },
-    label: {
-
-    }
-})
-
-
 
 export default Navigator;
