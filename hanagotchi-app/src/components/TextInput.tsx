@@ -30,7 +30,7 @@ const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, number
 const style = StyleSheet.create({
     textInput: {
         color: BROWN_DARK,
-        fontSize: 14,
+        fontSize: 16,
         textAlignVertical: "top",
     },
 });
