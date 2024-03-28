@@ -1,4 +1,5 @@
 import { TextInput as PaperTextInput } from "react-native-paper";
+import { TextInput as NativeTextInput } from "react-native";
 import {StyleSheet} from "react-native";
 import { BEIGE, BROWN_DARK } from "../themes/globalThemes";
 import BackgroundCard from "./BackgroundCard";
@@ -7,21 +8,20 @@ type TextInputProps = {
     label: string;
     value: string;
     onChangeText: (((text: string) => void) & Function);
+    numberOfLines?: number
 }
 
-const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText}) => {
+const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, numberOfLines = 1}) => {
+    const isTextArea = numberOfLines > 1;
     return (
         <BackgroundCard title={label}>
-            <PaperTextInput
+            <NativeTextInput 
                 value={value}
                 onChangeText={onChangeText}
-                mode="flat"
-                selectionColor={BEIGE}
-                cursorColor={BROWN_DARK}
-                textColor={BROWN_DARK}
+                selectionColor={BROWN_DARK}
+                multiline={isTextArea}
+                numberOfLines={numberOfLines}
                 style={style.textInput}
-                contentStyle={style.content}
-                underlineStyle={style.underline}  
             />
         </BackgroundCard>
     )
@@ -29,15 +29,10 @@ const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText}) => {
 
 const style = StyleSheet.create({
     textInput: {
-        height: 20,
+        color: BROWN_DARK,
+        fontSize: 14,
+        textAlignVertical: "top",
     },
-    content: {
-        backgroundColor: BEIGE,
-        paddingLeft: 0,
-    },
-    underline: {
-        display: "none"
-    }
 });
 
 export default TextInput;

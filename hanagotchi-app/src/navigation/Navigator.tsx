@@ -5,7 +5,7 @@ import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, View } from "react-native";
-import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
+import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
 import { Entypo, Ionicons   } from '@expo/vector-icons';
 
 const EmptyScreen: React.FC = ({route}) => {
@@ -41,13 +41,21 @@ const styles = StyleSheet.create({
     bottomTab: {
         backgroundColor: BEIGE_LIGHT,
         borderTopColor: BEIGE,
-        borderTopWidth: 1
+        borderTopWidth: 3,
+    },
+    header: {
+        backgroundColor: BEIGE_LIGHT,
+        borderBottomColor: BEIGE,
+        borderBottomWidth: 3,
     }
 })
 
 const screenOptions: BottomTabNavigationOptions = {
     tabBarStyle: styles.bottomTab,
-    headerShown: false,
+    headerStyle: styles.header,
+    headerTintColor: BLACK,
+    headerTitleAlign: "center",
+    //headerShown: false,
     tabBarActiveTintColor: GREEN,
     tabBarInactiveTintColor: BEIGE_DARK,
     tabBarLabelStyle: {fontWeight: "bold"}
@@ -98,7 +106,11 @@ const Navigator: React.FC = () => {
 
     return (
     <NavigationContainer>
-        <RootStack.Navigator>
+        <RootStack.Navigator screenOptions={{
+            headerStyle: styles.header,
+            headerTintColor: BLACK,
+            headerTitleAlign: "center",
+        }}>
             {!loggedIn ? (
                 <RootStack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
             ) : (

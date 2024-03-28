@@ -7,7 +7,7 @@ import type { CompositeScreenProps } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
 import LoaderButton from "../components/LoaderButton";
 import { useState } from "react";
-import { BEIGE, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
+import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 
 
@@ -48,6 +48,7 @@ const style = StyleSheet.create({
         alignItems: "center",
         paddingBottom: 20,
         gap: 10,
+        backgroundColor: BACKGROUND_COLOR,
     },
     button: {
         borderRadius: 10,
