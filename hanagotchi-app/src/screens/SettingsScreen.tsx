@@ -6,7 +6,7 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
 import LoaderButton from "../components/LoaderButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 
@@ -20,7 +20,24 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
     //const user = JSON.parse(SecureStore.getItem("user")!);
     
+    const [name, setName] = useState("");
     const [text, setText] = useState("");
+    const [lenght, setLenght] = useState(0);
+    const MAX_LENGHT = 500;
+
+    useEffect(() => {
+        const setInitialState = navigation.addListener('focus', () => {
+            setName("");
+            setText("");
+            setLenght(0);
+        });
+
+        return setInitialState;
+      }, [navigation]);
+
+    useEffect(() => {
+        setLenght(text.length)
+    }, [text])
 
     const handleSignOut = async () => {
         await signOut();
@@ -29,7 +46,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
     return <SafeAreaView style={style.container}>
         {/* <Text>{`Usuario: ${user.email ?? null}`}</Text> */}
-        <TextInput label="NOMBRE" value={text} onChangeText={(text) => setText(text)}/>
+        <TextInput label={`NOMBRE`} value={name} onChangeText={(name) => setName(name)}/>
+        <TextInput 
+            label={`DESCRIPCIÓN    ${lenght}/${MAX_LENGHT}`} 
+            value={text} 
+            onChangeText={(text) => setText(text)}
+            numberOfLines={4}
+            maxLenght={500}
+        />
         <LoaderButton 
             mode="contained" 
             uppercase style={style.button} 
