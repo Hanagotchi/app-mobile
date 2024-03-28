@@ -26,7 +26,8 @@
             "./assets/fonts/IBMPlexMono-ThinItalic.ttf"
           ]
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -35,7 +36,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#689278"
     },
     "assetBundlePatterns": [
       "**/*"

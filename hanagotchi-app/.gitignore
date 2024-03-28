@@ -34,4 +34,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+
+.env
+src/environment/loader.ts
 %ProgramData%/
