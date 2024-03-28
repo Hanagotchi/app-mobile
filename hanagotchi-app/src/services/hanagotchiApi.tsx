@@ -12,9 +12,9 @@ export class HanagotchiApiImpl implements HanagotchiApi {
       this.axiosInstance = axiosInstance;
     }
 
-    // TODO
     async logIn(authCode: string): Promise<LoginResponse> {
         const { data } = await this.axiosInstance.post("/login", {auth_code: authCode});
+        console.log(data);
         return LoginResponseSchema.parse(data);
     }
 }

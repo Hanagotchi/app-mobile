@@ -9,6 +9,7 @@ import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { handleError } from "../common/errorHandling";
 import LoaderButton from "../components/LoaderButton";
+import { statusCodes } from "@react-native-google-signin/google-signin";
 
 //type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Login">
 type LoginScreenProps = CompositeScreenProps<
@@ -27,6 +28,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             await signIn();
             navigation.navigate("Home", {bgColor: "blue"});
         } catch (err) {
+            if (err.code === statusCodes.SIGN_IN_CANCELLED) return;
             handleError(err as Error);
         } 
     }

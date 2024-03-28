@@ -56,6 +56,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
         } catch (err) {
             SecureStore.deleteItemAsync("user");
             setLoggedIn(false);
+
             if (await GoogleSignin.isSignedIn()) {
                 await GoogleSignin.signOut();
             }

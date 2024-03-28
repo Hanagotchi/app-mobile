@@ -6,10 +6,10 @@ const LoaderButton: React.FC<ButtonProps> = (props) => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const handleOnPress = (e: GestureResponderEvent) => {
+    const handleOnPress = async (e: GestureResponderEvent) => {
         setIsLoading(true);
         props.onPress?.(e);
-        setIsLoading(false);
+        await setIsLoading(false);
     }
 
     const handleOnLongPress = (e: GestureResponderEvent) => {
