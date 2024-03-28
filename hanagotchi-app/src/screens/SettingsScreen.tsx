@@ -6,6 +6,9 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
 import LoaderButton from "../components/LoaderButton";
+import { useState } from "react";
+import { BEIGE, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
+import TextInput from "../components/TextInput";
 
 
 type SettingsScreenProps = CompositeScreenProps<
@@ -16,6 +19,8 @@ type SettingsScreenProps = CompositeScreenProps<
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
     //const user = JSON.parse(SecureStore.getItem("user")!);
+    
+    const [text, setText] = useState("");
 
     const handleSignOut = async () => {
         await signOut();
@@ -24,6 +29,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
     return <SafeAreaView style={style.container}>
         {/* <Text>{`Usuario: ${user.email ?? null}`}</Text> */}
+        <TextInput label="NOMBRE" value={text} onChangeText={(text) => setText(text)}/>
         <LoaderButton 
             mode="contained" 
             uppercase style={style.button} 
@@ -41,6 +47,7 @@ const style = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: "center",
         paddingBottom: 20,
+        gap: 10,
     },
     button: {
         borderRadius: 10,
@@ -48,6 +55,16 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: "center",
     },
+    card: {
+        backgroundColor: BEIGE,
+        width: "80%",
+        gap: 0,
+        columnGap: 0,
+    },
+    cardTitle: {
+        color: BROWN_LIGHT,
+        fontSize: 12,
+    }
 })
 
 export default SettingsScreen;
