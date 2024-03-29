@@ -52,10 +52,7 @@ const styles = StyleSheet.create({
 
 const screenOptions: BottomTabNavigationOptions = {
     tabBarStyle: styles.bottomTab,
-    headerStyle: styles.header,
-    headerTintColor: BLACK,
-    headerTitleAlign: "center",
-    //headerShown: false,
+    headerShown: false,
     tabBarActiveTintColor: GREEN,
     tabBarInactiveTintColor: BEIGE_DARK,
     tabBarLabelStyle: {fontWeight: "bold"}
