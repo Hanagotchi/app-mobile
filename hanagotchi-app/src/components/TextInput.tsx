@@ -22,7 +22,7 @@ const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, number
                 selectionColor={BROWN_DARK}
                 multiline={isTextArea}
                 numberOfLines={numberOfLines}
-                style={style.textInput}
+                style={{...style.textInput, height: isTextArea ? undefined : 20,}}
                 maxLength={maxLength}
             />
         </BackgroundCard>
