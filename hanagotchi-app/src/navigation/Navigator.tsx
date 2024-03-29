@@ -3,13 +3,60 @@ import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/na
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View } from "react-native";
+import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { StyleSheet, View } from "react-native";
+import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
+import { Entypo, Ionicons   } from '@expo/vector-icons';
 
 const EmptyScreen: React.FC = ({route}) => {
     const {bgColor} = route.params;
     return <View style={{flex: 1, backgroundColor: bgColor}} />
 }
+
+const HomeIcon = (props: {
+    focused: boolean;
+    color: string;
+    size: number;
+}) => <Entypo name="home" size={props.size} color={props.color} />;
+
+const LogIcon = (props: {
+    focused: boolean;
+    color: string;
+    size: number;
+}) => <Entypo name="book" size={props.size} color={props.color} />;
+
+const SocialIcon = (props: {
+    focused: boolean;
+    color: string;
+    size: number;
+}) => <Entypo name="leaf" size={props.size} color={props.color} />;
+
+const SettingsIcon = (props: {
+    focused: boolean;
+    color: string;
+    size: number;
+}) => <Ionicons name="settings" size={props.size} color={props.color} />;
+
+const styles = StyleSheet.create({
+    bottomTab: {
+        backgroundColor: BEIGE_LIGHT,
+        borderTopColor: BEIGE,
+        borderTopWidth: 3,
+    },
+    header: {
+        backgroundColor: BEIGE_LIGHT,
+        borderBottomColor: BEIGE,
+        borderBottomWidth: 3,
+    }
+})
+
+const screenOptions: BottomTabNavigationOptions = {
+    tabBarStyle: styles.bottomTab,
+    headerShown: false,
+    tabBarActiveTintColor: GREEN,
+    tabBarInactiveTintColor: BEIGE_DARK,
+    tabBarLabelStyle: {fontWeight: "bold"}
+};
 
 export type MainTabParamsList = {
     Home: {bgColor: string},
@@ -22,12 +69,24 @@ const MainScreens: React.FC = () => {
     const Tab = createBottomTabNavigator<MainTabParamsList>();
 
     return (
-        <Tab.Navigator>
-            <Tab.Group screenOptions={{headerShown: false}}>
-                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{bgColor: "blue"}} options={{tabBarLabel: "Home"}} />
-                <Tab.Screen name="Logs" component={EmptyScreen} initialParams={{bgColor: "green"}} options={{tabBarLabel: "Bitácoras"}} />
-                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{bgColor: "red"}} options={{tabBarLabel: "Red social"}} />
-                <Tab.Screen name="Settings" component={SettingsScreen} options={{tabBarLabel: "Configuración"}} />
+        <Tab.Navigator screenOptions={screenOptions}>
+            <Tab.Group>
+                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{bgColor: "blue"}} options={{
+                    tabBarLabel: "Home",
+                    tabBarIcon: HomeIcon,
+                }} />
+                <Tab.Screen name="Logs" component={EmptyScreen} initialParams={{bgColor: "green"}} options={{
+                    tabBarLabel: "Bitácoras",
+                    tabBarIcon: LogIcon,
+                    }} />
+                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{bgColor: "red"}} options={{
+                    tabBarLabel: "Red social",
+                    tabBarIcon: SocialIcon,
+                }} />
+                <Tab.Screen name="Settings" component={SettingsScreen} options={{
+                    tabBarLabel: "Configuración",
+                    tabBarIcon: SettingsIcon,
+                }} />
             </Tab.Group>
         </Tab.Navigator>
     );
@@ -44,7 +103,11 @@ const Navigator: React.FC = () => {
 
     return (
     <NavigationContainer>
-        <RootStack.Navigator>
+        <RootStack.Navigator screenOptions={{
+            headerStyle: styles.header,
+            headerTintColor: BLACK,
+            headerTitleAlign: "center",
+        }}>
             {!loggedIn ? (
                 <RootStack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
             ) : (
