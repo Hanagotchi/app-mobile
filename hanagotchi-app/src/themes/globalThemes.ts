@@ -18,6 +18,7 @@ export const RED_LIGHT = '#E9B5B5';
 export const DARK_TEXT = "#4F4C4F";
 export const BLACK = "#1C1B1C";
 export const GREY = "#4F4C4F";
+export const GREY_LIGHT = "grey";
 
 /* export const globalTheme = {
     pallete: {
