@@ -10,6 +10,7 @@ import SelectBox from "../components/SelectBox";
 import LogPreview from "../components/logs/LogPreview";
 import { useApiFetch } from "../hooks/useApiFetch";
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
+import NoContent from "../components/NoContent";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -89,17 +90,20 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
         {
             isFetching ? (
                 <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
-            ) : (
-                <ScrollView contentContainerStyle={style.logList}>
-                    {fetchedData.map((log) => (
-                        <LogPreview
-                            key={log.id}
-                            createdAt={log.created_at} 
-                            title={log.title}
-                            mainPhotoUri={log.photos.length > 0 ? log.photos[0].photo_link : undefined} 
-                        />
-                    ))}
-                </ScrollView>
+            ) : (fetchedData.length === 0 ? (
+                    <NoContent />
+                ) : (
+                    <ScrollView contentContainerStyle={style.logList}>
+                        {fetchedData.map((log) => (
+                            <LogPreview
+                                key={log.id}
+                                createdAt={log.created_at} 
+                                title={log.title}
+                                mainPhotoUri={log.photos.length > 0 ? log.photos[0].photo_link : undefined} 
+                            />
+                        ))}
+                    </ScrollView>
+                )
             )
         }
         <FAB icon={"plus"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
