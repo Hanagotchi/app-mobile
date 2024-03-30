@@ -1,5 +1,4 @@
-import { PropsWithChildren, createContext, useEffect, useState } from "react";
-import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
+import { PropsWithChildren, createContext, useEffect } from "react";
 import env from "../environment/loader";
 import { User } from "../models/User";
 import firebase from 'firebase/compat/app'
@@ -17,9 +16,6 @@ export const FirebaseContext = createContext<FirebaseContextProps>({
 });
 
 export const FirebaseProvider: React.FC<PropsWithChildren> = ({ children }) => {
-    const [loggedIn, setLoggedIn] = useState<boolean>(false);
-    const hanagotchiApi = useHanagotchiApi();
-
     useEffect(() => {
         console.log("Configuring Firebase!")
 
