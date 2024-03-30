@@ -4,7 +4,16 @@ const env = {
     hanagotchiUserServiceURL: "",
     googleWebClientId: "",
     revGeoCodeApId: "",
-    revGeoCodeApiKey: ""
+    revGeoCodeApiKey: "",
+    firebaseConfig: {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: "",
+        measurementId: ""
+    }
 }
 
 export default env;
