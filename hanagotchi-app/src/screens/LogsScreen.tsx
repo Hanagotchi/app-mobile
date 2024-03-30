@@ -11,6 +11,7 @@ import LogPreview from "../components/logs/LogPreview";
 import { useApiFetch } from "../hooks/useApiFetch";
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import NoContent from "../components/NoContent";
+import * as SecureStore from "expo-secure-store";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -43,10 +44,15 @@ type LogsScreenProps = CompositeScreenProps<
 
 const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const [year, setYear] = useState<number>(currentYear); 
-    const [month, setMonth] = useState<number>(currentMonth); 
+    const [month, setMonth] = useState<number>(currentMonth);
+    const userId = Number(SecureStore.getItem("userId"))
 
     const api = useHanagotchiApi();
-    const {isFetching, fetchedData, error} = useApiFetch(() => api.getLogsByUser(4, {year: year, month: month}), [], [year, month])
+    const {isFetching, fetchedData, error} = useApiFetch(
+        () => api.getLogsByUser(userId, {year: year, month: month}),
+        [],
+        [year, month]
+    );
 
     
     if (!isFetching && error) {

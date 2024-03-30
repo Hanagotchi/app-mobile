@@ -1,11 +1,10 @@
-import { PropsWithChildren, createContext, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useEffect, useState } from "react";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { LoginResponse } from "../models/hanagotchiApi";
 import env from "../environment/loader";
 import * as SecureStore from "expo-secure-store";
-import { ToastAndroid } from "react-native";
 
 export type AuthContextProps = {
     loggedIn: boolean;
@@ -43,7 +42,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
             // Get the users ID token
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
             const {message}: LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
-            await SecureStore.setItemAsync("user", JSON.stringify(message));
+            await SecureStore.setItemAsync("userId", JSON.stringify(message.id));
 
             // Create a Google credential with the token
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
@@ -54,7 +53,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
             return userCredential
 
         } catch (err) {
-            SecureStore.deleteItemAsync("user");
+            SecureStore.deleteItemAsync("userId");
             setLoggedIn(false);
 
             if (await GoogleSignin.isSignedIn()) {
@@ -68,7 +67,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({children}) => {
         // await GoogleSignin.revokeAccess();
         await GoogleSignin.signOut();
         await auth().signOut()
-        SecureStore.deleteItemAsync("user");
+        SecureStore.deleteItemAsync("userId");
         setLoggedIn(false);
     };
 
