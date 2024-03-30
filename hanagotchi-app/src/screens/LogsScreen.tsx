@@ -8,11 +8,12 @@ import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../them
 import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../components/SelectBox";
 import LogPreview from "../components/logs/LogPreview";
+import { useApiFetch } from "../hooks/useApiFetch";
+import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
-const currentMonth = (new Date()).getMonth()
-
+const currentMonth = (new Date()).getMonth() + 1
 
 const years = 
     range(1997, (new Date()).getFullYear()+1)
@@ -20,18 +21,18 @@ const years =
     .map((year) => ({key: year, value: String(year)}))
 
 const months = [
-    {key: 0, value: "Enero"},
-    {key: 1, value: "Febrero"},
-    {key: 2, value: "Marzo"},
-    {key: 3, value: "Abril"},
-    {key: 4, value: "Mayo"},
-    {key: 5, value: "Junio"},
-    {key: 6, value: "Julio"},
-    {key: 7, value: "Agosto"},
-    {key: 8, value: "Septiembre"},
-    {key: 9, value: "Octubre"},
-    {key: 10, value: "Noviembre"},
-    {key: 11, value: "Diciembre"},
+    {key: 1, value: "Enero"},
+    {key: 2, value: "Febrero"},
+    {key: 3, value: "Marzo"},
+    {key: 4, value: "Abril"},
+    {key: 5, value: "Mayo"},
+    {key: 6, value: "Junio"},
+    {key: 7, value: "Julio"},
+    {key: 8, value: "Agosto"},
+    {key: 9, value: "Septiembre"},
+    {key: 10, value: "Octubre"},
+    {key: 11, value: "Noviembre"},
+    {key: 12, value: "Diciembre"},
 ]
 
 type LogsScreenProps = CompositeScreenProps<
@@ -43,9 +44,13 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const [year, setYear] = useState<number>(currentYear); 
     const [month, setMonth] = useState<number>(currentMonth); 
 
-    useEffect(() => {
-        console.log(year, month)
-    }, [year, month])
+    const api = useHanagotchiApi();
+    const {isFetching, fetchedData, error} = useApiFetch(() => api.getLogsByUser(4, {year: year, month: month}), [], [year, month])
+
+    
+    if (!isFetching && error) {
+        throw error;
+    }
 
     useEffect(() => {
         const setInitialState = navigation.addListener('focus', () => {
@@ -55,7 +60,6 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
         return setInitialState;
       }, [navigation]);
 
-      const isLoading = false;
 
     return <SafeAreaView style={style.container}>
         <Text style={{
@@ -83,26 +87,21 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
         </View>
         <Divider bold style={{width: "90%"}}/>
         {
-            isLoading ? (
+            isFetching ? (
                 <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
             ) : (
                 <ScrollView contentContainerStyle={style.logList}>
-                    <LogPreview 
-                        createdAt={new Date()} 
-                        title="Mi linda petuña que a veces se meure"
-                        mainPhotoUri= "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/plant_types%2Fchina.png?alt=media&token=a77c1851-b0d9-4eec-a334-7fa5314c119a"
-                    />
-                    <LogPreview 
-                        createdAt={new Date()} 
-                        title="Mi linda petuña que a veces se meure"
-                    />
+                    {fetchedData.map((log) => (
+                        <LogPreview
+                            key={log.id}
+                            createdAt={log.created_at} 
+                            title={log.title}
+                            mainPhotoUri={log.photos.length > 0 ? log.photos[0].photo_link : undefined} 
+                        />
+                    ))}
                 </ScrollView>
             )
         }
-        
-
-{/*          */}
-
         <FAB icon={"plus"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
     </SafeAreaView>
 }

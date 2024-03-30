@@ -13,8 +13,8 @@ export const LogSchema = z.object({
     plant_id: z.number(),
     title: z.string(),
     content: z.string(),
-    created_at: z.date(),
-    updated_at: z.date(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date(),
     photos: z.array(LogPhotoSchema),
 });
 
