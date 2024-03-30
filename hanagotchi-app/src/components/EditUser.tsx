@@ -4,6 +4,8 @@ import React from "react";
 import TextInput from "./TextInput";
 import DateButton from "./DateButton";
 import EditProfilePicture from "./EditProfilePicture";
+import EditLocation from './EditLocation';
+import { LocationUser } from '../models/LocationUser';
 
 type EditUserProps = {
     name: string;
@@ -13,13 +15,16 @@ type EditUserProps = {
     onPressUploadPhoto: (() => void) & Function;
     dateOfBirth: Date;
     onChangeDateOfBirth: ((date: Date) => void) & Function;
+    onRequestLocation: (() => void) & Function;
+    location: LocationUser | null;
 }
-const EditUser: React.FC<EditUserProps> = ({ name, profilePicture, onChangeName, onPressCompleteEdit, onPressUploadPhoto, dateOfBirth, onChangeDateOfBirth }) => {
+const EditUser: React.FC<EditUserProps> = ({ name, profilePicture, onChangeName, onPressCompleteEdit, onPressUploadPhoto, dateOfBirth, onChangeDateOfBirth, onRequestLocation, location }) => {
     return (
         <>
             <TextInput label={`NOMBRE`} value={name} onChangeText={(name) => onChangeName(name)} />
             <EditProfilePicture title="FOTO DE PERFIL (Opcional)" profilePicture={profilePicture} onPressUploadPhoto={onPressUploadPhoto} />
             <DateButton title="FECHA DE NACIMIENTO" date={dateOfBirth} setDate={onChangeDateOfBirth} />
+            <EditLocation title="MI UBICACIÓN" location={location} onRequestLocation={onRequestLocation} />
             <LoaderButton
                 mode="contained"
                 uppercase style={styles.button}
