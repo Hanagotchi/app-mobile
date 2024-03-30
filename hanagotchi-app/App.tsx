@@ -9,6 +9,7 @@ import MyErrorBoundary from "./src/common/MyErrorBoundaries";
 import { ToastAndroid } from "react-native";
 import { LocationProvider } from "./src/contexts/LocationContext";
 import { FirebaseProvider } from "./src/contexts/FirebaseContext";
+import { LocalStorageProvider } from "./src/contexts/LocalStorageContext";
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 4000);
@@ -22,13 +23,15 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <MyErrorBoundary onError={handleError}>
         <HanagotchiApiProvider>
-          <AuthProvider>
-            <FirebaseProvider>
-              <LocationProvider>
-                <Navigator />
-              </LocationProvider>
-            </FirebaseProvider>
-          </AuthProvider>
+          <LocalStorageProvider>
+            <AuthProvider>
+              <FirebaseProvider>
+                <LocationProvider>
+                  <Navigator />
+                </LocationProvider>
+              </FirebaseProvider>
+            </AuthProvider>
+          </LocalStorageProvider>
         </HanagotchiApiProvider>
       </MyErrorBoundary>
     </ThemeProvider>
