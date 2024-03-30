@@ -46,9 +46,10 @@ const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
                 onPress={handlePress}
                 style={styles.touchableOpacityContainer}
             >
-                <CalendarIcon color={BROWN_DARK} size={25} />
-                <Text style={styles.dateText}>{formatDate(date)}</Text>
-
+                <View style={styles.dateContent}>
+                    <CalendarIcon color={BROWN_DARK} size={25} />
+                    <Text style={styles.dateText}>{formatDate(date)}</Text>
+                </View>
                 <ArrowIcon color={BROWN_DARK} size={25} />
             </TouchableOpacity>
             <DatePicker
@@ -67,12 +68,16 @@ const styles = StyleSheet.create({
     touchableOpacityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'space-between', // Align items with space between them
+    },
+    dateContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     dateText: {
         fontSize: 16,
         color: BROWN_DARK,
-        marginRight: 60,
+        marginLeft: 10, // Add some space between the icon and text
     },
 });
 
