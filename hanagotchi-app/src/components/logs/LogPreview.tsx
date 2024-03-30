@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, GestureResponderEvent, TouchableOpacity } from "react-native";
 import { Surface, Text } from "react-native-paper";
 import { BEIGE, BROWN_DARK } from "../../themes/globalThemes";
 import { getSpanishSimplifiedDate } from "../../common/dateUtils";
@@ -7,24 +7,29 @@ type LogPreviewProps = {
     createdAt: Date;
     title: string;
     mainPhotoUri?: string;
+    onPress: (event: GestureResponderEvent) => void;
 };
 
-const LogPreview: React.FC<LogPreviewProps> = ({createdAt, title, mainPhotoUri}) => {
-    return <View style={style.container}>
-        <Surface elevation={0} style={style.dateSurface}>
-            <Text style={style.date}>{`${getSpanishSimplifiedDate(createdAt.getDay())} ${createdAt.getDate()}`}</Text>
-        </Surface>
-        <Surface elevation={0} style={style.titleSurface}>
-            <Text 
-                numberOfLines={1} 
-                ellipsizeMode="tail" 
-                style={{...style.title, width: mainPhotoUri ? "80%" : "100%"}}
-            >
-                {title}
-            </Text>
-            {mainPhotoUri && <Image style={style.image} source={{uri: mainPhotoUri}}/>}
-        </Surface>
-    </View>
+const LogPreview: React.FC<LogPreviewProps> = ({createdAt, title, mainPhotoUri, onPress}) => {
+    return (
+        <TouchableOpacity onPress={onPress}>
+            <View style={style.container}>
+                <Surface elevation={0} style={style.dateSurface}>
+                    <Text style={style.date}>{`${getSpanishSimplifiedDate(createdAt.getDay())} ${createdAt.getDate()}`}</Text>
+                </Surface>
+                <Surface elevation={0} style={style.titleSurface}>
+                    <Text 
+                        numberOfLines={1} 
+                        ellipsizeMode="tail" 
+                        style={{...style.title, width: mainPhotoUri ? "80%" : "100%"}}
+                    >
+                        {title}
+                    </Text>
+                    {mainPhotoUri && <Image style={style.image} source={{uri: mainPhotoUri}}/>}
+                </Surface>
+            </View>
+        </TouchableOpacity>
+    );
 }
 
 const style = StyleSheet.create({

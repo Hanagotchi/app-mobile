@@ -10,6 +10,7 @@ import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/LogsScreen";
 import { Log } from "../models/Log";
 import LogDetailsScreen from "../screens/LogDetailsScreen";
+import { formatDate } from "../common/dateUtils";
 
 const EmptyScreen: React.FC = ({route}) => {
     const {bgColor} = route.params;
@@ -118,7 +119,9 @@ const Navigator: React.FC = () => {
             ) : (
                 <>
                     <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
-
+                    <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
+                         title: formatDate(route.params.log.created_at)
+                    })}/>
                 </>
             )}
         </RootStack.Navigator>

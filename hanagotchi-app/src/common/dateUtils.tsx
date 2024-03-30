@@ -1,6 +1,6 @@
 export const simplifiedDatesList = ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"];
 
-export const weekDateList = [
+export const weekDayList = [
     "Domingo",
     "Lunes",
     "Martes",
@@ -26,3 +26,12 @@ export const monthList = [
   ];
 
 export const getSpanishSimplifiedDate = (day: number) => simplifiedDatesList[day]
+
+export const formatDate = (date: Date) => {
+  const weekDay = weekDayList[date.getDay()];
+  const day = date.getDate();
+  const month = monthList[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${weekDay} ${day} de ${month}, ${year}`;
+}

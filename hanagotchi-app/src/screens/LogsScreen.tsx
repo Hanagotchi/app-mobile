@@ -79,7 +79,8 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
                                 key={log.id}
                                 createdAt={log.created_at} 
                                 title={log.title}
-                                mainPhotoUri={log.photos.length > 0 ? log.photos[0].photo_link : undefined} 
+                                mainPhotoUri={log.photos.length > 0 ? log.photos[0].photo_link : undefined}
+                                onPress={() => navigation.navigate("LogDetails", {log: log})}
                             />
                         ))}
                     </ScrollView>
