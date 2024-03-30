@@ -59,11 +59,7 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        <Text style={{
-            fontSize: 36,
-            marginTop: StatusBar.currentHeight! + 10,
-            color: BROWN_DARK
-        }}>Mis Bitácoras</Text>
+        <Text style={style.title}>Mis Bitácoras</Text>
         <View style={style.filters}>
             <SelectBox
                 label="AÑO" 
@@ -114,6 +110,11 @@ const style = StyleSheet.create({
         paddingBottom: 20,
         gap: 20,
         backgroundColor: BACKGROUND_COLOR,
+    },
+    title: {
+        fontSize: 36,
+        marginTop: StatusBar.currentHeight! + 10,
+        color: BROWN_DARK
     },
     filters: {
         gap: 10,
