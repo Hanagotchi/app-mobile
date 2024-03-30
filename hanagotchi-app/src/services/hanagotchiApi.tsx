@@ -1,8 +1,9 @@
 import { AxiosInstance } from "axios";
-import { LoginResponse, LoginResponseSchema } from "../models/hanagotchiApi";
+import { LoginResponse, LoginResponseSchema, GetLogsByUserResponseSchema, GetLogsByUserResponse } from "../models/hanagotchiApi";
 
 export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
+    getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -14,7 +15,11 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async logIn(authCode: string): Promise<LoginResponse> {
         const { data } = await this.axiosInstance.post("/login", {auth_code: authCode});
-        console.log(data);
         return LoginResponseSchema.parse(data);
+    }
+
+    async getLogsByUser(userId: number, params: {year: number, month?: number} ): Promise<GetLogsByUserResponse> {
+        const { data } = await this.axiosInstance.get(`/logs/${userId}`, {params});
+        return GetLogsByUserResponseSchema.parse(data);
     }
 }

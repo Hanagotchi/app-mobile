@@ -6,7 +6,7 @@ export const LoginResponseSchema = z.object({
     status: z.number(),
     message: UserSchema,
 });
-
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
 export const GetLogsByUserResponseSchema = z.array(LogSchema);
+export type GetLogsByUserResponse = z.infer<typeof GetLogsByUserResponseSchema>;
