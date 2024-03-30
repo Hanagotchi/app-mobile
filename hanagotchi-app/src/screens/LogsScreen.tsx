@@ -54,19 +54,9 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
         [year, month]
     );
 
-    
     if (!isFetching && error) {
         throw error;
     }
-
-    useEffect(() => {
-        const setInitialState = navigation.addListener('focus', () => {
-            setYear((new Date()).getFullYear());
-        });
-
-        return setInitialState;
-      }, [navigation]);
-
 
     return <SafeAreaView style={style.container}>
         <Text style={{

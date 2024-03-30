@@ -23,7 +23,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({label, data, setSelected, width, s
   
     return(
         <BackgroundCard title={label} width={width}>
-            <SelectList 
+            <SelectList
                 setSelected={setSelected} 
                 data={data}
                 placeholder='---'
