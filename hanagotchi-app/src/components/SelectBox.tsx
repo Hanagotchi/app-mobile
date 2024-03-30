@@ -2,25 +2,27 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import BackgroundCard from './BackgroundCard';
 import { BEIGE_DARK, BROWN_DARK, BROWN_LIGHT, GREY_LIGHT } from '../themes/globalThemes';
 import { Entypo } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native';
+import { DimensionValue, StyleSheet } from 'react-native';
 
 type SelectOption = {
-    key: string,
+    key: any,
     value: string,
     disable?: boolean,
 };
 
 type SelectBoxProps = {
+    label: string,
     data: SelectOption[]
-    setSelected: (val: string) => void,
+    setSelected: (val: any) => void,
     save?: "value" | "key",
-    defaultOption?: SelectOption, 
+    defaultOption?: SelectOption,
+    width?: DimensionValue, 
 }
 
-const SelectBox: React.FC<SelectBoxProps> = ({data, setSelected, save = "key", defaultOption}) => {
+const SelectBox: React.FC<SelectBoxProps> = ({label, data, setSelected, width, save = "key", defaultOption}) => {
   
     return(
-        <BackgroundCard title="COSAS">
+        <BackgroundCard title={label} width={width}>
             <SelectList 
                 setSelected={setSelected} 
                 data={data}
@@ -45,7 +47,8 @@ const styles = StyleSheet.create({
     boxStyles: {
         borderWidth: 0,
         paddingHorizontal: 0,
-        paddingVertical: 0
+        paddingVertical: 0,
+        width: "100%",
     },
     inputStyles: {
         color: BROWN_DARK,
