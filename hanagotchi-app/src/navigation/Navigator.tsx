@@ -8,6 +8,8 @@ import { StyleSheet, View } from "react-native";
 import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
 import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/LogsScreen";
+import { Log } from "../models/Log";
+import LogDetailsScreen from "../screens/LogDetailsScreen";
 
 const EmptyScreen: React.FC = ({route}) => {
     const {bgColor} = route.params;
@@ -96,6 +98,8 @@ const MainScreens: React.FC = () => {
 export type RootStackParamsList = {
     Login: undefined;
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
+    LogDetails: {log: Log};
+    
 }
 
 const Navigator: React.FC = () => {
@@ -112,7 +116,10 @@ const Navigator: React.FC = () => {
             {!loggedIn ? (
                 <RootStack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
             ) : (
-                <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
+                <>
+                    <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
+
+                </>
             )}
         </RootStack.Navigator>
     </NavigationContainer>

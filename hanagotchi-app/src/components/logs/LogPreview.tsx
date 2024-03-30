@@ -1,6 +1,7 @@
 import { StyleSheet, View, Image } from "react-native";
 import { Surface, Text } from "react-native-paper";
 import { BEIGE, BROWN_DARK } from "../../themes/globalThemes";
+import { getSpanishSimplifiedDate } from "../../common/dateUtils";
 
 type LogPreviewProps = {
     createdAt: Date;
@@ -8,13 +9,10 @@ type LogPreviewProps = {
     mainPhotoUri?: string;
 };
 
-const getSpanishDate = (day: number) => ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"][day]
-
-
 const LogPreview: React.FC<LogPreviewProps> = ({createdAt, title, mainPhotoUri}) => {
     return <View style={style.container}>
         <Surface elevation={0} style={style.dateSurface}>
-            <Text style={style.date}>{`${getSpanishDate(createdAt.getDay())} ${createdAt.getDate()}`}</Text>
+            <Text style={style.date}>{`${getSpanishSimplifiedDate(createdAt.getDay())} ${createdAt.getDate()}`}</Text>
         </Surface>
         <Surface elevation={0} style={style.titleSurface}>
             <Text 

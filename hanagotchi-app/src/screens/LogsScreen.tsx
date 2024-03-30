@@ -12,6 +12,7 @@ import { useApiFetch } from "../hooks/useApiFetch";
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import NoContent from "../components/NoContent";
 import * as SecureStore from "expo-secure-store";
+import { monthList } from "../common/dateUtils";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -22,20 +23,7 @@ const years =
     .reverse()
     .map((year) => ({key: year, value: String(year)}))
 
-const months = [
-    {key: 1, value: "Enero"},
-    {key: 2, value: "Febrero"},
-    {key: 3, value: "Marzo"},
-    {key: 4, value: "Abril"},
-    {key: 5, value: "Mayo"},
-    {key: 6, value: "Junio"},
-    {key: 7, value: "Julio"},
-    {key: 8, value: "Agosto"},
-    {key: 9, value: "Septiembre"},
-    {key: 10, value: "Octubre"},
-    {key: 11, value: "Noviembre"},
-    {key: 12, value: "Diciembre"},
-]
+const months = monthList.map((month, idx) => ({key: idx+1, value: month}))
 
 type LogsScreenProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "Logs">,
