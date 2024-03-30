@@ -8,13 +8,13 @@ const LoaderButton: React.FC<ButtonProps> = (props) => {
 
     const handleOnPress = async (e: GestureResponderEvent) => {
         setIsLoading(true);
-        props.onPress?.(e);
-        await setIsLoading(false);
+        await Promise.resolve(props.onPress?.(e));
+        setIsLoading(false);
     }
 
-    const handleOnLongPress = (e: GestureResponderEvent) => {
+    const handleOnLongPress = async (e: GestureResponderEvent) => {
         setIsLoading(true);
-        props.onLongPress?.(e);
+        await Promise.resolve(props.onPress?.(e));
         setIsLoading(false);
     }
 
