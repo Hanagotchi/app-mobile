@@ -5,7 +5,7 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import { useEffect, useState } from "react";
 import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
-import { Divider, FAB, Text } from 'react-native-paper';
+import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../components/SelectBox";
 import LogPreview from "../components/logs/LogPreview";
 
@@ -55,7 +55,7 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
         return setInitialState;
       }, [navigation]);
 
-      
+      const isLoading = false;
 
     return <SafeAreaView style={style.container}>
         <Text style={{
@@ -82,17 +82,27 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
             />
         </View>
         <Divider bold style={{width: "90%"}}/>
-        <ScrollView contentContainerStyle={style.logList}>
-            <LogPreview 
-                createdAt={new Date()} 
-                title="Mi linda petuña que a veces se meure"
-                mainPhotoUri= "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/plant_types%2Fchina.png?alt=media&token=a77c1851-b0d9-4eec-a334-7fa5314c119a"
-            />
-            <LogPreview 
-                createdAt={new Date()} 
-                title="Mi linda petuña que a veces se meure"
-            />
-        </ScrollView>
+        {
+            isLoading ? (
+                <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+            ) : (
+                <ScrollView contentContainerStyle={style.logList}>
+                    <LogPreview 
+                        createdAt={new Date()} 
+                        title="Mi linda petuña que a veces se meure"
+                        mainPhotoUri= "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/plant_types%2Fchina.png?alt=media&token=a77c1851-b0d9-4eec-a334-7fa5314c119a"
+                    />
+                    <LogPreview 
+                        createdAt={new Date()} 
+                        title="Mi linda petuña que a veces se meure"
+                    />
+                </ScrollView>
+            )
+        }
+        
+
+{/*          */}
+
         <FAB icon={"plus"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
     </SafeAreaView>
 }
