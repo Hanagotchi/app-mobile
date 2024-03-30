@@ -1,12 +1,13 @@
-import { SafeAreaView, StatusBar, StyleSheet, View } from "react-native"
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native"
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import { useEffect, useState } from "react";
-import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT } from "../themes/globalThemes";
-import { Divider, Text } from 'react-native-paper';
+import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
+import { Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../components/SelectBox";
+import LogPreview from "../components/logs/LogPreview";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -80,7 +81,17 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
             />
         </View>
         <Divider bold style={{width: "90%"}}/>
-        <Text>Hola</Text>
+        <ScrollView contentContainerStyle={style.logList}>
+            <LogPreview />
+            <LogPreview />
+            <LogPreview />
+            <LogPreview />
+            <LogPreview />
+            <LogPreview />
+            <LogPreview />
+            <LogPreview />
+        </ScrollView>
+        <FAB icon={"plus"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
     </SafeAreaView>
 }
 
@@ -97,6 +108,17 @@ const style = StyleSheet.create({
         gap: 10,
         flexDirection: "row",
         alignItems: "flex-start",
+    },
+    logList: {
+        gap: 20,
+        width: "100%"
+    },
+    fab: {
+        bottom: 16,
+        right: 16,
+        position: 'absolute',
+        backgroundColor: GREEN,
+        color: BACKGROUND_COLOR,
     }
 })
 
