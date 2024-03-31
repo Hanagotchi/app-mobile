@@ -1,13 +1,13 @@
 import { StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
 
 type ProfilePictureProps = {
-    uri: string | null;
+    uri: string;
     uploadImage?: () => void;
 }
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ uri }) => {
     return (
         <TouchableWithoutFeedback onPress={() => console.log('...presiono:', uri)}>
-            <Image source={{ uri: uri ?? 'https://cdn-icons-png.flaticon.com/128/3033/3033143.png' }} style={style.profileImage} />
+            <Image source={{ uri }} style={style.profileImage} />
         </TouchableWithoutFeedback>
     )
 };
