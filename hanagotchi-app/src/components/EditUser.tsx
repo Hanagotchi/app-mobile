@@ -6,24 +6,36 @@ import DateButton from "./DateButton";
 import EditProfilePicture from "./EditProfilePicture";
 import EditLocation from './EditLocation';
 import { LocationUser } from '../models/LocationUser';
+import SelectBox, { SelectOption } from './SelectBox';
 
 type EditUserProps = {
     name: string;
     profilePicture: string;
+    dateOfBirth: Date;
+    location: LocationUser | null;
+    genders: SelectOption[];
     onChangeName: (((text: string) => void) & Function);
     onPressCompleteEdit: ((() => void) & Function);
     onPressUploadPhoto: (() => void) & Function;
-    dateOfBirth: Date;
     onChangeDateOfBirth: ((date: Date) => void) & Function;
     onRequestLocation: (() => void) & Function;
-    location: LocationUser | null;
+    onSelectGender: (val: any) => void,
 }
-const EditUser: React.FC<EditUserProps> = ({ name, profilePicture, onChangeName, onPressCompleteEdit, onPressUploadPhoto, dateOfBirth, onChangeDateOfBirth, onRequestLocation, location }) => {
+
+const EditUser: React.FC<EditUserProps> = ({ name, profilePicture, onChangeName, onPressCompleteEdit, onPressUploadPhoto, dateOfBirth, onChangeDateOfBirth, onRequestLocation, location, genders, onSelectGender}) => {
     return (
         <>
             <TextInput label={`NOMBRE`} value={name} onChangeText={(name) => onChangeName(name)} />
             <EditProfilePicture title="FOTO DE PERFIL (Opcional)" profilePicture={profilePicture} onPressUploadPhoto={onPressUploadPhoto} />
             <DateButton title="FECHA DE NACIMIENTO" date={dateOfBirth} setDate={onChangeDateOfBirth} />
+            <SelectBox
+                label="GÉNERO" 
+                data={genders} 
+                setSelected={onSelectGender} 
+                save="key" 
+                defaultOption={{key: 0, value: "---"}}
+                width="30%"
+            />
             <EditLocation title="MI UBICACIÓN" location={location} onRequestLocation={onRequestLocation} />
             <LoaderButton
                 mode="contained"

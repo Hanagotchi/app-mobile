@@ -53,6 +53,7 @@ const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
                 <ArrowIcon color={BROWN_DARK} size={25} />
             </TouchableOpacity>
             <DatePicker
+                title="Selecciona tu fecha de nacimiento"
                 modal
                 open={open}
                 date={date}
