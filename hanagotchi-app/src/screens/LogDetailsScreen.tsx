@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, ScrollView, Image } from "react-native"
+import { StyleSheet, SafeAreaView, ScrollView, Image, FlatList, View } from "react-native"
 import { FAB, Text } from "react-native-paper";
 import { BACKGROUND_COLOR, BROWN, GREEN, GREEN_DARK } from "../themes/globalThemes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -9,19 +9,25 @@ type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDet
 
 const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
     const {log} = route.params;
-    console.log(log)
-
     return (
         <SafeAreaView style={style.container}>
             <Text style={style.title}>{log.title}</Text>
-            <ScrollView horizontal style={{flexGrow: undefined}} contentContainerStyle={style.photoList}>
-                {log.photos.map((photo) => <ExpandibleImage 
-                    key={photo.id} 
-                    minimizedImageStyle={style.image}
-                    maximizedImageStyle={style.fullImage} 
-                    source={{uri: photo.photo_link}} 
-                />)}
-            </ScrollView>
+            <View style={{height: 200}}>
+                <FlatList 
+                    horizontal
+                    data={log.photos}
+                    renderItem={({item}) => 
+                        <ExpandibleImage 
+                            minimizedImageStyle={style.image}
+                            maximizedImageStyle={style.fullImage} 
+                            source={{uri: item.photo_link}} 
+                        />
+                    }
+                    keyExtractor={(item, index) => String(index)}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={style.photoList}
+                />
+            </View>
             <ScrollView>
                 <Text style={style.content}>{log.content}</Text>
             </ScrollView>
@@ -49,6 +55,7 @@ const style = StyleSheet.create({
     content: {
         color: BROWN,
         paddingHorizontal: "10%",
+        alignItems: "flex-start",
     },
     fab: {
         bottom: 16,
@@ -62,8 +69,8 @@ const style = StyleSheet.create({
         gap: 20,
     },
     image: {
-        width: 160,
-        height: 150,
+        width: 200,
+        height: 200,
         borderRadius: 12,
     },
     fullImage: {

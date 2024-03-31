@@ -9,6 +9,7 @@ import LoaderButton from "../components/LoaderButton";
 import { useEffect, useState } from "react";
 import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
+import { useTheme } from "react-native-paper";
 
 
 type SettingsScreenProps = CompositeScreenProps<
@@ -18,8 +19,6 @@ type SettingsScreenProps = CompositeScreenProps<
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
-    //const user = JSON.parse(SecureStore.getItem("user")!);
-    
     const [name, setName] = useState("");
     const [text, setText] = useState("");
     const [lenght, setLenght] = useState(0);

@@ -17,16 +17,18 @@ const handleError = (error: Error, stackTrace: string) => {
 
 export default function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <MyErrorBoundary onError={handleError}>
-        <PaperProvider>
-          <HanagotchiApiProvider>
-            <AuthProvider>
-              <Navigator />
-            </AuthProvider>
-          </HanagotchiApiProvider>
-        </PaperProvider>
-      </MyErrorBoundary>
-    </ThemeProvider>
+    <PaperProvider>
+      <ThemeProvider theme={theme}>
+        <MyErrorBoundary onError={handleError}>
+          
+            <HanagotchiApiProvider>
+              <AuthProvider>
+                <Navigator />
+              </AuthProvider>
+            </HanagotchiApiProvider>
+        
+        </MyErrorBoundary>
+      </ThemeProvider>
+    </PaperProvider>
   );
 }
