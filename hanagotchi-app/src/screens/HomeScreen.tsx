@@ -5,8 +5,21 @@ import plant from "../assets/plant.png";
 import plus from "../assets/plusicon.png";
 import info from "../assets/infoicon.png";
 import {Icon} from "react-native-paper";
+import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
+import {useApiFetch} from "../hooks/useApiFetch";
 
 const HomeScreen: React.FC = () => {
+  const api = useHanagotchiApi();
+/*  const {isFetching, fetchedData, error} = useApiFetch(
+      () => api.getPlant("2"),
+      []
+  );
+
+  if (!isFetching && error) {
+    throw error;
+  }
+
+  console.log(fetchedData)*/
 
   return (
       <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
