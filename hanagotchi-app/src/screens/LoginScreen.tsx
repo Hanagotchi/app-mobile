@@ -11,7 +11,6 @@ import { handleError } from "../common/errorHandling";
 import LoaderButton from "../components/LoaderButton";
 import { statusCodes } from "@react-native-google-signin/google-signin";
 
-//type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Login">
 type LoginScreenProps = CompositeScreenProps<
     NativeStackScreenProps<RootStackParamsList, "Login">,
     BottomTabScreenProps<MainTabParamsList>

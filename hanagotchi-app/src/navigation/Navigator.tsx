@@ -5,8 +5,9 @@ import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, View } from "react-native";
-import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
+import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN } from "../themes/globalThemes";
 import { Entypo, Ionicons   } from '@expo/vector-icons';
+import HomeScreen from "../screens/HomeScreen";
 
 const EmptyScreen: React.FC = ({route}) => {
     const {bgColor} = route.params;
@@ -71,7 +72,7 @@ const MainScreens: React.FC = () => {
     return (
         <Tab.Navigator screenOptions={screenOptions}>
             <Tab.Group>
-                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{bgColor: "blue"}} options={{
+                <Tab.Screen name="Home" component={HomeScreen} initialParams={{bgColor: "blue"}} options={{
                     tabBarLabel: "Home",
                     tabBarIcon: HomeIcon,
                 }} />
