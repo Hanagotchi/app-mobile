@@ -10,7 +10,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { handleError } from "../common/errorHandling";
 import LoaderButton from "../components/LoaderButton";
 import { statusCodes } from "@react-native-google-signin/google-signin";
-import * as SecureStore from "expo-secure-store";
+import { User } from "../models/User";
 
 //type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Login">
 type LoginScreenProps = CompositeScreenProps<
@@ -19,30 +19,20 @@ type LoginScreenProps = CompositeScreenProps<
 >;
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
-
     const theme = useTheme();
     const { signIn } = useAuth();
 
-
     const handleSignIn = async () => {
         try {
-            await signIn();
-            const user = await SecureStore.getItemAsync("user"); // json!
-
-            if (user !== null) {
-                const parsedUser = JSON.parse(user);
-                if (!parsedUser.genre) { // TODO: DEBATIR!
-                    console.log("Usuario no registrado...");
-                    navigation.navigate("FirstLogin", { user });
-                } else {
-                    navigation.navigate("Home", { bgColor: "blue" });
-                }
+            const user: User = await signIn();
+            if (!user.gender) {//|| !user.location) {
+                console.log("Usuario no registrado!");
+                navigation.navigate("CompleteLogin");
             } else {
-                console.log("Usuario no registrado...");
-                navigation.navigate("FirstLogin", { user });
-            }
+                navigation.navigate("Home", { bgColor: "blue" });
+            } 
 
-        } catch (err) {
+        } catch (err: any) {
             if (err.code === statusCodes.SIGN_IN_CANCELLED) return;
             handleError(err as Error);
         }

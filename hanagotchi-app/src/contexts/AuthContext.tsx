@@ -1,22 +1,22 @@
-import { PropsWithChildren, createContext, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useEffect, useState } from "react";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { LoginResponse } from "../models/hanagotchiApi";
 import env from "../environment/loader";
-import * as SecureStore from "expo-secure-store";
-import { ToastAndroid } from "react-native";
+import { User } from "../models/User";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export type AuthContextProps = {
     loggedIn: boolean;
-    signIn: () => Promise<FirebaseAuthTypes.UserCredential>;
+    signIn: () => Promise<User>
     signOut: () => Promise<void>;
     completeSignIn: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
     loggedIn: false,
-    signIn: () => Promise.resolve({} as FirebaseAuthTypes.UserCredential),
+    signIn: () => Promise.resolve({} as User),
     signOut: () => Promise.resolve(),
     completeSignIn: () => Promise.resolve()
 });
@@ -24,6 +24,8 @@ export const AuthContext = createContext<AuthContextProps>({
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const hanagotchiApi = useHanagotchiApi();
+    const { set } = useLocalStorage();
+    const { remove } = useLocalStorage();
 
     useEffect(() => {
         /* Configure GoogleSignIn with webClientId */
@@ -48,22 +50,19 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
             // Get the users ID token
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
-            const { message }: LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
-            console.log("message", message)
-            await SecureStore.setItemAsync("user", JSON.stringify(message));
+            
+            const {message: user}: LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
+            await set("user_id", user.id.toString());
 
             // Create a Google credential with the token
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
             // Sign-in the user with the credential
             const userCredential = auth().signInWithCredential(googleCredential);
-            // setLoggedIn(true);
-            console.log("userCredential", userCredential)
-            return userCredential
+            return user
 
         } catch (err) {
-            SecureStore.deleteItemAsync("user");
-            // setLoggedIn(false);
+            await remove("user_id");
 
             if (await GoogleSignin.isSignedIn()) {
                 await GoogleSignin.signOut();
@@ -73,10 +72,9 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     };
 
     const signOut = async () => {
-        // await GoogleSignin.revokeAccess();
         await GoogleSignin.signOut();
         await auth().signOut()
-        SecureStore.deleteItemAsync("user");
+        await remove("user_id");
         setLoggedIn(false);
     };
 
