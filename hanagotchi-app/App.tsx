@@ -1,6 +1,6 @@
 import "expo-dev-client";
 import { theme } from './src/themes/globalThemes';
-import { ThemeProvider } from 'react-native-paper';
+import { PaperProvider, ThemeProvider } from 'react-native-paper';
 import { AuthProvider } from "./src/contexts/AuthContext";
 import Navigator from "./src/navigation/Navigator";
 import * as SplashScreen from 'expo-splash-screen';
@@ -19,11 +19,13 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <MyErrorBoundary onError={handleError}>
-        <HanagotchiApiProvider>
-          <AuthProvider>
-            <Navigator />
-          </AuthProvider>
-        </HanagotchiApiProvider>
+        <PaperProvider>
+          <HanagotchiApiProvider>
+            <AuthProvider>
+              <Navigator />
+            </AuthProvider>
+          </HanagotchiApiProvider>
+        </PaperProvider>
       </MyErrorBoundary>
     </ThemeProvider>
   );

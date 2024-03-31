@@ -3,6 +3,7 @@ import { FAB, Text } from "react-native-paper";
 import { BACKGROUND_COLOR, BROWN, GREEN, GREEN_DARK } from "../themes/globalThemes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../navigation/Navigator";
+import ExpandibleImage from "../components/ExpandibleImage";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 
@@ -13,10 +14,15 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
     return (
         <SafeAreaView style={style.container}>
             <Text style={style.title}>{log.title}</Text>
-            <ScrollView horizontal contentContainerStyle={style.photoList}>
-                {log.photos.map((photo) => <Image key={photo.id} style={style.image} source={{uri: photo.photo_link}} />)}
+            <ScrollView horizontal style={{flexGrow: undefined}} contentContainerStyle={style.photoList}>
+                {log.photos.map((photo) => <ExpandibleImage 
+                    key={photo.id} 
+                    minimizedImageStyle={style.image}
+                    maximizedImageStyle={style.fullImage} 
+                    source={{uri: photo.photo_link}} 
+                />)}
             </ScrollView>
-            <ScrollView >
+            <ScrollView>
                 <Text style={style.content}>{log.content}</Text>
             </ScrollView>
             <FAB icon={"pencil"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
@@ -56,9 +62,14 @@ const style = StyleSheet.create({
         gap: 20,
     },
     image: {
-        width: 300,
-        borderRadius: 6,
-        borderWidth: 1,
+        width: 160,
+        height: 150,
+        borderRadius: 12,
+    },
+    fullImage: {
+        width: 320,
+        height: 300,
+        borderRadius: 12,
     }
 });
 

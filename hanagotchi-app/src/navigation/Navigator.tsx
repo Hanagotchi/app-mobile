@@ -5,7 +5,7 @@ import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, View } from "react-native";
-import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
+import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_DARK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
 import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/LogsScreen";
 import { Log } from "../models/Log";
@@ -111,7 +111,7 @@ const Navigator: React.FC = () => {
     <NavigationContainer>
         <RootStack.Navigator screenOptions={{
             headerStyle: styles.header,
-            headerTintColor: BLACK,
+            headerTintColor: BROWN_DARK,
             headerTitleAlign: "center",
         }}>
             {!loggedIn ? (
