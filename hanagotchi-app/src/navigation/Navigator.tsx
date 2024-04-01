@@ -1,12 +1,13 @@
 import useAuth from "../hooks/useAuth";
-import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {NavigationContainer, NavigatorScreenParams} from "@react-navigation/native";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, View } from "react-native";
-import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
-import { Entypo, Ionicons   } from '@expo/vector-icons';
+import {BottomTabNavigationOptions, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {StyleSheet, View} from "react-native";
+import {BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN} from "../themes/globalThemes";
+import {Entypo, Ionicons} from '@expo/vector-icons';
+import ProfileScreen from "../screens/ProfileScreen";
 
 const EmptyScreen: React.FC = ({route}) => {
     const {bgColor} = route.params;
@@ -95,6 +96,7 @@ const MainScreens: React.FC = () => {
 export type RootStackParamsList = {
     Login: undefined;
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
+    Profile: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -111,7 +113,10 @@ const Navigator: React.FC = () => {
             {!loggedIn ? (
                 <RootStack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
             ) : (
-                <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
+                <>
+                    <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
+                    <RootStack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}}/>
+                </>
             )}
         </RootStack.Navigator>
     </NavigationContainer>

@@ -1,14 +1,14 @@
-import { SafeAreaView, StyleSheet, Text } from "react-native"
+import {Pressable, SafeAreaView, StyleSheet, Text, View} from "react-native"
 import useAuth from "../hooks/useAuth";
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import type { CompositeScreenProps } from '@react-navigation/native';
-import * as SecureStore from "expo-secure-store";
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MainTabParamsList, RootStackParamsList} from "../navigation/Navigator";
+import type {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import type {CompositeScreenProps} from '@react-navigation/native';
+import arrow from "../assets/arrowicon.png";
 import LoaderButton from "../components/LoaderButton";
-import { useEffect, useState } from "react";
-import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
-import TextInput from "../components/TextInput";
+import React from "react";
+import {BACKGROUND_COLOR} from "../themes/globalThemes";
+import {Icon} from "react-native-paper";
 
 
 type SettingsScreenProps = CompositeScreenProps<
@@ -18,61 +18,42 @@ type SettingsScreenProps = CompositeScreenProps<
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
-    //const user = JSON.parse(SecureStore.getItem("user")!);
-    
-    const [name, setName] = useState("");
-    const [text, setText] = useState("");
-    const [lenght, setLenght] = useState(0);
-    const MAX_LENGHT = 500;
-
-    useEffect(() => {
-        const setInitialState = navigation.addListener('focus', () => {
-            setName("");
-            setText("");
-            setLenght(0);
-        });
-
-        return setInitialState;
-      }, [navigation]);
-
-    useEffect(() => {
-        setLenght(text.length)
-    }, [text])
 
     const handleSignOut = async () => {
         await signOut();
         navigation.navigate("Login");
     }
 
-    return <SafeAreaView style={style.container}>
-        {/* <Text>{`Usuario: ${user.email ?? null}`}</Text> */}
-        <TextInput label={`NOMBRE`} value={name} onChangeText={(name) => setName(name)}/>
-        <TextInput 
-            label={`DESCRIPCIÓN    ${lenght}/${MAX_LENGHT}`} 
-            value={text} 
-            onChangeText={(text) => setText(text)}
-            numberOfLines={4}
-            maxLenght={500}
-        />
-        <LoaderButton 
-            mode="contained" 
-            uppercase style={style.button} 
-            onPress={handleSignOut}
-            labelStyle={{fontSize: 17}}
-        >
-            Cerrar sesión
-        </LoaderButton>
+
+    return <SafeAreaView style={style.area}>
+        <View style={style.container}>
+            <Pressable style={style.option} onPress={()=>navigation.navigate("Profile")}>
+                <Text style={style.text}>Editar mis datos</Text>
+                <Icon size={40} source={arrow}></Icon>
+            </Pressable>
+            <View style={style.buttonContainer}>
+                <LoaderButton mode="contained" uppercase style={style.button} onPress={handleSignOut} labelStyle={{ fontSize: 17 }}>
+                    Cerrar sesión
+                </LoaderButton>
+            </View>
+        </View>
     </SafeAreaView>
 }
 
 const style = StyleSheet.create({
-    container: {
+    area: {
         flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: "center",
-        paddingBottom: 20,
-        gap: 10,
         backgroundColor: BACKGROUND_COLOR,
+        justifyContent: "flex-end"
+    },
+    container: {
+        marginTop: 100,
+        padding: 10,
+    },
+    option: {
+        display: "flex",
+        flexDirection: "row",
+        gap: -5
     },
     button: {
         borderRadius: 10,
@@ -80,16 +61,13 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: "center",
     },
-    card: {
-        backgroundColor: BEIGE,
-        width: "80%",
-        gap: 0,
-        columnGap: 0,
+    text: {
+        fontSize: 22,
+        fontFamily: "Roboto",
     },
-    cardTitle: {
-        color: BROWN_LIGHT,
-        fontSize: 12,
-    }
+    buttonContainer: {
+        alignItems: 'center'
+    },
 })
 
 export default SettingsScreen;
