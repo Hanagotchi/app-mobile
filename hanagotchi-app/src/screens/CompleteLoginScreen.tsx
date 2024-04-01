@@ -21,7 +21,7 @@ export type UserData = User & { dateOfBirth?: string } & { location: UserLocatio
 
 const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }) => {
     const hanagotchiApi = useHanagotchiApi();
-    const { signOut } = useAuth();
+    const { signOut , completeSignIn } = useAuth();
     const { uploadImage } = useFirebase();
     const { get } = useLocalStorage();
     const { location, requestLocation, revokeLocation, changeLocation } = useLocation();
@@ -112,8 +112,9 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
         console.log('Location:', location);
 
         // await uploadImage(user?.photo ?? 'https://cdn-icons-png.flaticon.com/128/3033/3033143.png', user?.email ?? '', 'avatar');
-        // await completeSignIn();
-        // navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });
+        await completeSignIn();
+        alert('Falta pegar endpoint backend y si no completo algun dato mostrar un msgta error jeje!');
+        navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });
     };
 
     return (
