@@ -61,7 +61,12 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
-      ]
+      ],
+      "config" : {
+        "googleMaps" : {
+          "apiKey" : "AIzaSyA414X9kRKkWWtoPnmTXhw2grv6nQbHmdo"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

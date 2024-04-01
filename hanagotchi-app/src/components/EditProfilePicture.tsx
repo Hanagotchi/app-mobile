@@ -11,7 +11,7 @@ type EditProfilePictureProps = {
 }
 const EditProfilePicture: React.FC<EditProfilePictureProps> = ({ title, profilePicture, onPressUploadPhoto }) => {
     return (
-        <BackgroundCard title={title} style_content={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 5 }}>
+        <BackgroundCard title={title} style_content={styles.content}>
             <ProfilePicture uri={profilePicture} />
             <LoaderButton
                 mode="contained"
@@ -33,6 +33,12 @@ const styles = StyleSheet.create({
         height: 40,
         justifyContent: "center",
         backgroundColor: BROWN_LIGHT,
+    },
+    content: {
+        flexDirection: 'row',
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        paddingTop: 5
     }
 });
 

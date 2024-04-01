@@ -5,38 +5,37 @@ import TextInput from "./TextInput";
 import DateButton from "./DateButton";
 import EditProfilePicture from "./EditProfilePicture";
 import EditLocation from './EditLocation';
-import { LocationUser } from '../models/LocationUser';
 import SelectBox, { SelectOption } from './SelectBox';
+import { Details, Region } from 'react-native-maps';
+import { UserData } from '../screens/CompleteLoginScreen';
+import { FIUBA_REGION } from '../contexts/LocationContext';
 
 type EditUserProps = {
-    name: string;
-    profilePicture: string;
-    dateOfBirth: Date;
-    location: LocationUser | null;
+    user: UserData;
     genders: SelectOption[];
     onChangeName: (((text: string) => void) & Function);
     onPressCompleteEdit: ((() => void) & Function);
     onPressUploadPhoto: (() => void) & Function;
     onChangeDateOfBirth: ((date: Date) => void) & Function;
-    onRequestLocation: (() => void) & Function;
-    onSelectGender: (val: any) => void,
+    onSelectGender: (val: string) => void,
+    onRegionChange: ((region: Region, details: Details) => void),
 }
 
-const EditUser: React.FC<EditUserProps> = ({ name, profilePicture, onChangeName, onPressCompleteEdit, onPressUploadPhoto, dateOfBirth, onChangeDateOfBirth, onRequestLocation, location, genders, onSelectGender}) => {
+const EditUser: React.FC<EditUserProps> = ({ user, genders, onChangeName, onPressCompleteEdit, onPressUploadPhoto, onChangeDateOfBirth, onSelectGender, onRegionChange }) => {
     return (
         <>
-            <TextInput label={`NOMBRE`} value={name} onChangeText={(name) => onChangeName(name)} />
-            <EditProfilePicture title="FOTO DE PERFIL (Opcional)" profilePicture={profilePicture} onPressUploadPhoto={onPressUploadPhoto} />
-            <DateButton title="FECHA DE NACIMIENTO" date={dateOfBirth} setDate={onChangeDateOfBirth} />
+            <TextInput label={`NOMBRE`} value={user.name ?? ''} onChangeText={(name) => onChangeName(name)} />
+            <EditProfilePicture title="FOTO DE PERFIL (Opcional)" profilePicture={user.photo ?? 'https://cdn-icons-png.flaticon.com/128/3033/3033143.png'} onPressUploadPhoto={onPressUploadPhoto} />
+            <DateButton title="FECHA DE NACIMIENTO" date={user.dateOfBirth} setDate={onChangeDateOfBirth}/>
             <SelectBox
-                label="GÉNERO" 
-                data={genders} 
-                setSelected={onSelectGender} 
-                save="key" 
-                defaultOption={{key: 0, value: "---"}}
+                label="GÉNERO"
+                data={genders}
+                setSelected={onSelectGender}
+                save="key"
+                defaultOption={{ key: 0, value: "---" }}
                 width="30%"
             />
-            <EditLocation title="MI UBICACIÓN" location={location} onRequestLocation={onRequestLocation} />
+            <EditLocation title="MI UBICACIÓN" region={user.location} onRegionChange={onRegionChange} />
             <LoaderButton
                 mode="contained"
                 uppercase style={styles.button}

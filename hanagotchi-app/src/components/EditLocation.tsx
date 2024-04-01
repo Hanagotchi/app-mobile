@@ -1,45 +1,26 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
-import { BROWN_DARK } from '../themes/globalThemes';
+import { StyleSheet } from 'react-native';
 import BackgroundCard from './BackgroundCard';
-import { Entypo } from '@expo/vector-icons';
-import { LocationUser } from '../models/LocationUser';
+import GoogleMap from './GoogleMap';
+import { Details, Region } from 'react-native-maps';
 
 type EditLocationProps = {
     title: string;
-    location: LocationUser | null;
-    onRequestLocation: (() => void) & Function;
+    region: Region;
+    onRegionChange: ((region: Region, details: Details) => void);
 };
 
-const UbicationIcon = (props: { color: string; size: number }) => (
-    <Entypo name="location" size={props.size} color={props.color} />
-);
-
-const EditLocation: React.FC<EditLocationProps> = ({ title, onRequestLocation, location }) => {
+const EditLocation: React.FC<EditLocationProps> = ({ title, region, onRegionChange }) => {
     return (
-        <BackgroundCard title={title}>
-            <TouchableOpacity
-                onPress={onRequestLocation}
-                style={styles.touchableOpacityContainer}
-            >
-                <UbicationIcon color={BROWN_DARK} size={22} />
-                <Text style={styles.dateText}>{location?.geoName?? '--'}</Text>
-
-            </TouchableOpacity>
+        <BackgroundCard title={title} style_content={styles.contentCard} >
+            <GoogleMap region={region} onRegionChange={onRegionChange} />
         </BackgroundCard>
     );
 };
 
 const styles = StyleSheet.create({
-    touchableOpacityContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    dateText: {
-        fontSize: 16,
-        color: BROWN_DARK,
-        marginLeft: 10, // Add some space between the icon and text
+    contentCard: {
+        paddingTop: 150,
     },
 });
 
