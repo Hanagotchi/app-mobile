@@ -19,7 +19,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async getPlant(id: string): Promise<GetPlantResponse> {
-        const { data } = await this.axiosInstance.post(`/plants/${id}`);
+        const { data } = await this.axiosInstance.get(`/plants/${id}`);
         return GetPlantResponseSchema.parse(data);
     }
 }

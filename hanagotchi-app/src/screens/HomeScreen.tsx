@@ -12,16 +12,21 @@ import {useApiFetch} from "../hooks/useApiFetch";
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
   const [modalOpen, setModalOpen] = React.useState(false);
-/*  const {isFetching, fetchedData, error} = useApiFetch(
+  const {isFetching, fetchedData, error} = useApiFetch(
       () => api.getPlant("2"),
-      []
+      {
+        id: 0,
+        user_id: 0,
+        name: '',
+        scientific_name: ''
+      }
   );
 
   if (!isFetching && error) {
     throw error;
   }
 
-  console.log(fetchedData)*/
+  console.log(fetchedData)
 
   const navigate = async () => {
     console.log("navigate to create log")

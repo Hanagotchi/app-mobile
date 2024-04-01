@@ -2,7 +2,7 @@ import {z} from "zod";
 
 export const PlantSchema = z.object({
     id: z.number(),
-    user_id: z.number(),
+    id_user: z.number(),
     name: z.string(),
     scientific_name: z.string(),
 })

@@ -9,6 +9,6 @@ export const LoginResponseSchema = z.object({
 
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
-export const GetPlantResponseSchema = z.array(PlantSchema)
+export const GetPlantResponseSchema = PlantSchema
 
 export type GetPlantResponse = z.infer<typeof GetPlantResponseSchema>;
