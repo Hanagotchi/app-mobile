@@ -112,7 +112,7 @@ const Navigator: React.FC = () => {
         <RootStack.Navigator screenOptions={{
             headerStyle: styles.header,
             headerTintColor: BROWN_DARK,
-            headerTitleAlign: "center",
+            headerTitleAlign: "center"
         }}>
             {!loggedIn ? (
                 <RootStack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
@@ -120,7 +120,7 @@ const Navigator: React.FC = () => {
                 <>
                     <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
                     <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
-                         title: formatDate(route.params.log.created_at)
+                         title: formatDate(route.params.log.created_at).toLocaleUpperCase(),
                     })}/>
                 </>
             )}

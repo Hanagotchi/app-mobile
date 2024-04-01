@@ -115,11 +115,12 @@ const style = StyleSheet.create({
         width: "100%"
     },
     fab: {
-        bottom: 16,
-        right: 16,
+        bottom: "4%",
+        right: "8%",
         position: 'absolute',
         backgroundColor: GREEN,
         color: BACKGROUND_COLOR,
+        borderRadius: 30,
     }
 })
 

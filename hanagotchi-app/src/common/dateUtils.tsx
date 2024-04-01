@@ -33,5 +33,5 @@ export const formatDate = (date: Date) => {
   const month = monthList[date.getMonth()];
   const year = date.getFullYear();
 
-  return `${weekDay} ${day} de ${month}, ${year}`;
+  return `${weekDay} ${day}, ${month} ${year}`;
 }

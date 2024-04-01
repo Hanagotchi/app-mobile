@@ -12,7 +12,7 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
     return (
         <SafeAreaView style={style.container}>
             <Text style={style.title}>{log.title}</Text>
-            <View style={{height: 200}}>
+            <View style={{height: 240}}>
                 <FlatList 
                     horizontal
                     data={log.photos}
@@ -42,12 +42,12 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: "center",
         paddingBottom: 20,
-        gap: 40,
+        gap: 30,
         backgroundColor: BACKGROUND_COLOR,
-        paddingTop: 40,
+        paddingTop: 60,
     },
     title: {
-        fontSize: 36,
+        fontSize: 30,
         color: GREEN_DARK,
         fontStyle: "italic",
         paddingHorizontal: "10%",
@@ -58,19 +58,20 @@ const style = StyleSheet.create({
         alignItems: "flex-start",
     },
     fab: {
-        bottom: 16,
-        right: 16,
+        bottom: "8%",
+        right: "8%",
         position: 'absolute',
         backgroundColor: GREEN,
         color: BACKGROUND_COLOR,
+        borderRadius: 30,
     },
     photoList: {
         paddingHorizontal: "10%",
         gap: 20,
     },
     image: {
-        width: 200,
-        height: 200,
+        width: 320,
+        height: 240,
         borderRadius: 12,
     },
     fullImage: {
