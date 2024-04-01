@@ -3,11 +3,11 @@ import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/na
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import FirstLoginScreen from "../screens/FirstLoginSceen";
+import CompleteLoginScreen from "../screens/CompleteLoginScreen";
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, View } from "react-native";
+import { Button, StyleSheet, TouchableOpacity, View } from "react-native";
 import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
-import { Entypo, Ionicons   } from '@expo/vector-icons';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -56,7 +56,7 @@ const screenOptions: BottomTabNavigationOptions = {
     headerShown: false,
     tabBarActiveTintColor: GREEN,
     tabBarInactiveTintColor: BEIGE_DARK,
-    tabBarLabelStyle: {fontWeight: "bold"}
+    tabBarLabelStyle: { fontWeight: "bold" }
 };
 
 export type MainTabParamsList = {
@@ -72,15 +72,15 @@ const MainScreens: React.FC = () => {
     return (
         <Tab.Navigator screenOptions={screenOptions}>
             <Tab.Group>
-                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{bgColor: "blue"}} options={{
+                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{ bgColor: "blue" }} options={{
                     tabBarLabel: "Home",
                     tabBarIcon: HomeIcon,
                 }} />
-                <Tab.Screen name="Logs" component={EmptyScreen} initialParams={{bgColor: "green"}} options={{
+                <Tab.Screen name="Logs" component={EmptyScreen} initialParams={{ bgColor: "green" }} options={{
                     tabBarLabel: "Bitácoras",
                     tabBarIcon: LogIcon,
-                    }} />
-                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{bgColor: "red"}} options={{
+                }} />
+                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{ bgColor: "red" }} options={{
                     tabBarLabel: "Red social",
                     tabBarIcon: SocialIcon,
                 }} />
@@ -96,7 +96,7 @@ const MainScreens: React.FC = () => {
 export type RootStackParamsList = {
     Login: undefined;
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
-    FirstLogin: { user: string | null }; // Mm..
+    CompleteLogin: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -104,22 +104,25 @@ const Navigator: React.FC = () => {
     const { loggedIn } = useAuth();
 
     return (
-    <NavigationContainer>
-        <RootStack.Navigator screenOptions={{
-            headerStyle: styles.header,
-            headerTintColor: BLACK,
-            headerTitleAlign: "center",
-        }}>
-            {!loggedIn ? (
-                <RootStack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
-                // <RootStack.Screen name="FirstLogin" component={FirstLoginScreen} options={{ title: 'Completa tus datos' }} />
-
-            ) : (
-                <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
-            )}
-        </RootStack.Navigator>
-    </NavigationContainer>
-  )
+        <NavigationContainer>
+            <RootStack.Navigator screenOptions={{
+                headerStyle: styles.header,
+                headerTintColor: BLACK,
+                headerTitleAlign: "center",
+            }}>
+                {!loggedIn ? (
+                    <>
+                        <RootStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+                        <RootStack.Screen name="CompleteLogin" component={CompleteLoginScreen} options={() => ({
+                            title: "Termina tu perfil",
+                        })} />
+                    </>
+                ) : (
+                    <RootStack.Screen name="MainScreens" component={MainScreens} options={{ headerShown: false }} />
+                )}
+            </RootStack.Navigator>
+        </NavigationContainer>
+    )
 }
 
 export default Navigator;
