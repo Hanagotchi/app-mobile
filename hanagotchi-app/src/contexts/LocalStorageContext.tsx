@@ -18,9 +18,11 @@ export const LocalStorageProvider: React.FC<PropsWithChildren> = ({ children }) 
         await SecureStore.setItemAsync(key, JSON.stringify(value));
     }
 
-    const get = async (key: string) => {
-        return JSON.parse(await SecureStore.getItemAsync(key) ?? "{}");
-    }
+const get = async (key: string) => {
+    const storedValue = await SecureStore.getItemAsync(key);
+    return storedValue ? JSON.parse(storedValue) : null;
+}
+
 
     const remove = async (key: string) => {
         await SecureStore.deleteItemAsync(key);

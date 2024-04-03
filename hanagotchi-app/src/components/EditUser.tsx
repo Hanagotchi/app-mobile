@@ -1,48 +1,92 @@
 import { StyleSheet } from 'react-native';
 import LoaderButton from "./LoaderButton";
-import React from "react";
+import React, { useEffect } from "react";
 import TextInput from "./TextInput";
-import DateButton from "./DateButton";
+import DateButton from "./DatePicker";
 import EditProfilePicture from "./EditProfilePicture";
-import EditLocation from './EditLocation';
-import SelectBox, { SelectOption } from './SelectBox';
+import EditLocation from './GoogleMaps';
+import SelectBox from './SelectBox';
 import { Details, Region } from 'react-native-maps';
 import { UserData } from '../screens/CompleteLoginScreen';
-import { FIUBA_REGION } from '../contexts/LocationContext';
+import { DEFAULT_REGION } from '../contexts/LocationContext';
+import * as ImagePicker from 'expo-image-picker';
+import useLocation from '../hooks/useLocation';
 
 type EditUserProps = {
     user: UserData;
-    genders: SelectOption[];
-    onChangeName: (((text: string) => void) & Function);
+    name_button: string,
     onPressCompleteEdit: ((() => void) & Function);
-    onPressUploadPhoto: (() => void) & Function;
-    onChangeDateOfBirth: ((date: Date) => void) & Function;
-    onSelectGender: (val: string) => void,
-    onRegionChange: ((region: Region, details: Details) => void),
+    setUser: React.Dispatch<React.SetStateAction<UserData | undefined>>;
 }
 
-const EditUser: React.FC<EditUserProps> = ({ user, genders, onChangeName, onPressCompleteEdit, onPressUploadPhoto, onChangeDateOfBirth, onSelectGender, onRegionChange }) => {
+const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteEdit, setUser }) => {
+    const { location, changeLocation } = useLocation();
+
+    // Si cambio, lo actualizo en el UserData recibido!
+    useEffect(() => {
+        if (location !== DEFAULT_REGION && location !== user.location) {
+            setUser({ ...user, location: location });
+        }
+    }, [location]);
+
+    const genders = [
+        { key: 1, value: "HOMBRE" },
+        { key: 2, value: "MUJER" },
+        { key: 3, value: "OTRO" },
+    ];
+
+    const handleBirthDay = async (date: Date) => {
+        setUser({ ...user, dateOfBirth: date } as UserData);
+    }
+    const handleName = (name: string) => {
+        setUser({ ...user, name: name } as UserData);
+    }
+    const handleGender = (gender: string) => {
+        setUser({ ...user, gender: gender } as UserData);
+    }
+
+    const handleRegionChange = (region: Region, details: Details) => {
+        changeLocation(region.latitude, region.longitude, region.latitudeDelta, region.longitudeDelta);
+    }
+
+    const handleUploadPhoto = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert('¡Se requiere permiso para acceder a la galería de imágenes!');
+            return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 4],
+            quality: 1,
+        });
+        if (!result.canceled) {
+            setUser({ ...user, photo: result.assets[0].uri } as UserData);
+        }
+    };
+
     return (
         <>
-            <TextInput label={`NOMBRE`} value={user.name ?? ''} onChangeText={(name) => onChangeName(name)} />
-            <EditProfilePicture title="FOTO DE PERFIL (Opcional)" profilePicture={user.photo ?? 'https://cdn-icons-png.flaticon.com/128/3033/3033143.png'} onPressUploadPhoto={onPressUploadPhoto} />
-            <DateButton title="FECHA DE NACIMIENTO" date={user.dateOfBirth} setDate={onChangeDateOfBirth}/>
+            <TextInput label={`NOMBRE (*)`} value={user.name ?? ''} onChangeText={handleName} />
+            <EditProfilePicture title="FOTO DE PERFIL (OPCIONAL)" profilePicture={user.photo ?? 'https://cdn-icons-png.flaticon.com/128/3033/3033143.png'} onPressUploadPhoto={handleUploadPhoto} />
+            <DateButton title="FECHA DE NACIMIENTO (*)" date={user.dateOfBirth} setDate={handleBirthDay}/>
             <SelectBox
-                label="GÉNERO"
+                label="GÉNERO (*)"
                 data={genders}
-                setSelected={onSelectGender}
+                setSelected={handleGender}
                 save="key"
                 defaultOption={{ key: 0, value: "---" }}
                 width="30%"
             />
-            <EditLocation title="MI UBICACIÓN" region={user.location} onRegionChange={onRegionChange} />
+            <EditLocation title="MI UBICACIÓN (OPCIONAL)" region={user.location} onRegionChange={handleRegionChange} />
             <LoaderButton
                 mode="contained"
                 uppercase style={styles.button}
                 onPress={onPressCompleteEdit}
                 labelStyle={{ fontSize: 17 }}
             >
-                COMPLETAR
+                {name_button}
             </LoaderButton>
         </>
     )

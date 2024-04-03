@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
             
             const {message: user}: LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
-            await set("user_id", user.id.toString());
+            await set("userId", user.id.toString());
 
             // Create a Google credential with the token
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             return user
 
         } catch (err) {
-            await remove("user_id");
+            await remove("userId");
 
             if (await GoogleSignin.isSignedIn()) {
                 await GoogleSignin.signOut();
@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const signOut = async () => {
         await GoogleSignin.signOut();
         await auth().signOut()
-        await remove("user_id");
+        await remove("userId");
         setLoggedIn(false);
     };
 

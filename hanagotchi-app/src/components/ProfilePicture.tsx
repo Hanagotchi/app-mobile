@@ -16,8 +16,7 @@ const style = StyleSheet.create({
     profileImage: {
         width: 60,
         height: 60,
-        borderRadius: 30,
-        paddingEnd: 10
+        borderRadius: 30
     },
 });
 

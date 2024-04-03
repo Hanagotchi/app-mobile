@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import DatePicker from 'react-native-date-picker';
+import * as DatePickerNative from 'react-native-date-picker';
 import { Text } from 'react-native-paper';
 import { BROWN_DARK } from '../themes/globalThemes';
 import BackgroundCard from './BackgroundCard';
@@ -8,7 +8,7 @@ import { Entypo } from '@expo/vector-icons';
 
 type DateButtonProps = {
     title: string;
-    date?: string;
+    date: Date;
     setDate: (date: Date) => void;
 };
 
@@ -22,16 +22,14 @@ const ArrowIcon = (props: { color: string; size: number }) => (
 
 const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
     const [open, setOpen] = useState(false);
-    const [dateSelected, setDateSelected] = useState<Date>(date ? new Date(date) : new Date());
 
     const handlePress = () => {
         setOpen(true);
     };
 
     const handleDateConfirm = (newDate: Date) => {
-        setDateSelected(newDate);
         setOpen(false);
-        setDate(dateSelected);
+        setDate(newDate);
     };
 
     const handleDateCancel = () => {
@@ -50,15 +48,15 @@ const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
             >
                 <View style={styles.dateContent}>
                     <CalendarIcon color={BROWN_DARK} size={25} />
-                    <Text style={styles.dateText}>{formatDate(dateSelected)}</Text>
+                    <Text style={styles.dateText}>{formatDate(date)}</Text>
                 </View>
                 <ArrowIcon color={BROWN_DARK} size={25} />
             </TouchableOpacity>
-            <DatePicker
+            <DatePickerNative.default
                 title="Selecciona tu fecha de nacimiento"
                 modal
                 open={open}
-                date={dateSelected}
+                date={date}
                 onConfirm={handleDateConfirm}
                 onCancel={handleDateCancel}
                 mode="date"

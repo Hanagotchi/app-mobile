@@ -26,8 +26,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         try {
             const user: User = await signIn();
             if (!user.gender) {//|| !user.location) {
-                console.log("Usuario no registrado!");
-                navigation.navigate("CompleteLogin");
+                navigation.navigate("CompleteLogin", { userId: user.id });
             } else {
                 navigation.navigate("Home", { bgColor: "blue" });
             } 

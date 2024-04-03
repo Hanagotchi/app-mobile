@@ -1,110 +1,68 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
-import { theme } from "../themes/globalThemes";
+import { View, StyleSheet, SafeAreaView, ScrollView, ActivityIndicator } from 'react-native';
+import { BROWN_DARK, theme } from "../themes/globalThemes";
 import useAuth from "../hooks/useAuth";
 import { RootStackParamsList } from "../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import * as ImagePicker from 'expo-image-picker';
 import EditUser from '../components/EditUser';
 import useLocation from '../hooks/useLocation';
-import useFirebase from '../hooks/useFirebase';
-import useLocalStorage from '../hooks/useLocalStorage';
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
-import { LoginResponse } from '../models/hanagotchiApi';
 import { User } from '../models/User';
-import { FIUBA_REGION, UserLocation } from '../contexts/LocationContext';
-import { Details, Region } from 'react-native-maps';
+import { UserLocation } from '../contexts/LocationContext';
+import { useApiFetch } from '../hooks/useApiFetch';
+import NoContent from '../components/NoContent';
 
 type CompleteLoginProps = NativeStackScreenProps<RootStackParamsList, "CompleteLogin">;
 
-export type UserData = User & { dateOfBirth?: string } & { location: UserLocation }
+export type UserData = User & { dateOfBirth: Date } & { location: UserLocation }
 
 const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }) => {
-    const hanagotchiApi = useHanagotchiApi();
-    const { signOut , completeSignIn } = useAuth();
-    const { uploadImage } = useFirebase();
-    const { get } = useLocalStorage();
-    const { location, requestLocation, revokeLocation, changeLocation } = useLocation();
+    const api = useHanagotchiApi();
+    const { userId } = route.params;
+    const { signOut, completeSignIn } = useAuth();
+    const { location, requestLocation, revokeLocation } = useLocation();
 
-    const [user, setUser] = useState<UserData>({ id: -1, email: '' } as UserData);
+    const [user, setUser] = useState<UserData | undefined>();
+    const { isFetching, fetchedData, error } = useApiFetch(
+        () => api.getUser(userId),
+    );
 
-    const genders = [
-        { key: 1, value: "HOMBRE" },
-        { key: 2, value: "MUJER" },
-        { key: 3, value: "OTRO" },
-    ]
-    const fetchUser = async () => {
-        const user_id = await get("user_id");
-        if (!user_id) {
-            console.log("No user_id found");
-            return;
-        }
-        const { message: userFetched }: LoginResponse = await hanagotchiApi.getUser(Number(user_id));
-        // setDateOfBirth(new Date(user.dateOfBirth ?? ''));s
-        setUser(userFetched as UserData);
+    if (!isFetching && error) {
+        throw error;
     }
-
-
-    const handleBirthDay = async (date: Date) => {
-        setUser({ ...user, dateOfBirth: date.toDateString() } as UserData);
-    }
-    const handleName = (name: string) => {
-        setUser({ ...user, name: name } as UserData);
-    }
-    const handleGender = (val: string) => {
-        setUser({ ...user, gender: val } as UserData);
-    }
-
-    const handleRegionChange = (region: Region, details: Details) => {
-        changeLocation(region.latitude, region.longitude, region.latitudeDelta, region.longitudeDelta);
-    }
-
-    const handleUploadPhoto = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
-            alert('¡Se requiere permiso para acceder a la galería de imágenes!');
-            return;
-        }
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 4],
-            quality: 1,
-        });
-        if (!result.canceled) {
-            setUser({ ...user, photo: result.assets[0].uri } as UserData);
-        }
-    };
 
     useEffect(() => {
         const fetchData = async () => {
-            await requestLocation();
-            await fetchUser();
-        };
-
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        if (location !== FIUBA_REGION && user.location !== location) {
-            setUser({ ...user, location: location });
+            setUser({
+                ...fetchedData?.message,
+                dateOfBirth: new Date(2000, 0, 1),
+            } as UserData);
         }
-    }, [location]);
+        fetchData();
+    }, [fetchedData]);
+
 
     useEffect(
         () =>
             // https://reactnavigation.org/docs/preventing-going-back/
             navigation.addListener('beforeRemove', async (e) => {
-                console.log("signOut start");
                 await signOut();
-                console.log("signOut success");
                 revokeLocation();
+                setUser(undefined);
                 navigation.navigate("Login");
             }),
         [navigation]
     );
 
-    const handleSignOut = async () => {
+    useEffect(() => {
+        const requestLocationOnce = async () => {
+            console.log("Requesting location - Login Screen!");
+            await requestLocation();
+        };
+        requestLocationOnce();
+    }, []);
+
+    const handleComplete = async () => {
         console.log('Name:', user?.name);
         console.log('Profile Picture:', user?.photo);
         console.log('Date of Birth:', user?.dateOfBirth);
@@ -116,32 +74,50 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
         alert('Falta pegar endpoint backend y si no completo algun dato mostrar un msgta error jeje!');
         navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });
     };
-
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-            <View style={styles.conteiner}>
-                <EditUser
-                    user={user}
-                    genders={genders}
-                    onChangeName={handleName}
-                    onChangeDateOfBirth={handleBirthDay}
-                    onSelectGender={handleGender}
-                    onPressCompleteEdit={handleSignOut}
-                    onPressUploadPhoto={handleUploadPhoto}
-                    onRegionChange={handleRegionChange}
-                />
-            </View>
+
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                <View style={styles.container}>
+                    {isFetching ? (
+                        <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={styles.activityIndicator} />
+                    ) : (
+                            fetchedData === undefined || user === undefined ? (
+                                <NoContent />
+                            ) : (
+                                    <EditUser
+                                        user={user}
+                                        name_button='COMPLETAR'
+                                        onPressCompleteEdit={handleComplete}
+                                        setUser={setUser}
+                                    />
+                                )
+                        )
+                    }
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    conteiner: {
-        flex: 1,
+    safeArea: {
+        flexGrow: 1,
+        backgroundColor: theme.colors.background,
+    },
+    scrollViewContent: {
+        paddingBottom: 30,
+    },
+    container: {
+        flex: 0,
         justifyContent: 'flex-start',
         paddingTop: 30,
         alignItems: "center",
         gap: 20,
+    },
+    activityIndicator: {
+        justifyContent: "center",
+        flexGrow: 1,
     },
 });
 

@@ -18,7 +18,6 @@ async function getAddressFromCoordinates(
             resJson.items[0].address.city &&
             resJson.items[0].address.countryName
         ) {
-            console.log(resJson.items[0]);
             const locationName = resJson.items[0].address.city + ", " + resJson.items[0].address.state + ", " + resJson.items[0].address.countryName;
             return locationName ?? defaultResponse;
         } else {

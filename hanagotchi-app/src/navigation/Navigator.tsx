@@ -96,7 +96,7 @@ const MainScreens: React.FC = () => {
 export type RootStackParamsList = {
     Login: undefined;
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
-    CompleteLogin: undefined;
+    CompleteLogin: { userId : number };
 }
 
 const Navigator: React.FC = () => {
