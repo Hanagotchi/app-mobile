@@ -63,7 +63,7 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "config" : {
-        "googleMaps" : {
+       "googleMaps" : {
           "apiKey" : "AIzaSyA414X9kRKkWWtoPnmTXhw2grv6nQbHmdo"
         }
       }

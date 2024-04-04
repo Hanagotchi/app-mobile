@@ -7,7 +7,8 @@ import CompleteLoginScreen from "../screens/CompleteLoginScreen";
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Button, StyleSheet, TouchableOpacity, View } from "react-native";
 import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
-import { Entypo, Ionicons } from '@expo/vector-icons';
+import { Entypo, Ionicons   } from '@expo/vector-icons';
+import LogsScreen from "../screens/LogsScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -76,7 +77,7 @@ const MainScreens: React.FC = () => {
                     tabBarLabel: "Home",
                     tabBarIcon: HomeIcon,
                 }} />
-                <Tab.Screen name="Logs" component={EmptyScreen} initialParams={{ bgColor: "green" }} options={{
+                <Tab.Screen name="Logs" component={LogsScreen} initialParams={{bgColor: "green"}} options={{
                     tabBarLabel: "Bitácoras",
                     tabBarIcon: LogIcon,
                 }} />

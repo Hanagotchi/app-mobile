@@ -15,7 +15,6 @@ const BackgroundCard: React.FC<BackgroundCardProps> = ({ title, width = "80%", s
     const cardContent = { ...style_content as object, ...style.cardContent };
     const cardTitle = { ...style_title as object, ...style.cardTitle };
     const card = { ...style_card as object, ...style.card };
-
     return (
 
         <Card mode="contained" style={card}>
@@ -30,7 +29,7 @@ const BackgroundCard: React.FC<BackgroundCardProps> = ({ title, width = "80%", s
 const style = StyleSheet.create({
     card: {
         backgroundColor: BEIGE,
-        width: "80%",
+        width: "85%",
         gap: 0,
         columnGap: 0,
     },
