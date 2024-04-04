@@ -1,21 +1,43 @@
 import { StyleSheet, SafeAreaView, ScrollView, Image, FlatList, View } from "react-native"
-import { FAB, Text } from "react-native-paper";
-import { BACKGROUND_COLOR, BROWN, GREEN, GREEN_DARK } from "../themes/globalThemes";
+import { ActivityIndicator, FAB, Text } from "react-native-paper";
+import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN, GREEN_DARK } from "../themes/globalThemes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../navigation/Navigator";
 import ExpandibleImage from "../components/ExpandibleImage";
+import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
+import { useApiFetch } from "../hooks/useApiFetch";
+import { GetLogByIdResponse } from "../models/hanagotchiApi";
+import NoContent from "../components/NoContent";
+import { handleError } from "../common/errorHandling";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 
 const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
-    const {log} = route.params;
+    const {log_id} = route.params;
+
+    const api = useHanagotchiApi();
+    const {isFetching, fetchedData: log, error} = useApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null)
+
+    if (isFetching) {
+        return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
+    }
+
+    if (error) {
+        handleError(error);
+        return <NoContent />;
+    }
+
+    if (!log) {
+        return <NoContent />;
+    }
+
     return (
         <SafeAreaView style={style.container}>
-            <Text style={style.title}>{log.title}</Text>
+            <Text style={style.title}>{log!.title}</Text>
             <View style={{height: 240}}>
                 <FlatList 
                     horizontal
-                    data={log.photos}
+                    data={log!.photos}
                     renderItem={({item}) => 
                         <ExpandibleImage 
                             minimizedImageStyle={style.image}
@@ -29,7 +51,7 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
                 />
             </View>
             <ScrollView>
-                <Text style={style.content}>{log.content}</Text>
+                <Text style={style.content}>{log!.content}</Text>
             </ScrollView>
             <FAB icon={"pencil"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
         </SafeAreaView>

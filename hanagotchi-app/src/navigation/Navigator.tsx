@@ -99,7 +99,7 @@ const MainScreens: React.FC = () => {
 export type RootStackParamsList = {
     Login: undefined;
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
-    LogDetails: {log: Log};
+    LogDetails: {log_id: number, created_at: Date};
     
 }
 
@@ -120,7 +120,7 @@ const Navigator: React.FC = () => {
                 <>
                     <RootStack.Screen name="MainScreens" component={MainScreens} options={{headerShown: false}}/>
                     <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
-                         title: formatDate(route.params.log.created_at).toLocaleUpperCase(),
+                         title: formatDate(route.params.created_at).toLocaleUpperCase(),
                     })}/>
                 </>
             )}
