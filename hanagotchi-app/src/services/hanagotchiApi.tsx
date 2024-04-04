@@ -19,7 +19,8 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async getLogsByUser(userId: number, params: {year: number, month?: number} ): Promise<GetLogsByUserResponse> {
-        const { data } = await this.axiosInstance.get(`/logs/${userId}`, {params});
+        console.log(userId, params)
+        const { data } = await this.axiosInstance.get(`/logs/user/${userId}`, {params});
         return GetLogsByUserResponseSchema.parse(data);
     }
 }
