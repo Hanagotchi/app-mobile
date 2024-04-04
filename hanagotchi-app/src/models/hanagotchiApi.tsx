@@ -10,3 +10,6 @@ export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
 export const GetLogsByUserResponseSchema = z.array(LogSchema);
 export type GetLogsByUserResponse = z.infer<typeof GetLogsByUserResponseSchema>;
+
+export const GetLogByIdResponseSchema = LogSchema;
+export type GetLogByIdResponse = z.infer<typeof GetLogByIdResponseSchema>;
