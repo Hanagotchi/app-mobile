@@ -1,14 +1,14 @@
 import { StyleSheet, SafeAreaView, ScrollView, Image, FlatList, View } from "react-native"
 import { ActivityIndicator, FAB, Text } from "react-native-paper";
-import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN, GREEN_DARK } from "../themes/globalThemes";
+import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN, GREEN_DARK } from "../../themes/globalThemes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamsList } from "../navigation/Navigator";
-import ExpandibleImage from "../components/ExpandibleImage";
-import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
-import { useApiFetch } from "../hooks/useApiFetch";
-import { GetLogByIdResponse } from "../models/hanagotchiApi";
-import NoContent from "../components/NoContent";
-import { handleError } from "../common/errorHandling";
+import { RootStackParamsList } from "../../navigation/Navigator";
+import ExpandibleImage from "../../components/ExpandibleImage";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import { useApiFetch } from "../../hooks/useApiFetch";
+import { GetLogByIdResponse } from "../../models/hanagotchiApi";
+import NoContent from "../../components/NoContent";
+import { handleError } from "../../common/errorHandling";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 

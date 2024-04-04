@@ -1,18 +1,18 @@
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native"
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
+import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import { useEffect, useState } from "react";
-import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
+import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../../themes/globalThemes";
 import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
-import SelectBox from "../components/SelectBox";
-import LogPreview from "../components/logs/LogPreview";
-import { useApiFetch } from "../hooks/useApiFetch";
-import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
-import NoContent from "../components/NoContent";
+import SelectBox from "../../components/SelectBox";
+import LogPreview from "../../components/logs/LogPreview";
+import { useApiFetch } from "../../hooks/useApiFetch";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import NoContent from "../../components/NoContent";
 import * as SecureStore from "expo-secure-store";
-import { monthList } from "../common/dateUtils";
+import { monthList } from "../../common/dateUtils";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();

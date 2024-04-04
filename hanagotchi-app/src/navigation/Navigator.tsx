@@ -7,9 +7,9 @@ import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-nav
 import { StyleSheet, View } from "react-native";
 import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, BROWN_DARK, BROWN_LIGHT, GREEN } from "../themes/globalThemes";
 import { Entypo, Ionicons   } from '@expo/vector-icons';
-import LogsScreen from "../screens/LogsScreen";
+import LogsScreen from "../screens/logs/LogsScreen";
 import { Log } from "../models/Log";
-import LogDetailsScreen from "../screens/LogDetailsScreen";
+import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
 
 const EmptyScreen: React.FC = ({route}) => {
