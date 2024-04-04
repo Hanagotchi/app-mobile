@@ -12,7 +12,6 @@ import LoaderButton from "../components/LoaderButton";
 import { statusCodes } from "@react-native-google-signin/google-signin";
 import { User } from "../models/User";
 
-//type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Login">
 type LoginScreenProps = CompositeScreenProps<
     NativeStackScreenProps<RootStackParamsList, "Login">,
     BottomTabScreenProps<MainTabParamsList>
@@ -20,16 +19,17 @@ type LoginScreenProps = CompositeScreenProps<
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     const theme = useTheme();
-    const { signIn } = useAuth();
+    const { signIn, completeSignIn } = useAuth();
 
     const handleSignIn = async () => {
         try {
             const user: User = await signIn();
-            if (!user.gender) {//|| !user.location) {
+            if (!user.name || !user.birthdate || !user.gender) {
                 navigation.navigate("CompleteLogin", { userId: user.id });
             } else {
-                navigation.navigate("Home", { bgColor: "blue" });
-            } 
+                await completeSignIn();
+                navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });
+            }
 
         } catch (err: any) {
             if (err.code === statusCodes.SIGN_IN_CANCELLED) return;

@@ -8,7 +8,7 @@ import { Entypo } from '@expo/vector-icons';
 
 type DateButtonProps = {
     title: string;
-    date: Date;
+    userDate: Date | null;
     setDate: (date: Date) => void;
 };
 
@@ -20,8 +20,9 @@ const ArrowIcon = (props: { color: string; size: number }) => (
     <Entypo name="chevron-small-down" size={props.size} color={props.color} />
 );
 
-const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
+const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate }) => {
     const [open, setOpen] = useState(false);
+    const [selectedDate, setselectedDate] = useState<Date>(userDate || new Date());
 
     const handlePress = () => {
         setOpen(true);
@@ -30,6 +31,7 @@ const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
     const handleDateConfirm = (newDate: Date) => {
         setOpen(false);
         setDate(newDate);
+        setselectedDate(newDate);
     };
 
     const handleDateCancel = () => {
@@ -48,7 +50,7 @@ const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
             >
                 <View style={styles.dateContent}>
                     <CalendarIcon color={BROWN_DARK} size={25} />
-                    <Text style={styles.dateText}>{formatDate(date)}</Text>
+                    <Text style={styles.dateText}>{formatDate(selectedDate)}</Text>
                 </View>
                 <ArrowIcon color={BROWN_DARK} size={25} />
             </TouchableOpacity>
@@ -56,11 +58,10 @@ const DateButton: React.FC<DateButtonProps> = ({ title, date, setDate }) => {
                 title="Selecciona tu fecha de nacimiento"
                 modal
                 open={open}
-                date={date}
+                date={selectedDate}
                 onConfirm={handleDateConfirm}
                 onCancel={handleDateCancel}
                 mode="date"
-                onDateChange={() => console.log("xd")}
             />
         </BackgroundCard>
     );

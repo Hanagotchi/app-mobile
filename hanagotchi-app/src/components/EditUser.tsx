@@ -1,52 +1,55 @@
 import { StyleSheet } from 'react-native';
 import LoaderButton from "./LoaderButton";
-import React, { useEffect } from "react";
+import React from "react";
 import TextInput from "./TextInput";
 import DateButton from "./DatePicker";
 import EditProfilePicture from "./EditProfilePicture";
 import EditLocation from './GoogleMaps';
 import SelectBox from './SelectBox';
-import { Details, Region } from 'react-native-maps';
-import { UserData } from '../screens/CompleteLoginScreen';
-import { DEFAULT_REGION } from '../contexts/LocationContext';
+import { Region } from 'react-native-maps';
 import * as ImagePicker from 'expo-image-picker';
 import useLocation from '../hooks/useLocation';
+import { User } from '../models/User';
+import { Text } from 'react-native-paper';
+import useFirebase from '../hooks/useFirebase';
 
 type EditUserProps = {
-    user: UserData;
+    user: User;
     name_button: string,
     onPressCompleteEdit: ((() => void) & Function);
-    setUser: React.Dispatch<React.SetStateAction<UserData | undefined>>;
+    setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 }
 
 const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteEdit, setUser }) => {
-    const { location, changeLocation } = useLocation();
-
-    // Si cambio, lo actualizo en el UserData recibido!
-    useEffect(() => {
-        if (location !== DEFAULT_REGION && location !== user.location) {
-            setUser({ ...user, location: location });
-        }
-    }, [location]);
+    const [requeriedFieldMessage, setRequeriedFieldMessage] = React.useState<string | null>(null);
+    const { changeLocation } = useLocation();
+    const { uploadImage } = useFirebase();
 
     const genders = [
-        { key: 1, value: "HOMBRE" },
-        { key: 2, value: "MUJER" },
-        { key: 3, value: "OTRO" },
+        { key: "HOMBRE", value: "HOMBRE" },
+        { key: "MUJER", value: "MUJER" },
+        { key: "OTRO", value: "OTRO" },
     ];
 
     const handleBirthDay = async (date: Date) => {
-        setUser({ ...user, dateOfBirth: date } as UserData);
+        setUser({ ...user, birthdate: new Date(date.toISOString().split('T')[0]) } as User);
     }
     const handleName = (name: string) => {
-        setUser({ ...user, name: name } as UserData);
+        setUser({ ...user, name: name } as User);
     }
     const handleGender = (gender: string) => {
-        setUser({ ...user, gender: gender } as UserData);
+        setUser({ ...user, gender: gender.toString() } as User);
     }
 
-    const handleRegionChange = (region: Region, details: Details) => {
-        changeLocation(region.latitude, region.longitude, region.latitudeDelta, region.longitudeDelta);
+    // New change from Google Maps or GeoLocation from Android
+    const handleRegionChange = async (new_region: Region) => {
+        changeLocation(new_region.latitude, new_region.longitude, new_region.latitudeDelta, new_region.longitudeDelta);
+        setUser({
+            ...user, location: {
+                lat: new_region.latitude,
+                long: new_region.longitude
+            }
+        } as User);
     }
 
     const handleUploadPhoto = async () => {
@@ -62,28 +65,42 @@ const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteE
             quality: 1,
         });
         if (!result.canceled) {
-            setUser({ ...user, photo: result.assets[0].uri } as UserData);
+            setUser({ ...user, photo: result.assets[0].uri } as User);
         }
     };
+
+    const handleOnComplete = async () => {
+        if (!user.name) {
+            setRequeriedFieldMessage('El nombre es requerido');
+        } else if (!user.birthdate) {
+            setRequeriedFieldMessage('La fecha de nacimiento es requerida');
+        } else if (!user.gender || user.gender == '---') {
+            setRequeriedFieldMessage('El género es requerido');
+        } else {
+            setRequeriedFieldMessage(null);
+            onPressCompleteEdit();
+        }
+    }
 
     return (
         <>
             <TextInput label={`NOMBRE (*)`} value={user.name ?? ''} onChangeText={handleName} />
             <EditProfilePicture title="FOTO DE PERFIL (OPCIONAL)" profilePicture={user.photo ?? 'https://cdn-icons-png.flaticon.com/128/3033/3033143.png'} onPressUploadPhoto={handleUploadPhoto} />
-            <DateButton title="FECHA DE NACIMIENTO (*)" date={user.dateOfBirth} setDate={handleBirthDay}/>
+            <DateButton title="FECHA DE NACIMIENTO (*)" userDate={user.birthdate} setDate={handleBirthDay} />
             <SelectBox
                 label="GÉNERO (*)"
                 data={genders}
                 setSelected={handleGender}
                 save="key"
-                defaultOption={{ key: 0, value: "---" }}
+                defaultOption={{ key: "---", value: "---" }}
                 width="30%"
             />
-            <EditLocation title="MI UBICACIÓN (OPCIONAL)" region={user.location} onRegionChange={handleRegionChange} />
+            <EditLocation title="MI UBICACIÓN (OPCIONAL)" onRegionChange={handleRegionChange} />
+            {requeriedFieldMessage ? <Text style={styles.requiredField}>{requeriedFieldMessage}</Text> : null}
             <LoaderButton
                 mode="contained"
                 uppercase style={styles.button}
-                onPress={onPressCompleteEdit}
+                onPress={handleOnComplete}
                 labelStyle={{ fontSize: 17 }}
             >
                 {name_button}
@@ -100,6 +117,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: "center",
         alignSelf: "center",
+    },
+    requiredField: {
+        color: 'red',
+        textAlign: 'center'
     }
 });
 

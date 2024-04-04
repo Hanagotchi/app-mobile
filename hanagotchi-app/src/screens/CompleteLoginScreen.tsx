@@ -8,23 +8,24 @@ import EditUser from '../components/EditUser';
 import useLocation from '../hooks/useLocation';
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { User } from '../models/User';
-import { UserLocation } from '../contexts/LocationContext';
 import { useApiFetch } from '../hooks/useApiFetch';
 import NoContent from '../components/NoContent';
+import useFirebase from '../hooks/useFirebase';
+import { handleError } from '../common/errorHandling';
+import { DEFAULT_PHOTO } from '../components/ProfilePicture';
 
 type CompleteLoginProps = NativeStackScreenProps<RootStackParamsList, "CompleteLogin">;
-
-export type UserData = User & { dateOfBirth: Date } & { location: UserLocation }
 
 const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }) => {
     const api = useHanagotchiApi();
     const { userId } = route.params;
     const { signOut, completeSignIn } = useAuth();
-    const { location, requestLocation, revokeLocation } = useLocation();
-
-    const [user, setUser] = useState<UserData | undefined>();
+    const { requestLocation, revokeLocation } = useLocation();
+    const { uploadImage } = useFirebase();
+    const [user, setUser] = useState<User>();
     const { isFetching, fetchedData, error } = useApiFetch(
         () => api.getUser(userId),
+        user
     );
 
     if (!isFetching && error) {
@@ -33,10 +34,7 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
 
     useEffect(() => {
         const fetchData = async () => {
-            setUser({
-                ...fetchedData?.message,
-                dateOfBirth: new Date(2000, 0, 1),
-            } as UserData);
+            setUser(fetchedData);
         }
         fetchData();
     }, [fetchedData]);
@@ -63,36 +61,40 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
     }, []);
 
     const handleComplete = async () => {
-        console.log('Name:', user?.name);
-        console.log('Profile Picture:', user?.photo);
-        console.log('Date of Birth:', user?.dateOfBirth);
-        console.log('Gender:', user?.gender);
-        console.log('Location:', location);
-
-        // await uploadImage(user?.photo ?? 'https://cdn-icons-png.flaticon.com/128/3033/3033143.png', user?.email ?? '', 'avatar');
-        await completeSignIn();
-        alert('Falta pegar endpoint backend y si no completo algun dato mostrar un msgta error jeje!');
-        navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });
+        if (!user) {
+            return;
+        }
+        try {
+            const userUpdated: User = {
+                ...user,
+                photo: user?.photo?.startsWith('file://') ? await uploadImage(user?.photo ?? DEFAULT_PHOTO, user?.email ?? '', 'avatar') : user.photo
+            } as User;
+            setUser(userUpdated);
+            await api.patchUser(userUpdated);
+            await completeSignIn();
+            navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });
+        } catch (err: any) {
+            handleError(err as Error);
+        }
     };
     return (
-
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="handled">
                 <View style={styles.container}>
                     {isFetching ? (
                         <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={styles.activityIndicator} />
                     ) : (
-                            fetchedData === undefined || user === undefined ? (
-                                <NoContent />
-                            ) : (
-                                    <EditUser
-                                        user={user}
-                                        name_button='COMPLETAR'
-                                        onPressCompleteEdit={handleComplete}
-                                        setUser={setUser}
-                                    />
-                                )
+                        fetchedData === undefined || user === undefined ? (
+                            <NoContent />
+                        ) : (
+                            <EditUser
+                                user={user}
+                                name_button='COMPLETAR'
+                                onPressCompleteEdit={handleComplete}
+                                setUser={setUser}
+                            />
                         )
+                    )
                     }
                 </View>
             </ScrollView>

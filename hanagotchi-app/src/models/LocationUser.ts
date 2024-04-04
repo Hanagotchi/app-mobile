@@ -1,9 +1,8 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const LocationScheme = z.object({
-  latitude: z.number().nullable(),
-  longitude: z.number().nullable(),
-  geoName: z.string().nullable(),
+  lat: z.number().nullable(),
+  long: z.number().nullable()
 })
 
 export type LocationUser = z.infer<typeof LocationScheme>;

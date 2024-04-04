@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { LoginResponse } from "../models/hanagotchiApi";
 import env from "../environment/loader";
-import { User } from "../models/User";
+import { User, UserSchema } from "../models/User";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 export type AuthContextProps = {
@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             // Get the users ID token
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
             
-            const {message: user}: LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
+            const { message: user} : LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
             await set("userId", user.id.toString());
 
             // Create a Google credential with the token
@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
             // Sign-in the user with the credential
             const userCredential = auth().signInWithCredential(googleCredential);
-            return user
+            return UserSchema.parse(user);
 
         } catch (err) {
             await remove("userId");

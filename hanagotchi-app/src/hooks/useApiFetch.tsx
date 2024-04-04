@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 
 export function useApiFetch<ResponseDataType>(
     apiCall: () => Promise<ResponseDataType>, 
-    initialValue?: ResponseDataType, 
+    initialValue: ResponseDataType, 
     deps?: React.DependencyList
   ) {
   const [error, setError] = useState<Error | null>(null);
-  const [fetchedData, setFetchedData] = useState<ResponseDataType | undefined>(initialValue);
+  const [fetchedData, setFetchedData] = useState<ResponseDataType>(initialValue);
   const [isFetching, setFetching] = useState<boolean>(true);
 
   useEffect(() => {

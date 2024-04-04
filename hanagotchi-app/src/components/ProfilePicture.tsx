@@ -1,5 +1,7 @@
 import { StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
 
+export const DEFAULT_PHOTO = "https://cdn-icons-png.flaticon.com/128/3033/3033143.png";
+
 type ProfilePictureProps = {
     uri: string;
     uploadImage?: () => void;
