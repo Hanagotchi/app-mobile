@@ -87,7 +87,15 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
                 )
             )
         }
-        <FAB icon={"plus"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
+        <FAB 
+            icon={"plus"} 
+            mode="flat" 
+            style={style.fab}
+            variant="primary"
+            size="medium" 
+            color={BACKGROUND_COLOR}
+            onPress={() => navigation.navigate("CreateLog")}
+        />
     </SafeAreaView>
 }
 

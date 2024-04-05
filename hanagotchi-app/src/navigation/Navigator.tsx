@@ -11,6 +11,7 @@ import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
+import CreateLogScreen from "../screens/logs/CreateLogScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -101,7 +102,7 @@ export type RootStackParamsList = {
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
-
+    CreateLog: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -127,6 +128,9 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="MainScreens" component={MainScreens} options={{ headerShown: false }} />
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
+                        })}/>
+                        <RootStack.Screen name="CreateLog" component={CreateLogScreen} options={({ route }) => ({
+                            title: "Nueva bitácora",
                         })}/>
                     </>
                 )}
