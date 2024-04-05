@@ -19,3 +19,11 @@ export const LogSchema = z.object({
 });
 
 export type Log = z.infer<typeof LogSchema>;
+
+export const LogDataSchema = z.object({
+    title: z.string(),
+    content: z.string(),
+    photos: z.array(z.string().url()).max(4),
+})
+
+export type LogData = z.infer<typeof LogDataSchema>;
