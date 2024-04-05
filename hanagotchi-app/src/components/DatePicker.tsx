@@ -29,9 +29,11 @@ const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate }) => 
     };
 
     const handleDateConfirm = (newDate: Date) => {
+        const userTimezoneOffset = newDate.getTimezoneOffset() * 60000;
+        const localDate = new Date(newDate.getTime() - userTimezoneOffset);
         setOpen(false);
-        setDate(newDate);
-        setselectedDate(newDate);
+        setDate(localDate);
+        setselectedDate(localDate);
     };
 
     const handleDateCancel = () => {
