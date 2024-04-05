@@ -12,7 +12,7 @@ type TextInputProps = {
     maxLenght?: number;
 }
 
-const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, numberOfLines = 1, maxLength}) => {
+const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, numberOfLines = 1, maxLenght}) => {
     const isTextArea = numberOfLines > 1;
     return (
         <BackgroundCard title={label}>
@@ -23,7 +23,7 @@ const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, number
                 multiline={isTextArea}
                 numberOfLines={numberOfLines}
                 style={{...style.textInput, height: isTextArea ? undefined : 20,}}
-                maxLength={maxLength}
+                maxLength={maxLenght}
             />
         </BackgroundCard>
     )

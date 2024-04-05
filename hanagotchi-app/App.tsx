@@ -7,6 +7,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { HanagotchiApiProvider } from "./src/contexts/HanagotchiServiceContext";
 import MyErrorBoundary from "./src/common/MyErrorBoundaries";
 import { ToastAndroid } from "react-native";
+import { LocationProvider } from "./src/contexts/LocationContext";
+import { FirebaseProvider } from "./src/contexts/FirebaseContext";
+import { LocalStorageProvider } from "./src/contexts/LocalStorageContext";
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 4000);
@@ -17,16 +20,21 @@ const handleError = (error: Error, stackTrace: string) => {
 
 export default function App() {
   return (
-    <PaperProvider>
+
+  <PaperProvider>
       <ThemeProvider theme={theme}>
         <MyErrorBoundary onError={handleError}>
-          
-            <HanagotchiApiProvider>
+          <HanagotchiApiProvider>
+            <LocalStorageProvider>
               <AuthProvider>
-                <Navigator />
+                <FirebaseProvider>
+                  <LocationProvider>
+                    <Navigator />
+                  </LocationProvider>
+                </FirebaseProvider>
               </AuthProvider>
-            </HanagotchiApiProvider>
-        
+            </LocalStorageProvider>
+          </HanagotchiApiProvider>
         </MyErrorBoundary>
       </ThemeProvider>
     </PaperProvider>
