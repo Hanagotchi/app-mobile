@@ -12,9 +12,26 @@ type BackgroundCardProps = PropsWithChildren & {
 }
 
 const BackgroundCard: React.FC<BackgroundCardProps> = ({ title, width = "80%", style_content, style_title, style_card, children }) => {
+    const style = StyleSheet.create({
+        card: {
+            backgroundColor: BEIGE,
+            width,
+            gap: 0,
+            columnGap: 0,
+        },
+        cardTitle: {
+            color: BROWN_LIGHT,
+            fontSize: 12,
+        },
+        cardContent: {
+            marginTop: -12,
+        },
+    })
+
     const cardContent = { ...style_content as object, ...style.cardContent };
     const cardTitle = { ...style_title as object, ...style.cardTitle };
     const card = { ...style_card as object, ...style.card };
+
     return (
 
         <Card mode="contained" style={card}>
@@ -25,21 +42,5 @@ const BackgroundCard: React.FC<BackgroundCardProps> = ({ title, width = "80%", s
         </Card>
     )
 }
-
-const style = StyleSheet.create({
-    card: {
-        backgroundColor: BEIGE,
-        width: "85%",
-        gap: 0,
-        columnGap: 0,
-    },
-    cardTitle: {
-        color: BROWN_LIGHT,
-        fontSize: 12,
-    },
-    cardContent: {
-        marginTop: -12,
-    },
-})
 
 export default BackgroundCard;
