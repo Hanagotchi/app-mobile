@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import EditLog from "../../components/logs/EditLog";
+import { FAB } from "react-native-paper";
 
 
 
