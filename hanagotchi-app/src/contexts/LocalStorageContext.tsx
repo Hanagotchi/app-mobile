@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 
 export type LocalStorageContextProps = {
     set: (key: string, value: string) => Promise<void>;
-    get: (key: string) => Promise<string>;
+    get: (key: string) => Promise<string | null>;
     remove: (key: string) => Promise<void>;
 }
 
@@ -15,12 +15,11 @@ export const LocalStorageContext = createContext<LocalStorageContextProps>({
 
 export const LocalStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const set = async (key: string, value: string) => {
-        await SecureStore.setItemAsync(key, JSON.stringify(value));
+        await SecureStore.setItemAsync(key, value);
     }
 
 const get = async (key: string) => {
-    const storedValue = await SecureStore.getItemAsync(key);
-    return storedValue ? JSON.parse(storedValue) : null;
+    return await SecureStore.getItemAsync(key);
 }
 
 
