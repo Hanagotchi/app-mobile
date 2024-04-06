@@ -28,8 +28,6 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, handleSubmit
     const onChangeContent = (content: string) => setData((oldValues) => ({...oldValues, content}));
     const onChangePhotos = (photos: string[]) => setData((oldValues) => ({...oldValues, photos}));
 
-    console.log(data);
-
     useEffect(() => setContentLen(data.content.length), [data.content]);
 
     return (
