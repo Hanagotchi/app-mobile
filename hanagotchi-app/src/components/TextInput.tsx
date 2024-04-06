@@ -1,7 +1,5 @@
-import { TextInput as PaperTextInput } from "react-native-paper";
-import { TextInput as NativeTextInput } from "react-native";
-import {StyleSheet} from "react-native";
-import { BEIGE, BROWN_DARK } from "../themes/globalThemes";
+import {StyleSheet, TextInput as NativeTextInput} from "react-native";
+import {BROWN_DARK} from "../themes/globalThemes";
 import BackgroundCard from "./BackgroundCard";
 
 type TextInputProps = {
@@ -12,7 +10,7 @@ type TextInputProps = {
     maxLenght?: number;
 }
 
-const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, numberOfLines = 1, maxLength}) => {
+const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, numberOfLines = 1, maxLenght}) => {
     const isTextArea = numberOfLines > 1;
     return (
         <BackgroundCard title={label}>
@@ -23,7 +21,7 @@ const TextInput: React.FC<TextInputProps> = ({label, value, onChangeText, number
                 multiline={isTextArea}
                 numberOfLines={numberOfLines}
                 style={{...style.textInput, height: isTextArea ? undefined : 20,}}
-                maxLength={maxLength}
+                maxLength={maxLenght}
             />
         </BackgroundCard>
     )

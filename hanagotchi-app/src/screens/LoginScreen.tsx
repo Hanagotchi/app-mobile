@@ -10,41 +10,46 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { handleError } from "../common/errorHandling";
 import LoaderButton from "../components/LoaderButton";
 import { statusCodes } from "@react-native-google-signin/google-signin";
+import { User } from "../models/User";
 
 type LoginScreenProps = CompositeScreenProps<
     NativeStackScreenProps<RootStackParamsList, "Login">,
     BottomTabScreenProps<MainTabParamsList>
 >;
 
-const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
-
+const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     const theme = useTheme();
-    const {signIn} = useAuth();
+    const { signIn, completeSignIn } = useAuth();
 
-    
     const handleSignIn = async () => {
         try {
-            await signIn();
-            navigation.navigate("Home", {bgColor: "blue"});
-        } catch (err) {
+            const user: User = await signIn();
+            if (!user.name || !user.birthdate || !user.gender) {
+                navigation.navigate("CompleteLogin", { userId: user.id });
+            } else {
+                await completeSignIn();
+                navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });
+            }
+
+        } catch (err: any) {
             if (err.code === statusCodes.SIGN_IN_CANCELLED) return;
             handleError(err as Error);
-        } 
+        }
     }
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <View style={style.container}>
                 <View>
-                    <Text style={{...style.title, color: theme.colors.onSecondary}}>HANAGOTCHI</Text>
-                    <Text style={{...style.subtitle, color: BROWN_LIGHT}}>Tu nuevo mejor amigo</Text>
+                    <Text style={{ ...style.title, color: theme.colors.onSecondary }}>HANAGOTCHI</Text>
+                    <Text style={{ ...style.subtitle, color: BROWN_LIGHT }}>Tu nuevo mejor amigo</Text>
                 </View>
                 <ImageBackground source={loginBackground} style={style.background} />
-                <LoaderButton 
-                    mode="contained" 
-                    uppercase style={style.button} 
+                <LoaderButton
+                    mode="contained"
+                    uppercase style={style.button}
                     onPress={handleSignIn}
-                    labelStyle={{fontSize: 17}}
+                    labelStyle={{ fontSize: 17 }}
                 >
                     Iniciar sesión
                 </LoaderButton>
@@ -60,7 +65,7 @@ const style = StyleSheet.create({
         alignItems: "center",
         gap: 40,
         marginTop: 35,
-      },
+    },
     background: {
         width: 400,
         height: 400,
@@ -78,23 +83,23 @@ const style = StyleSheet.create({
         alignItems: "center",
     },
     title: {
-      fontSize: 45,
-      fontFamily: "IBMPlexMono_Italic",
-      textAlign: 'center',
-      fontWeight: "bold"
+        fontSize: 45,
+        fontFamily: "IBMPlexMono_Italic",
+        textAlign: 'center',
+        fontWeight: "bold"
     },
     subtitle: {
         fontSize: 30,
         fontFamily: "IBMPlexMono_Italic",
         textAlign: 'center',
         fontStyle: "italic",
-      },
+    },
     button: {
         borderRadius: 10,
         width: "50%",
         height: 50,
         justifyContent: "center",
     },
-  })
-  
+})
+
 export default LoginScreen;

@@ -17,7 +17,6 @@ type SettingsScreenProps = CompositeScreenProps<
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
-
     const [name, setName] = useState("");
     const [text, setText] = useState("");
     const [lenght, setLenght] = useState(0);
