@@ -30,6 +30,11 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
         }
     };
 
+    const handleDeletePhoto = async (indexToDelete: number) => {
+        photosFilepathList.splice(indexToDelete, 1);
+        updatePhotosFilepathList(photosFilepathList);
+    }
+
     return (
         <>
             <View style={{width: "80%"}}>
@@ -37,7 +42,14 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
             </View>
             <FlatList 
                 data={photosFilepathList}
-                renderItem={({item}) => <DeletableImage source={{uri: item}} style={style.image}/>}
+                renderItem={
+                    ({item, index}) => 
+                        <DeletableImage 
+                            source={{uri: item}} 
+                            style={style.image} 
+                            onPressDelete={() => handleDeletePhoto(index)}
+                        />
+                }
                 numColumns={2}
                 style={style.photoList}
                 contentContainerStyle={style.photoListContent}
