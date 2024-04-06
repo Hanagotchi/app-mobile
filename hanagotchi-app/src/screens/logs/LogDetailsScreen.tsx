@@ -9,10 +9,11 @@ import { useApiFetch } from "../../hooks/useApiFetch";
 import { GetLogByIdResponse } from "../../models/hanagotchiApi";
 import NoContent from "../../components/NoContent";
 import { handleError } from "../../common/errorHandling";
+import { Log } from "../../models/Log";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 
-const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
+const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) => {
     const {log_id} = route.params;
 
     const api = useHanagotchiApi();
@@ -53,7 +54,15 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
             <ScrollView>
                 <Text style={style.content}>{log!.content}</Text>
             </ScrollView>
-            <FAB icon={"pencil"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
+            <FAB 
+                icon={"pencil"} 
+                mode="flat" 
+                style={style.fab} 
+                variant="primary" 
+                size="medium" 
+                color={BACKGROUND_COLOR}
+                onPress={() => navigation.navigate("EditLog", {log: log})}
+            />
         </SafeAreaView>
     )
 }
