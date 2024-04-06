@@ -1,12 +1,21 @@
 import { PropsWithChildren, createContext, useEffect } from "react";
 import env from "../environment/loader";
-import { User } from "../models/User";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/storage'
 import 'firebase/compat/auth';
 
+export const profilePictureUrl = (user_email: string, subfolder: string) => {
+    const date = new Date().getTime();
+    return `users/${user_email}/${subfolder}/${date}`;
+};
+
+export const logPhotoUrl = (plantId: number) => {
+    const date = new Date().getTime();
+    return `plants/${plantId}/${date}`;
+}
+
 export type FirebaseContextProps = {
-    uploadImage: (local_uri: string, user_email: string, subfolder: string) => Promise<string>;
+    uploadImage: (local_uri: string, firebaseFilepath: string) => Promise<string>;
     removeImage: (remote_uri: string) => Promise<void>;
 }
 
@@ -23,14 +32,14 @@ export const FirebaseProvider: React.FC<PropsWithChildren> = ({ children }) => {
         }
     }, [])
 
-    const uploadImage = async (local_uri: string, user_email: string, subfolder: string) => {
+    const uploadImage = async (local_uri: string, firebaseFilepath: string) => {
         const response = await fetch(local_uri);
         const blob = await response.blob();
         let date = new Date().getTime()
 
         // TODO ... ERROR HANDLING!!
-        const res = await firebase.storage().ref().child(`users/${user_email}/${subfolder}/${date}`).put(blob)
-        const remote_uri = await firebase.storage().ref().child(`users/${user_email}/${subfolder}/${date}`).getDownloadURL()
+        const res = await firebase.storage().ref().child(firebaseFilepath).put(blob)
+        const remote_uri = await firebase.storage().ref().child(firebaseFilepath).getDownloadURL()
         return remote_uri
     }
 

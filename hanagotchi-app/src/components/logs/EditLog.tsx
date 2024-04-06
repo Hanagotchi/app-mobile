@@ -1,13 +1,14 @@
 import { Text } from "react-native-paper"
 import { LogData } from "../../models/Log";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import TextInput from "../TextInput";
 import PhotoUploader from "../PhotoUploader";
 import LoaderButton from "../LoaderButton";
 
 type EditLogProps = {
-    initValues?: LogData; 
+    initValues?: LogData;
+    handleSubmit: ((data: LogData) => void); 
 }
 
 const defaultData: LogData = {
@@ -18,7 +19,7 @@ const defaultData: LogData = {
 
 const CONTENT_MAX_LENGTH = 500;
 
-const EditLog: React.FC<EditLogProps> = ({initValues = defaultData}) => {
+const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, handleSubmit}) => {
 
     const [data, setData] = useState<LogData>(initValues);
     const [contentLen, setContentLen] = useState<number>(initValues.content.length);
@@ -26,6 +27,8 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData}) => {
     const onChangeTitle = (title: string) => setData((oldValues) => ({...oldValues, title}));
     const onChangeContent = (content: string) => setData((oldValues) => ({...oldValues, content}));
     const onChangePhotos = (photos: string[]) => setData((oldValues) => ({...oldValues, photos}));
+
+    console.log(data);
 
     useEffect(() => setContentLen(data.content.length), [data.content]);
 
@@ -51,6 +54,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData}) => {
                 uppercase
                 style={style.button}
                 labelStyle={{ fontSize: 17 }}
+                onPress={() => handleSubmit(data)}
             >
                 Actualizar
             </LoaderButton>
