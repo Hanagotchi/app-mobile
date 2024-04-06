@@ -6,8 +6,12 @@ import { CreateLogSchema, LogData, LogDataSchema } from "../../models/Log";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import useFirebase from "../../hooks/useFirebase";
 import { logPhotoUrl } from "../../contexts/FirebaseContext";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamsList } from "../../navigation/Navigator";
 
-const CreateLogScreen: React.FC = () => {
+type CreateLogScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateLog">
+
+const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
 
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
@@ -21,9 +25,10 @@ const CreateLogScreen: React.FC = () => {
                 ...data,
                 photos: photos.map(ph => ({photo_link: ph}))
             });
-            console.log(createLogBody)
+            await api.createLog(createLogBody);
+            navigation.goBack();
         } catch (err) {
-            console.log(err)
+            throw err;
         }
     }
 

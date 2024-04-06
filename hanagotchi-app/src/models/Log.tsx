@@ -36,4 +36,6 @@ export const CreateLogSchema = z.object({
     photos: z.array(z.object({
         photo_link: z.string().url(),
     })).max(4),
-})
+});
+
+export type CreateLog = z.infer<typeof CreateLogSchema>;
