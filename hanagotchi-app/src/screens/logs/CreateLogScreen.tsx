@@ -8,16 +8,11 @@ import { handleError } from "../../common/errorHandling";
 const CreateLogScreen: React.FC = () => {
 
     const submit = (data: LogData) => {
-        try {
-            const parsedData: LogData = LogDataSchema.parse(data);
-            console.log(parsedData);
-        } catch (e) {
-            handleError(e as Error);
-        }
+        console.log("data", data)
     }
 
     return <SafeAreaView style={style.container}>
-        <EditLog handleSubmit={submit}/>
+        <EditLog onSubmit={submit}/>
     </SafeAreaView>
 };
 

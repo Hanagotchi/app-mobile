@@ -1,14 +1,13 @@
-import { Text } from "react-native-paper"
 import { LogData } from "../../models/Log";
 import { useEffect, useState } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import TextInput from "../TextInput";
 import PhotoUploader from "../PhotoUploader";
 import LoaderButton from "../LoaderButton";
 
 type EditLogProps = {
     initValues?: LogData;
-    handleSubmit: ((data: LogData) => void); 
+    onSubmit: ((data: LogData) => void); 
 }
 
 const defaultData: LogData = {
@@ -19,7 +18,7 @@ const defaultData: LogData = {
 
 const CONTENT_MAX_LENGTH = 500;
 
-const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, handleSubmit}) => {
+const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit}) => {
 
     const [data, setData] = useState<LogData>(initValues);
     const [contentLen, setContentLen] = useState<number>(initValues.content.length);
@@ -33,9 +32,9 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, handleSubmit
     return (
         <View style={style.container}>
             <View style={style.container}>
-                <TextInput label="TÍTULO" value={data.title} onChangeText={onChangeTitle}/>
+                <TextInput label="TÍTULO *" value={data.title} onChangeText={onChangeTitle}/>
                 <TextInput 
-                    label={`BITÁCORA ${contentLen}/${CONTENT_MAX_LENGTH}`}
+                    label={`BITÁCORA ${contentLen}/${CONTENT_MAX_LENGTH} *`}
                     value={data.content} 
                     onChangeText={onChangeContent}
                     numberOfLines={4}
@@ -52,9 +51,10 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, handleSubmit
                 uppercase
                 style={style.button}
                 labelStyle={{ fontSize: 17 }}
-                onPress={() => handleSubmit(data)}
+                onPress={() => onSubmit(data)}
+                disabled={data.content.length === 0 || data.title.length === 0}
             >
-                Actualizar
+                Crear
             </LoaderButton>
         </View>
     )
