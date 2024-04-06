@@ -27,3 +27,12 @@ export const LogDataSchema = z.object({
 })
 
 export type LogData = z.infer<typeof LogDataSchema>;
+
+export const CreateLogSchema = z.object({
+    plant_id: z.number(),
+    title: z.string().min(1, "Log title can't be empty"),
+    content: z.string().min(1, "Log content can't be empty"),
+    photos: z.array(z.object({
+        photo_link: z.string().url(),
+    })).max(4),
+})

@@ -1,9 +1,16 @@
 import { LogData } from "../../models/Log";
-import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import TextInput from "../TextInput";
 import PhotoUploader from "../PhotoUploader";
 import LoaderButton from "../LoaderButton";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import { useApiFetch } from "../../hooks/useApiFetch";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import { GetPlantsResponse } from "../../models/hanagotchiApi";
+import { BROWN_DARK } from "../../themes/globalThemes";
+import SelectBox, { SelectOption } from "../SelectBox";
+import * as SecureStore from "expo-secure-store";
 
 type EditLogProps = {
     initValues?: LogData;
@@ -22,6 +29,15 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit}) =
 
     const [data, setData] = useState<LogData>(initValues);
     const [contentLen, setContentLen] = useState<number>(initValues.content.length);
+    const id_user = Number(SecureStore.getItem("userId"));
+    const api = useHanagotchiApi()
+    const {isFetching, fetchedData, error} = useApiFetch<GetPlantsResponse>(() => api.getPlants({id_user, limit: 1024}), []);
+    const myPlants: SelectOption[] = useMemo(() => {
+        return fetchedData.map(plant => ({
+            key: plant.id,
+            value: plant.name,
+        }));
+    }, [fetchedData])
 
     const onChangeTitle = (title: string) => setData((oldValues) => ({...oldValues, title}));
     const onChangeContent = (content: string) => setData((oldValues) => ({...oldValues, content}));
@@ -29,10 +45,25 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit}) =
 
     useEffect(() => setContentLen(data.content.length), [data.content]);
 
+    if (isFetching) {
+        return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+    }
+
+    if (!isFetching && error) {
+        throw error;
+    }
+
     return (
         <View style={style.container}>
             <View style={style.container}>
                 <TextInput label="TÍTULO *" value={data.title} onChangeText={onChangeTitle}/>
+                <SelectBox 
+                    label="PLANTA" 
+                    data={myPlants} 
+                    setSelected={(item) => {}} 
+                    save="key"
+                    defaultOption={myPlants.length > 0 ? myPlants[0] : {key: 0, value: "---"}}
+                />
                 <TextInput 
                     label={`BITÁCORA ${contentLen}/${CONTENT_MAX_LENGTH} *`}
                     value={data.content} 

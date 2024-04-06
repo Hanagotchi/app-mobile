@@ -1,5 +1,14 @@
 import { AxiosInstance } from "axios";
-import { LoginResponse, LoginResponseSchema, GetLogsByUserResponseSchema, GetLogsByUserResponse, GetLogByIdResponse, GetLogByIdResponseSchema } from "../models/hanagotchiApi";
+import { 
+    LoginResponse, 
+    LoginResponseSchema, 
+    GetLogsByUserResponseSchema, 
+    GetLogsByUserResponse, 
+    GetLogByIdResponse, 
+    GetLogByIdResponseSchema, 
+    GetPlantsResponse, 
+    GetPlantsResponseSchema 
+} from "../models/hanagotchiApi";
 import { UpdateUserSchema, User, UserSchema } from "../models/User";
 
 
@@ -7,8 +16,9 @@ export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
     getUser: (userId: number) => Promise<User>;
     patchUser: (user: User) => Promise<void>;
-    getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
-    getLogById: (log_id: number) => Promise<GetLogByIdResponse>
+    getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>;
+    getLogById: (logId: number) => Promise<GetLogByIdResponse>;
+    getPlants: (params: {id_user?: number, limit?: number}) => Promise<GetPlantsResponse>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -40,8 +50,14 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetLogsByUserResponseSchema.parse(data);
     }
 
-    async getLogById(log_id: number): Promise<GetLogByIdResponse> {
-        const { data } = await this.axiosInstance.get(`/logs/${log_id}`);
+    async getLogById(logId: number): Promise<GetLogByIdResponse> {
+        const { data } = await this.axiosInstance.get(`/logs/${logId}`);
         return GetLogByIdResponseSchema.parse(data);
     }
+
+    async getPlants(params: {id_user?: number, limit?: number}): Promise<GetPlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/plants`, {params});
+        return GetPlantsResponseSchema.parse(data)
+    }
+
 }
