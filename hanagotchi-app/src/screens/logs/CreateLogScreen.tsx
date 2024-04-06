@@ -33,7 +33,7 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        <EditLog onSubmit={submit}/>
+        <EditLog onSubmit={submit} buttonLabel="Crear"/>
     </SafeAreaView>
 };
 

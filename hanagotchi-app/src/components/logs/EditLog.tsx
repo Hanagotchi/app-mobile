@@ -4,7 +4,6 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import TextInput from "../TextInput";
 import PhotoUploader from "../PhotoUploader";
 import LoaderButton from "../LoaderButton";
-import useLocalStorage from "../../hooks/useLocalStorage";
 import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { GetPlantsResponse } from "../../models/hanagotchiApi";
@@ -14,7 +13,8 @@ import * as SecureStore from "expo-secure-store";
 
 type EditLogProps = {
     initValues?: LogData;
-    onSubmit: ((data: LogData) => void); 
+    onSubmit: ((data: LogData) => void);
+    buttonLabel: string;
 }
 
 const defaultData: LogData = {
@@ -26,7 +26,7 @@ const defaultData: LogData = {
 
 const CONTENT_MAX_LENGTH = 500;
 
-const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit}) => {
+const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, buttonLabel}) => {
 
     const [data, setData] = useState<LogData>(initValues);
     const [contentLen, setContentLen] = useState<number>(initValues.content.length);
@@ -87,7 +87,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit}) =
                 onPress={() => onSubmit(data)}
                 disabled={data.content.length === 0 || data.title.length === 0}
             >
-                Crear
+                {buttonLabel}
             </LoaderButton>
         </View>
     )
