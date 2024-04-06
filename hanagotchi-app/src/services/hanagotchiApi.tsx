@@ -10,7 +10,7 @@ import {
     GetPlantsResponseSchema 
 } from "../models/hanagotchiApi";
 import { UpdateUserSchema, User, UserSchema } from "../models/User";
-import { CreateLog, Log, LogSchema } from "../models/Log";
+import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 
 
 export interface HanagotchiApi {
@@ -21,6 +21,10 @@ export interface HanagotchiApi {
     getLogById: (logId: number) => Promise<GetLogByIdResponse>;
     getPlants: (params: {id_user?: number, limit?: number}) => Promise<GetPlantsResponse>;
     createLog: (log: CreateLog) => Promise<Log>;
+    editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
+    addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
+    deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
+
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -65,5 +69,19 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async createLog(body: CreateLog): Promise<Log> {
         const { data } = await this.axiosInstance.post("/logs", body);
         return LogSchema.parse(data);
+    }
+    
+    async editLog(logId: number, updateSet: PartialUpdateLog): Promise<Log> {
+        const { data } = await this.axiosInstance.patch(`/logs/${logId}`, updateSet);
+        return LogSchema.parse(data);
+    }
+
+    async addPhotoToLog(logId: number, body: {photo_link: string}): Promise<Log> {
+        const { data } = await this.axiosInstance.post(`/logs/${logId}/photos`, body);
+        return LogSchema.parse(data);
+    }
+
+    async deletePhotoFromLog(logId: number, photoId: number) {
+        await this.axiosInstance.delete(`/logs/${logId}/photos/${photoId}`);
     }
 }
