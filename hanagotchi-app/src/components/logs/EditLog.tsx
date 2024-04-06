@@ -20,6 +20,7 @@ type EditLogProps = {
 const defaultData: LogData = {
     title: "",
     content: "",
+    plant_id: 0,
     photos: [],
 }
 
@@ -41,6 +42,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit}) =
 
     const onChangeTitle = (title: string) => setData((oldValues) => ({...oldValues, title}));
     const onChangeContent = (content: string) => setData((oldValues) => ({...oldValues, content}));
+    const onChangePlant = (plant_id: number) => setData((oldValues) => ({...oldValues, plant_id}))
     const onChangePhotos = (photos: string[]) => setData((oldValues) => ({...oldValues, photos}));
 
     useEffect(() => setContentLen(data.content.length), [data.content]);
@@ -60,7 +62,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit}) =
                 <SelectBox 
                     label="PLANTA" 
                     data={myPlants} 
-                    setSelected={(item) => {}} 
+                    setSelected={onChangePlant} 
                     save="key"
                     defaultOption={myPlants.length > 0 ? myPlants[0] : {key: 0, value: "---"}}
                 />

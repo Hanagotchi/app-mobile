@@ -2,13 +2,29 @@ import { StyleSheet } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import EditLog from "../../components/logs/EditLog";
-import { LogData, LogDataSchema } from "../../models/Log";
-import { handleError } from "../../common/errorHandling";
+import { CreateLogSchema, LogData, LogDataSchema } from "../../models/Log";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import useFirebase from "../../hooks/useFirebase";
+import { logPhotoUrl } from "../../contexts/FirebaseContext";
 
 const CreateLogScreen: React.FC = () => {
 
-    const submit = (data: LogData) => {
-        console.log("data", data)
+    const api = useHanagotchiApi();
+    const {uploadImage} = useFirebase();
+
+    const submit = async (data: LogData) => {
+        try {
+            const photos = await Promise.all(
+                data.photos.map(photo => uploadImage(photo, logPhotoUrl(data.plant_id)))
+            );
+            const createLogBody = CreateLogSchema.parse({
+                ...data,
+                photos: photos.map(ph => ({photo_link: ph}))
+            });
+            console.log(createLogBody)
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return <SafeAreaView style={style.container}>
