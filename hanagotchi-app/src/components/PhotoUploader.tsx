@@ -2,6 +2,7 @@ import { FlatList, Image, StyleSheet, View } from "react-native"
 import * as ImagePicker from 'expo-image-picker';
 import { FAB, Text } from "react-native-paper";
 import { BEIGE_LIGHT, BROWN, BROWN_LIGHT, GREEN_DARK } from "../themes/globalThemes";
+import DeletableImage from "./DeletableImage";
 
 type PhotoUploaderProps = {
     maxAmount?: number;
@@ -36,9 +37,10 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
             </View>
             <FlatList 
                 data={photosFilepathList}
-                renderItem={({item}) => <Image source={{uri: item}} style={style.image}/>}
-                horizontal
-                style={{flexGrow: 0}}
+                renderItem={({item}) => <DeletableImage source={{uri: item}} style={style.image}/>}
+                numColumns={2}
+                style={style.photoList}
+                contentContainerStyle={style.photoListContent}
                 ListFooterComponent={
                     (maxAmount && maxAmount <= photosFilepathList.length)
                     ? <View/>
@@ -66,13 +68,22 @@ const style = StyleSheet.create({
         fontWeight: "bold",
         color: GREEN_DARK,
     },
+    photoList: {
+        flexGrow: 0
+    },
+    photoListContent: {
+        alignItems: "center", 
+        gap: 5,
+        rowGap: 5,
+        columnGap: 5,
+    },
     image: {
         width: 100,
         height: 100,
         borderRadius: 10,
-        margin: 5,
         borderWidth: 1,
         borderColor: BROWN,
+
     },
     fab: {
         borderRadius: 10,

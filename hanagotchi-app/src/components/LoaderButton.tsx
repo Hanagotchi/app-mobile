@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { GestureResponderEvent } from "react-native";
 import { Button, ButtonProps } from "react-native-paper";
-import { GREEN } from "../themes/globalThemes";
 
 const LoaderButton: React.FC<ButtonProps> = (props) => {
 
