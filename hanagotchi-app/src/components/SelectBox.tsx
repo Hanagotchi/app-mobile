@@ -4,7 +4,7 @@ import { BEIGE_DARK, BROWN_DARK, BROWN_LIGHT, GREY_LIGHT } from '../themes/globa
 import { Entypo } from '@expo/vector-icons';
 import { DimensionValue, StyleSheet } from 'react-native';
 
-type SelectOption = {
+export type SelectOption = {
     key: any,
     value: string,
     disable?: boolean,
