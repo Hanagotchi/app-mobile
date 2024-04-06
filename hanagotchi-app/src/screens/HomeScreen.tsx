@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {View, Text, StyleSheet, SafeAreaView, Image, Pressable, Modal} from 'react-native'
 import {theme} from "../themes/globalThemes";
-import plant from "../assets/plant.png";
+import plantImage from "../assets/plant.png";
 import plus from "../assets/plusicon.png";
 import info from "../assets/infoicon.png";
 import close from "../assets/closeicon.png";
@@ -12,21 +12,42 @@ import {useApiFetch} from "../hooks/useApiFetch";
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
   const [modalOpen, setModalOpen] = React.useState(false);
-  const {isFetching, fetchedData, error} = useApiFetch(
+  const {isFetching, fetchedData: plant, error} = useApiFetch(
       () => api.getPlant("2"),
       {
         id: 0,
-        user_id: 0,
+        id_user: 0,
         name: '',
         scientific_name: ''
       }
   );
 
+  const [plantType, setPlantType] = React.useState({
+    id: 0,
+    botanical_name: '',
+    common_name: '',
+    description: ''
+  });
+
+  const fetchPlantType = async () => {
+    const {isFetching: isLoading, fetchedData: fetchedPlantType, error: error2} = useApiFetch(
+        () => api.getPlantType(plant?.scientific_name),
+        {
+          id: 0,
+          botanical_name: '',
+          common_name: '',
+          description: ''
+        }
+    );
+  }
+
+
   if (!isFetching && error) {
     throw error;
   }
 
-  console.log(fetchedData)
+  console.log(plant)
+  console.log(plantType)
 
   const navigate = async () => {
     console.log("navigate to create log")
@@ -35,8 +56,8 @@ const HomeScreen: React.FC = () => {
   return (
       <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
         <View style={style.container}>
-            <Text style={style.title}>Plant name</Text>
-            <Image source={plant} style={style.image}></Image>
+            <Text style={style.title}>{plant.name}</Text>
+            <Image source={plantImage} style={style.image}></Image>
 
             <View style={style.box}>
               <View style={style.measurements}>
@@ -59,14 +80,14 @@ const HomeScreen: React.FC = () => {
           <View style={style.centeredView}>
             <View style={style.modalView}>
               <View style={style.modalHeader}>
-                <Text style={style.modalTitle}>Passiflora</Text>
+                <Text style={style.modalTitle}>{plantType.botanical_name}</Text>
                 <Pressable onPress={() => setModalOpen(false)}>
                   <Icon size={20} source={close}/>
                 </Pressable>
               </View>
               <View style={style.description}>
-                <Text style={style.modalText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus eget nunc scelerisque viverra mauris in aliquam sem fringilla.</Text>
-                <Image source={plant} style={style.imageDescription}/>
+                <Text style={style.modalText}>{plantType.description}</Text>
+                <Image source={plantImage} style={style.imageDescription}/>
               </View>
             </View>
           </View>
