@@ -2,8 +2,8 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-nat
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import type { CompositeScreenProps } from '@react-navigation/native';
-import { useEffect, useState } from "react";
+import { useFocusEffect, type CompositeScreenProps } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from "react";
 import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../../themes/globalThemes";
 import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../../components/SelectBox";
@@ -36,10 +36,14 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const userId = Number(SecureStore.getItem("userId"))
 
     const api = useHanagotchiApi();
+    const [fetchSignal, setFetchSignal] = useState<boolean>(false);
+    useFocusEffect(
+        useCallback(() => setFetchSignal((prev) => !prev), [])
+    )
     const {isFetching, fetchedData, error} = useApiFetch(
         () => api.getLogsByUser(userId, {year: year, month: month}),
         [],
-        [year, month]
+        [year, month, fetchSignal]
     );
 
     if (!isFetching && error) {

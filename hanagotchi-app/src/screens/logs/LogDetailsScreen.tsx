@@ -10,14 +10,20 @@ import { GetLogByIdResponse } from "../../models/hanagotchiApi";
 import NoContent from "../../components/NoContent";
 import { handleError } from "../../common/errorHandling";
 import { Log } from "../../models/Log";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 
 const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) => {
     const {log_id} = route.params;
 
-    const api = useHanagotchiApi();
-    const {isFetching, fetchedData: log, error} = useApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null)
+    const api = useHanagotchiApi();    
+    const [fetchSignal, setFetchSignal] = useState<boolean>(false);
+    useFocusEffect(
+        useCallback(() => setFetchSignal((prev) => !prev), [])
+    )
+    const {isFetching, fetchedData: log, error} = useApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null, [fetchSignal, log_id]);
 
     if (isFetching) {
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
