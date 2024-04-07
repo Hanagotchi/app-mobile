@@ -13,6 +13,7 @@ import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import NoContent from "../../components/NoContent";
 import * as SecureStore from "expo-secure-store";
 import { monthList } from "../../common/dateUtils";
+import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -36,14 +37,11 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const userId = Number(SecureStore.getItem("userId"))
 
     const api = useHanagotchiApi();
-    const [fetchSignal, setFetchSignal] = useState<boolean>(false);
-    useFocusEffect(
-        useCallback(() => setFetchSignal((prev) => !prev), [])
-    )
-    const {isFetching, fetchedData, error} = useApiFetch(
+
+    const {isFetching, fetchedData, error} = useFocusApiFetch(
         () => api.getLogsByUser(userId, {year: year, month: month}),
         [],
-        [year, month, fetchSignal]
+        [year, month]
     );
 
     if (!isFetching && error) {
