@@ -5,13 +5,9 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../navigation/Navigator";
 import ExpandibleImage from "../../components/ExpandibleImage";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
-import { useApiFetch } from "../../hooks/useApiFetch";
 import { GetLogByIdResponse } from "../../models/hanagotchiApi";
 import NoContent from "../../components/NoContent";
 import { handleError } from "../../common/errorHandling";
-import { Log } from "../../models/Log";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
 import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">

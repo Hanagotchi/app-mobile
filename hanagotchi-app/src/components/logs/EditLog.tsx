@@ -64,7 +64,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
                     data={myPlants} 
                     setSelected={onChangePlant} 
                     save="key"
-                    defaultOption={myPlants.length > 0 ? myPlants[0] : {key: 0, value: "---"}}
+                    defaultOption={myPlants.length > 0 ? myPlants.find(p => p.key === initValues.plant_id) : {key: 0, value: "---"}}
                 />
                 <TextInput 
                     label={`BITÁCORA ${contentLen}/${CONTENT_MAX_LENGTH} *`}
