@@ -28,16 +28,16 @@ const ConfirmBackpressDialog: React.FC<ConfirmBackpressDialogProps> = ({goBack})
 
       return (
         <Dialog
-        ref={dialogRef}
-        title="¿Desea descartar los cambios?"
-        content="Se perderán los cambios que no hayan sido confirmados"
-        primaryButtonProps={{
-            onPress: goBack,
-        }}
-        secondaryButtonProps={{
-            onPress: () => dialogRef.current?.hideDialog(),
-        }}
-    />
+            ref={dialogRef}
+            title="¿Desea descartar los cambios?"
+            content="Se perderán los cambios que no hayan sido confirmados"
+            primaryButtonProps={{
+                onPress: goBack,
+            }}
+            secondaryButtonProps={{
+                onPress: () => dialogRef.current?.hideDialog(),
+            }}
+        />
       )
 }
 

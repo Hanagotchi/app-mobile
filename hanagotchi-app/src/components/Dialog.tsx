@@ -17,6 +17,27 @@ type DialogProps = Omit<NativeDialogProps, "children" | "style" | "visible"> & {
     secondaryButtonProps?: Omit<ButtonProps, "children">;
 };
 
+/**
+ * Custom styled dialog for our app.
+ * 
+ * Dialog toggle is controlled with a React imperative handler. This means that,
+ * in order to use it properly, you need to pass a ref (besides the other props)
+ * to handle the dialog showing or hiding.
+ * 
+ * You can create it calling the useRef hook:
+ * 
+ *      const dialogRef = useRef<DialogRef>(null);
+ * 
+ *      ...
+ * 
+ *      const handleOpenDialog = () => {
+ *          ...
+ *          dialogRef.current?.showDialog();
+ *      }
+ * 
+ *      <Dialog ref={dialogRef} ... />
+ */
+
 const Dialog = forwardRef<DialogRef, DialogProps>((props, ref) => {
     const [open, setOpen] = useState<boolean>(false);
 

@@ -14,7 +14,6 @@ type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDet
 
 const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) => {
     const {log_id} = route.params;
-
     const api = useHanagotchiApi();    
 
     const {
