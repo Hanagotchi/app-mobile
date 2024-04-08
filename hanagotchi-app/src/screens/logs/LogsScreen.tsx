@@ -14,6 +14,8 @@ import * as SecureStore from "expo-secure-store";
 import { monthList } from "../../common/dateUtils";
 import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
 import Dialog from "../../components/Dialog";
+import { useMyPlants } from "../../hooks/useMyPlants";
+import { useToggle } from "../../hooks/useToggle";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -35,16 +37,26 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const [year, setYear] = useState<number>(currentYear); 
     const [month, setMonth] = useState<number>(currentMonth);
     const userId = Number(SecureStore.getItem("userId"))
+    const [showDialog, toggleDialog] = useToggle(false)
 
     const api = useHanagotchiApi();
-
     const {isFetching, fetchedData, error} = useFocusApiFetch(
         () => api.getLogsByUser(userId, {year: year, month: month}),
         [],
         [year, month]
     );
 
+    const {isFetchingPlants, myPlants, fetchingPlantsError} = useMyPlants()
 
+    const handleAddNewLog = () => {
+        if (isFetchingPlants || fetchingPlantsError) return;
+
+        if (myPlants.length === 0) {
+            toggleDialog();
+        } else {
+            navigation.navigate("CreateLog");
+        }
+    }
 
     if (!isFetching && error) {
         throw error;
@@ -52,13 +64,14 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
 
     return <SafeAreaView style={style.container}>
         <Dialog
-        visible
-            title="¿Desea descartar los cambios?" 
-            content="Se perderan los cambios que no hayan sido confirmados"
+            visible={showDialog}
+            title="¡No tienes ningun hanagotchi!" 
+            content="Crea un hanagotchi para comenzar a escribir tus bitacoras"
             primaryButtonLabel="ACEPTAR"
             primaryButtonProps={{
-                onPress: () => console.log("hola")
+                onPress: toggleDialog
             }}
+            onDismiss={toggleDialog}
         />
         <Text style={style.title}>Mis Bitácoras</Text>
         <View style={style.filters}>
@@ -107,7 +120,7 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
             variant="primary"
             size="medium" 
             color={BACKGROUND_COLOR}
-            onPress={() => navigation.navigate("CreateLog")}
+            onPress={handleAddNewLog}
         />
     </SafeAreaView>
 }
