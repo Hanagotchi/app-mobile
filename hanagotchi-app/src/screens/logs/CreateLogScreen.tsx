@@ -34,7 +34,7 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        <ConfirmBackpressDialog goBack={navigation.goBack}/>
+        <ConfirmBackpressDialog />
         <EditLog onSubmit={submit} buttonLabel="Crear"/>
     </SafeAreaView>
 };
