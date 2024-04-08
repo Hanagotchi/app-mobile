@@ -4,11 +4,10 @@ import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigat
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { useFocusEffect, type CompositeScreenProps } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from "react";
-import { BACKGROUND_COLOR, BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../../themes/globalThemes";
+import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../../components/SelectBox";
 import LogPreview from "../../components/logs/LogPreview";
-import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import NoContent from "../../components/NoContent";
 import * as SecureStore from "expo-secure-store";
@@ -45,13 +44,15 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
         [year, month]
     );
 
+
+
     if (!isFetching && error) {
         throw error;
     }
 
     return <SafeAreaView style={style.container}>
-        <Dialog 
-            visible 
+        <Dialog
+        visible
             title="¿Desea descartar los cambios?" 
             content="Se perderan los cambios que no hayan sido confirmados"
             primaryButtonLabel="ACEPTAR"
