@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Dialog, { DialogRef } from "./Dialog";
-import { BackHandler } from "react-native";
-import { NavigationAction, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { NavigationAction, useNavigation } from "@react-navigation/native";
 
 const ConfirmBackpressDialog: React.FC = () => {
     const dialogRef = useRef<DialogRef>(null);

@@ -10,6 +10,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../navigation/Navigator";
 import { AxiosError } from "axios";
 import ConfirmBackpressDialog from "../../components/ConfirmBackpressDialog";
+import { useState } from "react";
 
 type EditLogScreenProps = NativeStackScreenProps<RootStackParamsList, "EditLog">
 
@@ -24,13 +25,12 @@ const EditLogScreen: React.FC<EditLogScreenProps> = ({navigation, route}) => {
 
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
+    const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
     const submit = async (updatedData: LogData) => {
 
         const photosToUpload = updatedData.photos.filter((ph) => !initLogData.photos.includes(ph));
         const photosToDelete = log.photos.filter(({photo_link}) => !updatedData.photos.includes(photo_link));
-        console.log(photosToUpload);
-        console.log(photosToDelete);
         const oldPhotos = updatedData.photos.filter((ph) => initLogData.photos.includes(ph)).map(ph => ({photo_link: ph}));
 
         try {
@@ -50,6 +50,7 @@ const EditLogScreen: React.FC<EditLogScreenProps> = ({navigation, route}) => {
                 Promise.all(photosToDelete.map((ph) => api.deletePhotoFromLog(log.id, ph.id)))
             ]);
 
+            setHasSubmitted(true);
             navigation.goBack();
         } catch (err) {
             console.log((err as AxiosError).toJSON())
@@ -57,7 +58,7 @@ const EditLogScreen: React.FC<EditLogScreenProps> = ({navigation, route}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        <ConfirmBackpressDialog goBack={navigation.goBack}/>
+        {!hasSubmitted && <ConfirmBackpressDialog />}
         <EditLog initValues={initLogData} onSubmit={submit} buttonLabel="Actualizar"/>
     </SafeAreaView>
 };

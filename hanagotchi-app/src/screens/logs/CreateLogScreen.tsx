@@ -9,6 +9,7 @@ import { logPhotoUrl } from "../../contexts/FirebaseContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../navigation/Navigator";
 import ConfirmBackpressDialog from "../../components/ConfirmBackpressDialog";
+import { useState } from "react";
 
 type CreateLogScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateLog">
 
@@ -16,6 +17,7 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
 
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
+    const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
     const submit = async (data: LogData) => {
         try {
@@ -27,6 +29,7 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
                 photos: photos.map(ph => ({photo_link: ph}))
             });
             await api.createLog(createLogBody);
+            setHasSubmitted(true);
             navigation.goBack();
         } catch (err) {
             throw err;
@@ -34,7 +37,7 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        <ConfirmBackpressDialog />
+        {!hasSubmitted && <ConfirmBackpressDialog />}
         <EditLog onSubmit={submit} buttonLabel="Crear"/>
     </SafeAreaView>
 };
