@@ -14,6 +14,8 @@ import { formatDate } from "../common/dateUtils";
 import CreateLogScreen from "../screens/logs/CreateLogScreen";
 import { Log } from "../models/Log";
 import EditLogScreen from "../screens/logs/EditLogScreen";
+import ConfirmBackpressDialog from "../components/ConfirmBackpressDialog";
+import ConfirmHeaderBackpress from "../components/ConfirmHeaderBackpress";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -132,8 +134,9 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>
-                        <RootStack.Screen name="CreateLog" component={CreateLogScreen} options={() => ({
+                        <RootStack.Screen name="CreateLog" component={CreateLogScreen} options={({navigation}) => ({
                             title: "Nueva bitácora",
+                            // headerLeft: () => <ConfirmHeaderBackpress goBack={navigation.goBack}/>,
                         })}/>
                         <RootStack.Screen name="EditLog" component={EditLogScreen} options={() => ({
                             title: "Editar bitácora",
