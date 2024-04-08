@@ -14,6 +14,7 @@ import NoContent from "../../components/NoContent";
 import * as SecureStore from "expo-secure-store";
 import { monthList } from "../../common/dateUtils";
 import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
+import Dialog from "../../components/Dialog";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -49,6 +50,15 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
+        <Dialog 
+            visible 
+            title="¿Desea descartar los cambios?" 
+            content="Se perderan los cambios que no hayan sido confirmados"
+            primaryButtonLabel="ACEPTAR"
+            primaryButtonProps={{
+                onPress: () => console.log("hola")
+            }}
+        />
         <Text style={style.title}>Mis Bitácoras</Text>
         <View style={style.filters}>
             <SelectBox
