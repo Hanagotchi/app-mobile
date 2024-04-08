@@ -2,13 +2,14 @@ import { StyleSheet } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import EditLog from "../../components/logs/EditLog";
-import { CreateLogSchema, LogData, LogDataSchema, PartialUpdateLog, PartialUpdateLogSchema } from "../../models/Log";
+import { LogData, PartialUpdateLogSchema } from "../../models/Log";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import useFirebase from "../../hooks/useFirebase";
 import { logPhotoUrl } from "../../contexts/FirebaseContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../navigation/Navigator";
-import { Axios, AxiosError } from "axios";
+import { AxiosError } from "axios";
+import ConfirmBackpressDialog from "../../components/ConfirmBackpressDialog";
 
 type EditLogScreenProps = NativeStackScreenProps<RootStackParamsList, "EditLog">
 
@@ -56,6 +57,7 @@ const EditLogScreen: React.FC<EditLogScreenProps> = ({navigation, route}) => {
     }
 
     return <SafeAreaView style={style.container}>
+        <ConfirmBackpressDialog goBack={navigation.goBack}/>
         <EditLog initValues={initLogData} onSubmit={submit} buttonLabel="Actualizar"/>
     </SafeAreaView>
 };

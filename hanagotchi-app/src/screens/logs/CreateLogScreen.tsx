@@ -2,12 +2,13 @@ import { StyleSheet } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import EditLog from "../../components/logs/EditLog";
-import { CreateLogSchema, LogData, LogDataSchema } from "../../models/Log";
+import { CreateLogSchema, LogData } from "../../models/Log";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import useFirebase from "../../hooks/useFirebase";
 import { logPhotoUrl } from "../../contexts/FirebaseContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../navigation/Navigator";
+import ConfirmBackpressDialog from "../../components/ConfirmBackpressDialog";
 
 type CreateLogScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateLog">
 
@@ -33,6 +34,7 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
+        <ConfirmBackpressDialog goBack={navigation.goBack}/>
         <EditLog onSubmit={submit} buttonLabel="Crear"/>
     </SafeAreaView>
 };

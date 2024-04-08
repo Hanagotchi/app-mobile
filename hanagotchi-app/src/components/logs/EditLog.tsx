@@ -85,7 +85,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
                 style={style.button}
                 labelStyle={{ fontSize: 17 }}
                 onPress={() => onSubmit(data)}
-                disabled={data.content.length === 0 || data.title.length === 0}
+                disabled={data.content.length === 0 || data.title.length === 0 || data.plant_id === 0}
             >
                 {buttonLabel}
             </LoaderButton>

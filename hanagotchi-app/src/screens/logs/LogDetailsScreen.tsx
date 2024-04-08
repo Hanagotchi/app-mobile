@@ -23,7 +23,16 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) 
         error} = useFocusApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null, [log_id]);
 
     if (isFetching) {
-        return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
+        return (
+            <SafeAreaView style={style.container}>
+                <ActivityIndicator 
+                    animating={true} 
+                    color={BROWN_DARK} 
+                    size={80} 
+                    style={{justifyContent: "center", flexGrow: 1}}
+                />
+            </SafeAreaView>
+        );
     }
 
     if (error) {
@@ -37,23 +46,25 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) 
 
     return (
         <SafeAreaView style={style.container}>
-            <Text style={style.title}>{log!.title}</Text>
-            <View style={{height: 240}}>
-                <FlatList 
-                    horizontal
-                    data={log!.photos}
-                    renderItem={({item}) => 
-                        <ExpandibleImage 
-                            minimizedImageStyle={style.image}
-                            maximizedImageStyle={style.fullImage} 
-                            source={{uri: item.photo_link}} 
-                        />
-                    }
-                    keyExtractor={(item, index) => String(index)}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={style.photoList}
-                />
-            </View>
+            <Text style={style.title}>{log.title}</Text>
+            {log.photos.length > 0 && (
+                <View style={{height: 240}}>
+                    <FlatList 
+                        horizontal
+                        data={log.photos}
+                        renderItem={({item}) => 
+                            <ExpandibleImage 
+                                minimizedImageStyle={style.image}
+                                maximizedImageStyle={style.fullImage} 
+                                source={{uri: item.photo_link}} 
+                            />
+                        }
+                        keyExtractor={(item, index) => String(index)}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={style.photoList}
+                    />
+                </View>
+            )}
             <ScrollView>
                 <Text style={style.content}>{log!.content}</Text>
             </ScrollView>
