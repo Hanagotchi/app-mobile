@@ -3,7 +3,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { useFocusEffect, type CompositeScreenProps } from '@react-navigation/native';
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../../components/SelectBox";
@@ -13,7 +13,7 @@ import NoContent from "../../components/NoContent";
 import * as SecureStore from "expo-secure-store";
 import { monthList } from "../../common/dateUtils";
 import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
-import Dialog from "../../components/Dialog";
+import Dialog, { DialogRef } from "../../components/Dialog";
 import { useMyPlants } from "../../hooks/useMyPlants";
 import { useToggle } from "../../hooks/useToggle";
 
@@ -37,7 +37,7 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const [year, setYear] = useState<number>(currentYear); 
     const [month, setMonth] = useState<number>(currentMonth);
     const userId = Number(SecureStore.getItem("userId"))
-    const [showDialog, toggleDialog] = useToggle(false)
+    const dialogRef = useRef<DialogRef>(null);
 
     const api = useHanagotchiApi();
     const {isFetching, fetchedData, error} = useFocusApiFetch(
@@ -52,7 +52,7 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
         if (isFetchingPlants || fetchingPlantsError) return;
 
         if (myPlants.length === 0) {
-            toggleDialog();
+            dialogRef.current?.showDialog();
         } else {
             navigation.navigate("CreateLog");
         }
@@ -64,14 +64,14 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
 
     return <SafeAreaView style={style.container}>
         <Dialog
-            visible={showDialog}
+            ref={dialogRef}
             title="¡No tienes ningun hanagotchi!" 
             content="Crea un hanagotchi para comenzar a escribir tus bitacoras"
             primaryButtonLabel="ACEPTAR"
             primaryButtonProps={{
-                onPress: toggleDialog
+                onPress: dialogRef.current?.hideDialog
             }}
-            onDismiss={toggleDialog}
+            onDismiss={dialogRef.current?.hideDialog}
         />
         <Text style={style.title}>Mis Bitácoras</Text>
         <View style={style.filters}>

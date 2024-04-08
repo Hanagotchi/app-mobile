@@ -1,8 +1,14 @@
-import { GestureResponderEvent, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Portal, Dialog as NativeDialog, DialogProps as NativeDialogProps, Text, Divider, Button, ButtonProps} from "react-native-paper";
 import { BACKGROUND_COLOR, BEIGE_DARK, BLACK, BROWN, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
+import { forwardRef, useImperativeHandle, useState } from "react";
 
-type DialogProps = Omit<NativeDialogProps, "children" | "style"> & {
+export type DialogRef = {
+    showDialog: () => void;
+    hideDialog: () => void;
+}
+
+type DialogProps = Omit<NativeDialogProps, "children" | "style" | "visible"> & {
     title: string;
     content: string;
     primaryButtonLabel?: string;
@@ -11,9 +17,16 @@ type DialogProps = Omit<NativeDialogProps, "children" | "style"> & {
     secondaryButtonProps?: Omit<ButtonProps, "children">;
 };
 
-const Dialog: React.FC<DialogProps> = (props) => {
+const Dialog = forwardRef<DialogRef, DialogProps>((props, ref) => {
+    const [open, setOpen] = useState<boolean>(false);
+
+    useImperativeHandle(ref, () => ({
+        showDialog: () => setOpen(true),
+        hideDialog: () => setOpen(false),
+    }));
+
     return <Portal>
-        <NativeDialog {...props} style={style.dialog}>
+        <NativeDialog visible={open} {...props} style={style.dialog}>
             <NativeDialog.Title style={style.dialogTitle}>
                 <Text style={style.title}>{props.title}</Text>
             </NativeDialog.Title>
@@ -47,7 +60,7 @@ const Dialog: React.FC<DialogProps> = (props) => {
             </NativeDialog.Actions>
         </NativeDialog>
     </Portal>
-}
+});
 
 const style = StyleSheet.create({
     dialog: {
