@@ -11,11 +11,17 @@ import {Icon} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [plantType, setPlantType] = useState({
+    id: 0,
+    botanical_name: '',
+    common_name: '',
+    description: ''
+  });
   //const userId = Number(SecureStore.getItem("userId"))
   const {isFetching, fetchedData: plants, error} = useApiFetch(
       () => api.getPlants(2),
@@ -27,70 +33,81 @@ const HomeScreen: React.FC = () => {
       }]
   );
 
-  const plantss = [{"id": 1, "id_user": 2, "name": "Rosuwu", "scientific_name": "Rosa chinensis"}, {"id": 2, "id_user": 2, "name": "Rosa", "scientific_name": "Rosa chinensis"}, {"id": 3, "id_user": 2, "name": "Rosita", "scientific_name": "Rosa chinensis"}]
+  const plantss = [{"id": 1, "id_user": 2, "name": "Canna", "scientific_name": "Canna indica"}, {"id": 2, "id_user": 2, "name": "Rosa", "scientific_name": "Rosa chinensis"}, {"id": 3, "id_user": 2, "name": "yummi", "scientific_name": "Monstera deliciosa"}]
   let [currentPlant, setCurrentPlant] = useState(0);
+
+  const fetchPlantType = async () => {
+    const fetchedPlantType = await api.getPlantType(plantss[currentPlant].scientific_name);
+    setPlantType(fetchedPlantType);
+  };
+
+  useEffect(() => {
+    fetchPlantType(); // Llama a la función fetchPlantType cada vez que cambie currentPlant
+  }, [currentPlant]);
 
   if (!isFetching && error) {
     throw error;
   }
 
-  console.log(plants)
-  const navigate = async () => {
-    console.log("navigate to create log")
+  console.log("-----")
+  console.log(plantss[currentPlant].name)
+  console.log(plantType.botanical_name)
 
-  }
+  const navigate = async () => {
+    console.log("navigate to create log");
+  };
 
   function nextPlant() {
-    if (currentPlant < plantss.length-1) setCurrentPlant(currentPlant+=1)
-
+    if (currentPlant < plantss.length - 1) setCurrentPlant(currentPlant + 1);
   }
+
   function previousPlant() {
-    if (currentPlant > 0) setCurrentPlant(currentPlant-=1)
+    if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
   }
 
   return (
-      <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <View style={style.container}>
-            <Text style={style.title}>{plantss[currentPlant].name}</Text>
+          <Text style={style.title}>{plantss[currentPlant].name}</Text>
           <View style={style.carrousel}>
-            <Pressable onPress={()=>previousPlant()}>
-              <Image source={left} style={style.arrow}/>
+            <Pressable onPress={previousPlant}>
+              <Image source={left} style={style.arrow} />
             </Pressable>
-            <Image source={plantImage} style={style.image}/>
-            <Pressable onPress={()=>nextPlant()}>
-              <Image source={right} style={style.arrow}/>
+            <Image source={plantImage} style={style.image} />
+            <Pressable onPress={nextPlant}>
+              <Image source={right} style={style.arrow} />
             </Pressable>
           </View>
 
-            <View style={style.box}>
-              <View style={style.measurements}>
-                <Text style={style.measurement}>Humedad: 50%</Text>
-                <Text style={style.measurement}>Temperatura: 24C</Text>
-                <Text style={style.measurement}>Luz: 10</Text>
-                <Text style={style.measurement}>Riego: 25</Text>
-              </View>
-              <View style={{justifyContent: "space-evenly"}}>
-                <Pressable onPress={navigate}>
-                  <Icon size={30} source={plus}/>
-                </Pressable>
-                <Pressable onPress={() => setModalOpen(true)}>
-                  <Icon size={30} source={info}/>
-                </Pressable>
-              </View>
+          <View style={style.box}>
+            <View style={style.measurements}>
+              <Text style={style.measurement}>Humedad: 50%</Text>
+              <Text style={style.measurement}>Temperatura: 24C</Text>
+              <Text style={style.measurement}>Luz: 10</Text>
+              <Text style={style.measurement}>Riego: 25</Text>
             </View>
+            <View style={{ justifyContent: "space-evenly" }}>
+              <Pressable onPress={navigate}>
+                <Icon size={30} source={plus} />
+              </Pressable>
+              <Pressable onPress={() => setModalOpen(true)}>
+                <Icon size={30} source={info} />
+              </Pressable>
+            </View>
+          </View>
         </View>
         <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
           <View style={style.centeredView}>
             <View style={style.modalView}>
               <View style={style.modalHeader}>
-                <Text style={style.modalTitle}>{"plantType.botanical_name"}</Text>
+                <Text style={style.modalTitle}>{plantType.botanical_name}</Text>
                 <Pressable onPress={() => setModalOpen(false)}>
-                  <Icon size={20} source={close}/>
+                  <Icon size={20} source={close} />
                 </Pressable>
               </View>
               <View style={style.description}>
-                <Text style={style.modalText}>{"plantType.description"}</Text>
-                <Image source={plantImage} style={style.imageDescription}/>
+                <Text style={style.modalText}>{plantType.description}</Text>
+                <Image source={plantImage} style={style.imageDescription} />
               </View>
             </View>
           </View>
@@ -98,6 +115,7 @@ const HomeScreen: React.FC = () => {
       </SafeAreaView>
   )
 }
+
 const style = StyleSheet.create({
   container: {
     flex: 1,
