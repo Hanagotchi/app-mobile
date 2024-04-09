@@ -20,7 +20,8 @@ const HomeScreen: React.FC = () => {
     id: 0,
     botanical_name: '',
     common_name: '',
-    description: ''
+    description: '',
+    photo_link: '',
   });
   //const userId = Number(SecureStore.getItem("userId"))
   const {isFetching, fetchedData: plants, error} = useApiFetch(
@@ -29,7 +30,7 @@ const HomeScreen: React.FC = () => {
         id: 0,
         id_user: 0,
         name: '',
-        scientific_name: ''
+        scientific_name: '',
       }]
   );
 
@@ -42,7 +43,7 @@ const HomeScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchPlantType(); // Llama a la función fetchPlantType cada vez que cambie currentPlant
+    fetchPlantType();
   }, [currentPlant]);
 
   if (!isFetching && error) {
@@ -52,6 +53,7 @@ const HomeScreen: React.FC = () => {
   console.log("-----")
   console.log(plantss[currentPlant].name)
   console.log(plantType.botanical_name)
+  console.log(plantType.photo_link)
 
   const navigate = async () => {
     console.log("navigate to create log");
@@ -107,7 +109,7 @@ const HomeScreen: React.FC = () => {
               </View>
               <View style={style.description}>
                 <Text style={style.modalText}>{plantType.description}</Text>
-                <Image source={plantImage} style={style.imageDescription} />
+                <Image source={{ uri: plantType.photo_link }} style={style.imageDescription} />
               </View>
             </View>
           </View>
