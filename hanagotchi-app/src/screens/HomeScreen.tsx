@@ -73,7 +73,7 @@ const HomeScreen: React.FC = () => {
           <Text style={style.title}>{plantss[currentPlant].name}</Text>
           <View style={style.carrousel}>
             <Pressable onPress={previousPlant}>
-              <Image source={left} style={style.arrow} />
+              <Image source={left} style={style.arrow}/>
             </Pressable>
             <Image source={plantImage} style={style.image} />
             <Pressable onPress={nextPlant}>
@@ -104,7 +104,7 @@ const HomeScreen: React.FC = () => {
               <View style={style.modalHeader}>
                 <Text style={style.modalTitle}>{plantType.botanical_name}</Text>
                 <Pressable onPress={() => setModalOpen(false)}>
-                  <Icon size={20} source={close} />
+                  <Icon size={23} source={close} />
                 </Pressable>
               </View>
               <View style={style.description}>
@@ -128,6 +128,7 @@ const style = StyleSheet.create({
   carrousel: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "center"
   },
   title: {
     fontSize: 45,
@@ -167,13 +168,15 @@ const style = StyleSheet.create({
     height: 300
   },
   arrow: {
-    width: 30,
-    height: 30
+    marginTop: 200,
+    width: 25,
+    height: 25
   },
   imageDescription: {
-    alignSelf: "center",
-    width: 100,
-    height: 100
+    alignSelf: "auto",
+    borderRadius: 10,
+    width: 130,
+    height: 130,
   },
   centeredView: {
     flex: 1,
@@ -183,7 +186,7 @@ const style = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    width: "75%",
+    width: "80%",
     backgroundColor: "#E8DECF",
     borderRadius: 20,
     padding: 20,
@@ -192,7 +195,7 @@ const style = StyleSheet.create({
       width: 0,
       height: 2
     },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.35,
     shadowRadius: 4,
     elevation: 5
   },
@@ -203,16 +206,16 @@ const style = StyleSheet.create({
     paddingBottom: 5
   },
   modalText: {
-    marginBottom: 15,
-    textAlign: "left",
+    textAlign: "justify",
     color: '#4F4C4F',
     fontFamily: "Roboto",
-    width: "60%"
+    width: "60%",
+    paddingRight: 10
   },
   modalTitle: {
     textAlign: "left",
     color: '#4F4C4F',
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "Roboto"
   }
 })
