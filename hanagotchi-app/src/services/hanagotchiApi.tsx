@@ -5,7 +5,7 @@ import {
     GetLogsByUserResponse,
     GetLogsByUserResponseSchema,
     GetPlantResponse,
-    GetPlantResponseSchema,
+    GetPlantResponseSchema, GetPlantsResponse, GetPlantsResponseSchema,
     GetPlantTypeResponse,
     GetPlantTypeResponseSchema,
     LoginResponse,
@@ -16,6 +16,7 @@ import {UpdateUserSchema, User, UserSchema} from "../models/User";
 export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
     getPlant: (id: string) => Promise<GetPlantResponse>;
+    getPlants: (userId: number) => Promise<GetPlantsResponse>;
     getPlantType: (name: string) => Promise<GetPlantTypeResponse>;
     getUser: (userId: number) => Promise<User>;
     patchUser: (user: User) => Promise<void>;
@@ -39,6 +40,11 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getPlant(id: string): Promise<GetPlantResponse> {
         const { data } = await this.axiosInstance.get(`/plants/${id}`);
         return GetPlantResponseSchema.parse(data);
+    }
+
+    async getPlants(userId: string): Promise<GetPlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/plants?id_user=${userId}`);
+        return GetPlantsResponseSchema.parse(data);
     }
     async getPlantType(name: string): Promise<GetPlantTypeResponse> {
         const encodedName = encodeURIComponent(name);

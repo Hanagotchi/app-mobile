@@ -5,59 +5,62 @@ import plantImage from "../assets/plant.png";
 import plus from "../assets/plusicon.png";
 import info from "../assets/infoicon.png";
 import close from "../assets/closeicon.png";
+import left from "../assets/vector2.png";
+import right from "../assets/vector1.png";
 import {Icon} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
+import * as SecureStore from "expo-secure-store";
+import {useState} from "react";
 
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
   const [modalOpen, setModalOpen] = React.useState(false);
-  const {isFetching, fetchedData: plant, error} = useApiFetch(
-      () => api.getPlant("2"),
-      {
+  //const userId = Number(SecureStore.getItem("userId"))
+  const {isFetching, fetchedData: plants, error} = useApiFetch(
+      () => api.getPlants(2),
+      [{
         id: 0,
         id_user: 0,
         name: '',
         scientific_name: ''
-      }
+      }]
   );
 
-  const [plantType, setPlantType] = React.useState({
-    id: 0,
-    botanical_name: '',
-    common_name: '',
-    description: ''
-  });
-
-  const fetchPlantType = async () => {
-    const {isFetching: isLoading, fetchedData: fetchedPlantType, error: error2} = useApiFetch(
-        () => api.getPlantType(plant?.scientific_name),
-        {
-          id: 0,
-          botanical_name: '',
-          common_name: '',
-          description: ''
-        }
-    );
-  }
-
+  const plantss = [{"id": 1, "id_user": 2, "name": "Rosuwu", "scientific_name": "Rosa chinensis"}, {"id": 2, "id_user": 2, "name": "Rosa", "scientific_name": "Rosa chinensis"}, {"id": 3, "id_user": 2, "name": "Rosita", "scientific_name": "Rosa chinensis"}]
+  let [currentPlant, setCurrentPlant] = useState(0);
 
   if (!isFetching && error) {
     throw error;
   }
 
-  console.log(plant)
-  console.log(plantType)
-
+  console.log(plants)
   const navigate = async () => {
     console.log("navigate to create log")
+
+  }
+
+  function nextPlant() {
+    if (currentPlant < plantss.length-1) setCurrentPlant(currentPlant+=1)
+
+  }
+  function previousPlant() {
+    if (currentPlant > 0) setCurrentPlant(currentPlant-=1)
   }
 
   return (
       <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
         <View style={style.container}>
-            <Text style={style.title}>{plant.name}</Text>
-            <Image source={plantImage} style={style.image}></Image>
+            <Text style={style.title}>{plantss[currentPlant].name}</Text>
+          <View style={style.carrousel}>
+            <Pressable onPress={()=>previousPlant()}>
+              <Image source={left} style={style.arrow}/>
+            </Pressable>
+            <Image source={plantImage} style={style.image}/>
+            <Pressable onPress={()=>nextPlant()}>
+              <Image source={right} style={style.arrow}/>
+            </Pressable>
+          </View>
 
             <View style={style.box}>
               <View style={style.measurements}>
@@ -80,13 +83,13 @@ const HomeScreen: React.FC = () => {
           <View style={style.centeredView}>
             <View style={style.modalView}>
               <View style={style.modalHeader}>
-                <Text style={style.modalTitle}>{plantType.botanical_name}</Text>
+                <Text style={style.modalTitle}>{"plantType.botanical_name"}</Text>
                 <Pressable onPress={() => setModalOpen(false)}>
                   <Icon size={20} source={close}/>
                 </Pressable>
               </View>
               <View style={style.description}>
-                <Text style={style.modalText}>{plantType.description}</Text>
+                <Text style={style.modalText}>{"plantType.description"}</Text>
                 <Image source={plantImage} style={style.imageDescription}/>
               </View>
             </View>
@@ -101,6 +104,10 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: "center",
     backgroundColor: "#F7EAC8"
+  },
+  carrousel: {
+    display: "flex",
+    flexDirection: "row",
   },
   title: {
     fontSize: 45,
@@ -138,6 +145,10 @@ const style = StyleSheet.create({
   image: {
     width: 300,
     height: 300
+  },
+  arrow: {
+    width: 30,
+    height: 30
   },
   imageDescription: {
     alignSelf: "center",

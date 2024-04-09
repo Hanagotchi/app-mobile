@@ -25,8 +25,11 @@ export const GetLogByIdResponseSchema = LogSchema;
 export type GetLogByIdResponse = z.infer<typeof GetLogByIdResponseSchema>;
 
 
-export const GetPlantResponseSchema = PlantSchema
+export const GetPlantResponseSchema = PlantSchema;
 export type GetPlantResponse = z.infer<typeof GetPlantResponseSchema>;
+
+export const GetPlantsResponseSchema = z.array(PlantSchema);
+export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
 
 export const GetPlantTypeResponseSchema = PlantTypeSchema
 export type GetPlantTypeResponse = z.infer<typeof GetPlantTypeResponseSchema>;
