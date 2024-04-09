@@ -23,9 +23,9 @@ const HomeScreen: React.FC = () => {
     description: '',
     photo_link: '',
   });
-  //const userId = Number(SecureStore.getItem("userId"))
+  const userId = Number(SecureStore.getItem("userId"))
   const {isFetching, fetchedData: plants, error} = useApiFetch(
-      () => api.getPlants(2),
+      () => api.getPlants(userId),
       [{
         id: 0,
         id_user: 0,
@@ -49,11 +49,6 @@ const HomeScreen: React.FC = () => {
   if (!isFetching && error) {
     throw error;
   }
-
-  console.log("-----")
-  console.log(plantss[currentPlant].name)
-  console.log(plantType.botanical_name)
-  console.log(plantType.photo_link)
 
   const navigate = async () => {
     console.log("navigate to create log");
