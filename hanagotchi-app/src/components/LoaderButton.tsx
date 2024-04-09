@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { GestureResponderEvent } from "react-native";
 import { Button, ButtonProps } from "react-native-paper";
+import { GREEN } from "../themes/globalThemes";
 
 const LoaderButton: React.FC<ButtonProps> = (props) => {
 
@@ -8,17 +9,17 @@ const LoaderButton: React.FC<ButtonProps> = (props) => {
 
     const handleOnPress = async (e: GestureResponderEvent) => {
         setIsLoading(true);
-        props.onPress?.(e);
-        await setIsLoading(false);
-    }
-
-    const handleOnLongPress = (e: GestureResponderEvent) => {
-        setIsLoading(true);
-        props.onLongPress?.(e);
+        await Promise.resolve(props.onPress?.(e));
         setIsLoading(false);
     }
 
-    return <Button {...props} loading={isLoading} onPress={handleOnPress} onLongPress={handleOnLongPress} disabled={isLoading}>
+    const handleOnLongPress = async (e: GestureResponderEvent) => {
+        setIsLoading(true);
+        await Promise.resolve(props.onPress?.(e));
+        setIsLoading(false);
+    }
+
+    return <Button {...props} loading={isLoading} onPress={handleOnPress} onLongPress={handleOnLongPress} disabled={isLoading} >
         {props.children}
     </Button>
 }
