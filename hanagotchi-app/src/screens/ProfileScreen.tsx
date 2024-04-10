@@ -1,62 +1,57 @@
-import {Pressable, SafeAreaView, StyleSheet, Text, View} from "react-native";
-import {Icon, useTheme} from 'react-native-paper';
-import {BEIGE, BROWN_LIGHT} from "../themes/globalThemes";
+import {ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Icon} from 'react-native-paper';
+import {BEIGE, BROWN_DARK, BROWN_LIGHT, theme} from "../themes/globalThemes";
 import {RootStackParamsList} from "../navigation/Navigator";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import back from "../assets/backicon.png";
-import TextInput from "../components/TextInput";
-import LoaderButton from "../components/LoaderButton";
+import EditUser from "../components/EditUser";
+import {User} from "../models/User";
+import {useApiFetch} from "../hooks/useApiFetch";
+import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
+import * as SecureStore from "expo-secure-store";
+import NoContent from "../components/NoContent";
 
-type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, "Profile">
+type ProfileScreenProps = NativeStackScreenProps<RootStackParamsList, "Profile">
 
-const ProfileScreen: React.FC<LoginScreenProps> = ({navigation}) => {
-
-    const theme = useTheme();
-    const [name, setName] = useState("");
-    const [text, setText] = useState("");
-    const [date, setDate] = useState("");
-    const [lenght, setLenght] = useState(0);
-    const MAX_LENGHT = 500;
-
-    useEffect(() => {
-        const setInitialState = navigation.addListener('focus', () => {
-            setName("");
-            setText("");
-            setLenght(0);
-        });
-
-        return setInitialState;
-      }, [navigation]);
-
-    useEffect(() => {
-        setLenght(text.length)
-    }, [text])
-
+const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
+    const api = useHanagotchiApi();
+    const userId = Number(SecureStore.getItem("userId"))
+    const [user, setUser] = useState<User>();
+    const { isFetching, fetchedData, error } = useApiFetch(
+        () => api.getUser(userId),
+        user
+    );
+    console.log(userId)
+    console.log(user)
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
-            <View style={style.container}>
-                <View style={style.header}>
-                    <Pressable onPress={() => navigation.goBack()}>
-                        <Icon size={24} source={back}/>
-                    </Pressable>
-                    <Text style={style.title}>Editar perfil</Text>
+        <SafeAreaView style={style.safeArea}>
+            <ScrollView contentContainerStyle={style.scrollViewContent} keyboardShouldPersistTaps="handled">
+                <View style={style.container}>
+                    <View style={style.header}>
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <Icon size={24} source={back}/>
+                        </Pressable>
+                        <Text style={style.title}>Editar perfil</Text>
+                    </View>
                 </View>
 
-                <TextInput label={`NOMBRE`} value={name} onChangeText={(name) => setName(name)}/>
-                <TextInput
-                    label={`DESCRIPCIÓN    ${lenght}/${MAX_LENGHT}`}
-                    value={text}
-                    onChangeText={(text) => setText(text)}
-                    numberOfLines={4}
-                    maxLenght={500}
-                />
-                <TextInput label={"FECHA DE NACIMIENTO"} value={date} onChangeText={(date) => setDate(date)}/>
-
-                <LoaderButton mode="contained" uppercase style={style.button} onPress={()=> console.log("actualizar")} labelStyle={{ fontSize: 17 }}>
-                    Actualizar
-                </LoaderButton>
-            </View>
+                {isFetching ? (
+                    <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={style.activityIndicator} />
+                ) : (
+                    fetchedData === undefined || user === undefined ? (
+                        <NoContent />
+                    ) : (
+                        <EditUser
+                            user={user}
+                            name_button='GUARDAR'
+                            onPressCompleteEdit={()=> console.log("  ")}
+                            setUser={setUser}
+                        />
+                    )
+                )
+                }
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -67,10 +62,17 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: "center",
         gap: 40,
-      },
-    background: {
-        width: 400,
-        height: 400,
+    },
+    safeArea: {
+        flexGrow: 1,
+        backgroundColor: theme.colors.background,
+    },
+    activityIndicator: {
+        justifyContent: "center",
+        flexGrow: 1,
+    },
+    scrollViewContent: {
+        paddingTop: 50,
     },
     header: {
         flexDirection: 'row',
@@ -81,39 +83,11 @@ const style = StyleSheet.create({
         width: '100%',
         gap: 10
     },
-    footer: {
-        position: "absolute",
-        bottom: 50,
-        width: "100%",
-        alignItems: "center",
-    },
     title: {
-      fontSize: 30,
+      fontSize: 25,
       fontFamily: "IBMPlexMono_Italic",
       textAlign: 'center',
       fontWeight: "bold"
-    },
-    subtitle: {
-        fontSize: 30,
-        fontFamily: "IBMPlexMono_Italic",
-        textAlign: 'center',
-        fontStyle: "italic",
-      },
-    button: {
-        borderRadius: 10,
-        width: "50%",
-        height: 50,
-        justifyContent: "center",
-    },
-    card: {
-    backgroundColor: BEIGE,
-        width: "80%",
-        gap: 0,
-        columnGap: 0,
-    },
-    cardTitle: {
-        color: BROWN_LIGHT,
-            fontSize: 12,
     }
   })
   
