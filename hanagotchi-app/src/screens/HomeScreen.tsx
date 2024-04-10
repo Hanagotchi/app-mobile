@@ -12,6 +12,17 @@ import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
+import NoContent from "../components/NoContent";
+
+interface Measurement {
+  id: number;
+  id_plant: number;
+  temperature: number;
+  humidity: number;
+  light: number;
+  watering: number;
+  time_stamp: string;
+}
 
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
@@ -23,16 +34,10 @@ const HomeScreen: React.FC = () => {
     description: '',
     photo_link: '',
   });
-  const [measurement, setMeasurement] = useState({
-    id: 0,
-    id_plant: 0,
-    temperature: 0,
-    humidity: 0,
-    light: 0,
-    watering: 0,
-    time_stamp: ""
-  });
+  const [measurement, setMeasurement] = useState<Measurement | null>(null);
   const userId = Number(SecureStore.getItem("userId"))
+  let [currentPlant, setCurrentPlant] = useState(0);
+
   const {isFetching, fetchedData: plants, error} = useApiFetch(
       () => api.getPlants(userId),
       [{
@@ -43,15 +48,13 @@ const HomeScreen: React.FC = () => {
       }]
   );
 
-  const plantss = [{"id": 1, "id_user": 2, "name": "Canna", "scientific_name": "Canna indica"}, {"id": 2, "id_user": 2, "name": "Rosa", "scientific_name": "Rosa chinensis"}, {"id": 3, "id_user": 2, "name": "yummi", "scientific_name": "Monstera deliciosa"}]
-  let [currentPlant, setCurrentPlant] = useState(0);
-
   const fetchPlantType = async () => {
-    const fetchedPlantType = await api.getPlantType(plantss[currentPlant].scientific_name);
+    const fetchedPlantType = await api.getPlantType(plants[currentPlant].scientific_name);
     setPlantType(fetchedPlantType);
   };
   const fetchMeasurement = async () => {
-    const fetchedMeasurement = await api.getLastMeasurement(plantss[currentPlant].id);
+    setMeasurement(null)
+    const fetchedMeasurement = await api.getLastMeasurement(plants[currentPlant].id);
     setMeasurement(fetchedMeasurement);
   };
 
@@ -69,17 +72,23 @@ const HomeScreen: React.FC = () => {
   };
 
   function nextPlant() {
-    if (currentPlant < plantss.length - 1) setCurrentPlant(currentPlant + 1);
+    if (currentPlant < plants.length - 1) setCurrentPlant(currentPlant + 1);
   }
 
   function previousPlant() {
     if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
   }
 
+  if (plants.length == 0 && !isFetching) return (
+      <View style={{margin: 100}}>
+        <NoContent/>
+      </View>
+  )
+
   return (
       <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <View style={style.container}>
-          <Text style={style.title}>{plantss[currentPlant].name}</Text>
+          <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
             <Pressable onPress={previousPlant}>
               <Image source={left} style={style.arrow}/>
@@ -92,12 +101,13 @@ const HomeScreen: React.FC = () => {
 
           <View style={style.box}>
             <View style={style.boxElements}>
+              {measurement ?
               <View style={style.measurements}>
                 <Text style={style.measurement}>Humedad: {measurement.humidity}%</Text>
                 <Text style={style.measurement}>Temperatura: {measurement.temperature}°C</Text>
                 <Text style={style.measurement}>Luz: {measurement.light}ftc</Text>
                 <Text style={style.measurement}>Riego: {measurement.watering}</Text>
-              </View>
+              </View> : <Text style={style.measurement}> No se registran {'\n'} mediciones</Text> }
               <View style={{ justifyContent: "space-evenly" }}>
                 <Pressable onPress={navigate}>
                   <Icon size={30} source={plus} />
@@ -107,7 +117,7 @@ const HomeScreen: React.FC = () => {
                 </Pressable>
               </View>
             </View>
-            <Text style={style.time}>Última actualización {measurement.time_stamp}</Text>
+            {measurement && <Text style={style.time}>Última actualización {measurement.time_stamp}</Text>}
           </View>
         </View>
         <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
