@@ -54,7 +54,7 @@ const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteE
 
     const handleUploadPhoto = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
+        if (!permissionResult.granted) {
             alert('¡Se requiere permiso para acceder a la galería de imágenes!');
             return;
         }
