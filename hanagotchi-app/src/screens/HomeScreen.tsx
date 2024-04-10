@@ -30,6 +30,7 @@ const HomeScreen: React.FC = () => {
     humidity: 0,
     light: 0,
     watering: 0,
+    time_stamp: ""
   });
   const userId = Number(SecureStore.getItem("userId"))
   const {isFetching, fetchedData: plants, error} = useApiFetch(
@@ -90,20 +91,23 @@ const HomeScreen: React.FC = () => {
           </View>
 
           <View style={style.box}>
-            <View style={style.measurements}>
-              <Text style={style.measurement}>Humedad: {measurement.humidity}%</Text>
-              <Text style={style.measurement}>Temperatura: {measurement.temperature}C</Text>
-              <Text style={style.measurement}>Luz: {measurement.light}</Text>
-              <Text style={style.measurement}>Riego: {measurement.watering}</Text>
+            <View style={style.boxElements}>
+              <View style={style.measurements}>
+                <Text style={style.measurement}>Humedad: {measurement.humidity}%</Text>
+                <Text style={style.measurement}>Temperatura: {measurement.temperature}°C</Text>
+                <Text style={style.measurement}>Luz: {measurement.light}ftc</Text>
+                <Text style={style.measurement}>Riego: {measurement.watering}</Text>
+              </View>
+              <View style={{ justifyContent: "space-evenly" }}>
+                <Pressable onPress={navigate}>
+                  <Icon size={30} source={plus} />
+                </Pressable>
+                <Pressable onPress={() => setModalOpen(true)}>
+                  <Icon size={30} source={info} />
+                </Pressable>
+              </View>
             </View>
-            <View style={{ justifyContent: "space-evenly" }}>
-              <Pressable onPress={navigate}>
-                <Icon size={30} source={plus} />
-              </Pressable>
-              <Pressable onPress={() => setModalOpen(true)}>
-                <Icon size={30} source={info} />
-              </Pressable>
-            </View>
+            <Text style={style.time}>Última actualización {measurement.time_stamp}</Text>
           </View>
         </View>
         <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
@@ -152,6 +156,13 @@ const style = StyleSheet.create({
     color: '#4F4C4F',
     padding: 2
   },
+  time: {
+    fontSize: 12,
+    fontFamily: "Roboto",
+    textAlign: 'center',
+    color: '#4F4C4F',
+    paddingTop: 10
+  },
   measurements: {
     flex: 0.96,
     alignItems: "flex-start",
@@ -162,10 +173,12 @@ const style = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     marginTop: 50,
+    height: 190,
+    width: 240
+  },
+  boxElements: {
     display: "flex",
     flexDirection: "row",
-    height: 160,
-    width: 240
   },
   description: {
     display: "flex",
