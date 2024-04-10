@@ -23,6 +23,14 @@ const HomeScreen: React.FC = () => {
     description: '',
     photo_link: '',
   });
+  const [measurement, setMeasurement] = useState({
+    id: 0,
+    id_plant: 0,
+    temperature: 0,
+    humidity: 0,
+    light: 0,
+    watering: 0,
+  });
   const userId = Number(SecureStore.getItem("userId"))
   const {isFetching, fetchedData: plants, error} = useApiFetch(
       () => api.getPlants(userId),
@@ -41,9 +49,14 @@ const HomeScreen: React.FC = () => {
     const fetchedPlantType = await api.getPlantType(plantss[currentPlant].scientific_name);
     setPlantType(fetchedPlantType);
   };
+  const fetchMeasurement = async () => {
+    const fetchedMeasurement = await api.getLastMeasurement(plantss[currentPlant].id);
+    setMeasurement(fetchedMeasurement);
+  };
 
   useEffect(() => {
     fetchPlantType();
+    fetchMeasurement()
   }, [currentPlant]);
 
   if (!isFetching && error) {
@@ -78,10 +91,10 @@ const HomeScreen: React.FC = () => {
 
           <View style={style.box}>
             <View style={style.measurements}>
-              <Text style={style.measurement}>Humedad: 50%</Text>
-              <Text style={style.measurement}>Temperatura: 24C</Text>
-              <Text style={style.measurement}>Luz: 10</Text>
-              <Text style={style.measurement}>Riego: 25</Text>
+              <Text style={style.measurement}>Humedad: {measurement.humidity}%</Text>
+              <Text style={style.measurement}>Temperatura: {measurement.temperature}C</Text>
+              <Text style={style.measurement}>Luz: {measurement.light}</Text>
+              <Text style={style.measurement}>Riego: {measurement.watering}</Text>
             </View>
             <View style={{ justifyContent: "space-evenly" }}>
               <Pressable onPress={navigate}>

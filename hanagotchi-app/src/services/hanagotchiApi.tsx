@@ -12,6 +12,7 @@ import {
     LoginResponseSchema
 } from "../models/hanagotchiApi";
 import {UpdateUserSchema, User, UserSchema} from "../models/User";
+import {Measurement, MeasurementSchema} from "../models/Measurement";
 
 export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
@@ -19,6 +20,7 @@ export interface HanagotchiApi {
     getPlants: (userId: number) => Promise<GetPlantsResponse>;
     getPlantType: (name: string) => Promise<GetPlantTypeResponse>;
     getUser: (userId: number) => Promise<User>;
+    getLastMeasurement: (plantId: number) => Promise<Measurement>;
     patchUser: (user: User) => Promise<void>;
     getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
     getLogById: (log_id: number) => Promise<GetLogByIdResponse>
@@ -55,6 +57,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getUser(userId: number): Promise<User> {
         const { data } = await this.axiosInstance.get(`/users/${userId}`);
         return UserSchema.parse(data?.message);
+    }
+    async getLastMeasurement(plantId: number): Promise<Measurement> {
+        const { data } = await this.axiosInstance.get(`/measurements/${plantId}/last`);
+        return MeasurementSchema.parse(data);
     }
 
     async patchUser(user: User): Promise<void> {
