@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet } from "react-native"
-import { BACKGROUND_COLOR } from "../themes/globalThemes";
+import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 
 const FeedScreen: React.FC = () => {
     return (

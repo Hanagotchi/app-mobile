@@ -11,7 +11,7 @@ import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
-import FeedScreen from "../screens/FeedScreen";
+import FeedScreen from "../screens/social/FeedScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
