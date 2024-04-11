@@ -52,24 +52,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         }
     };
 
-    // const user = {
-    //     id: 9,
-    //     name: "Sofia Feijoo",
-    //     email: "sfeijoo@fi.uba.ar",
-    //     gender: "MUJER",
-    //     photo: "https://lh3.googleusercontent.com/a/ACg8ocKSdQGDvwfSGYTCoJRphWDNN5m_iNCmnSJnNlP6K49PfxrsuNaB=s96-c",
-    //     birthdate: new Date("1998-04-26"),
-    //     location: {
-    //         "lat": -34.61350316225834,
-    //         "long": -58.38341312482953
-    //     },
-    //     nickname: null,
-    //     biography: null
-    // }
-
-    console.log(userId)
-    console.log(user)
-
     if (!isFetching && error) { throw error }
 
     return (
@@ -110,9 +92,11 @@ const style = StyleSheet.create({
         gap: 40,
     },
     editContainer: {
-        flex: 1,
+        flex: 0,
+        justifyContent: 'flex-start',
+        paddingTop: 30,
         alignItems: "center",
-        paddingTop: 20,
+        gap: 20,
     },
     safeArea: {
         flexGrow: 1,
