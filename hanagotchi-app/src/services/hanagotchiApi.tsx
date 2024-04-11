@@ -27,8 +27,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getUser(userId: number): Promise<User> {
         const { data } = await this.axiosInstance.get(`/users/${userId}`);
-        console.log("...")
-        console.log(data)
+        data.message.birthdate = new Date(data.message.birthdate);
         return UserSchema.parse(data?.message);
     }
 

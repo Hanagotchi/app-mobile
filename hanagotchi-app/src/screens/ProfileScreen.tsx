@@ -20,7 +20,7 @@ type ProfileScreenProps = NativeStackScreenProps<RootStackParamsList, "Profile">
 const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();
     const userId = Number(SecureStore.getItem("userId"))
-    const { requestLocation, revokeLocation } = useLocation();
+    const { requestLocation } = useLocation();
     const { uploadImage } = useFirebase();
     const [user, setUser] = useState<User>();
     const { isFetching, fetchedData, error } = useApiFetch(() => api.getUser(userId), user);
@@ -87,12 +87,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 {isFetching ? (
                     <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={style.activityIndicator} />
                 ) : (
+                    <View style={style.editContainer}>
                         <EditUser
                             user={user!}
                             name_button='GUARDAR'
                             onPressCompleteEdit={handleComplete}
                             setUser={setUser}
                         />
+                    </View>
                     )
                 }
             </ScrollView>
@@ -106,6 +108,11 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: "center",
         gap: 40,
+    },
+    editContainer: {
+        flex: 1,
+        alignItems: "center",
+        paddingTop: 20,
     },
     safeArea: {
         flexGrow: 1,
