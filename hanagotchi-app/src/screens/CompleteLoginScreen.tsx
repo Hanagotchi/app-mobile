@@ -13,6 +13,7 @@ import NoContent from '../components/NoContent';
 import useFirebase from '../hooks/useFirebase';
 import { handleError } from '../common/errorHandling';
 import { DEFAULT_PHOTO } from '../components/ProfilePicture';
+import { profilePictureUrl } from '../contexts/FirebaseContext';
 
 type CompleteLoginProps = NativeStackScreenProps<RootStackParamsList, "CompleteLogin">;
 
@@ -65,9 +66,10 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
             return;
         }
         try {
+            const filepath = profilePictureUrl(user.email, 'avatar');
             const userUpdated: User = {
                 ...user,
-                photo: user?.photo?.startsWith('file://') ? await uploadImage(user?.photo ?? DEFAULT_PHOTO, user?.email ?? '', 'avatar') : user.photo
+                photo: user?.photo?.startsWith('file://') ? await uploadImage(user.photo ?? DEFAULT_PHOTO, filepath) : user.photo
             } as User;
             setUser(userUpdated);
             await api.patchUser(userUpdated);
