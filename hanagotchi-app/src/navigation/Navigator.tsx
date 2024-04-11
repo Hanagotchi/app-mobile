@@ -11,6 +11,7 @@ import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
+import FeedScreen from "../screens/FeedScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -64,8 +65,8 @@ const screenOptions: BottomTabNavigationOptions = {
 
 export type MainTabParamsList = {
     Home: { bgColor: string },
-    Logs: { bgColor: string },
-    SocialNetwork: { bgColor: string },
+    Logs: undefined,
+    SocialNetwork: undefined,
     Settings: undefined,
 }
 
@@ -79,11 +80,11 @@ const MainScreens: React.FC = () => {
                     tabBarLabel: "Home",
                     tabBarIcon: HomeIcon,
                 }} />
-                <Tab.Screen name="Logs" component={LogsScreen} initialParams={{bgColor: "green"}} options={{
+                <Tab.Screen name="Logs" component={LogsScreen} options={{
                     tabBarLabel: "Bitácoras",
                     tabBarIcon: LogIcon,
                 }} />
-                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{ bgColor: "red" }} options={{
+                <Tab.Screen name="SocialNetwork" component={FeedScreen} options={{
                     tabBarLabel: "Red social",
                     tabBarIcon: SocialIcon,
                 }} />
