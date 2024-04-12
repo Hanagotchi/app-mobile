@@ -7,7 +7,7 @@ import PhotoUploader from "../../PhotoUploader";
 
 type EditPostProps = {
     initValues?: PostData;
-    onSubmit: ((data: PostData) => void);
+    onSubmit: ((data: PostDataWithoutAuthorId) => void);
     buttonLabel: string;
 }
 
