@@ -11,6 +11,10 @@ import { useMemo } from "react";
 import useMyUser from "../../hooks/useMyUser";
 import { Post } from "../../models/Post";
 
+
+const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+const examplePhoto = "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/plants%2F5%2F1712438363124?alt=media&token=9cdd20c2-43f0-4327-9eb9-8135e6b5a306"
+
 type LogsScreenProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
     NativeStackScreenProps<RootStackParamsList>
@@ -36,11 +40,11 @@ const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
                 photo: myUser.photo,
                 nickname: myUser.nickname,
             },
-            content: "Este es un post mockeado, donde escribo muchas cosas sin sentido. Pach pach pach.",
+            content: loremIpsum,
             likes_count: 0,
             updated_at: new Date(),
             created_at: new Date(),
-            photo_links: [],
+            photo_links: [examplePhoto],
         };
     }, [myUser])
 
