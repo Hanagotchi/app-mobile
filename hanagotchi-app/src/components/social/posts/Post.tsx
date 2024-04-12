@@ -53,7 +53,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-start',
-        gap: 20,
+        gap: 15,
         width: "100%",
         alignItems: "center",
     },

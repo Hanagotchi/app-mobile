@@ -13,6 +13,34 @@ import { UpdateUserSchema, User, UserSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 import { Post, PostData, PostSchema } from "../models/Post";
 
+const generateDummyData = () => {
+    const dummyData: Post[] = [];
+  
+    for (let i = 0; i < 50; i++) {
+      const postData: Post = {
+        id: String(i),
+        author: {
+            id: i,
+            name: `Author ${i}`,
+            nickname: `nickName${i}`,
+            photo: null
+        },
+        content: `Post content ${i}`,
+        likes_count: Math.floor(Math.random() * 100),
+        created_at: new Date(),
+        updated_at: new Date(),
+        photo_links: Math.random() < 0.5 ? [
+          "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/plants%2F5%2F1712438363124?alt=media&token=9cdd20c2-43f0-4327-9eb9-8135e6b5a306"
+        ] : [],
+      };
+      dummyData.push(PostSchema.parse(postData));
+    }
+  
+    return dummyData;
+};
+
+const dummyPosts = generateDummyData();
+  
 
 export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
@@ -26,6 +54,7 @@ export interface HanagotchiApi {
     addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     createPost: (post: PostData) => Promise<Post>;
+    dummyGetPosts: (page: number, size: number) => Promise<Post[]>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -107,4 +136,9 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         }
         return PostSchema.parse(data);
     }
+
+    async dummyGetPosts(page: number, size: number) {
+        return dummyPosts.slice(size*(page-1), size*page)
+    }
+    
 }
