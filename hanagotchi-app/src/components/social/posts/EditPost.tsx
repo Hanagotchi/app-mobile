@@ -1,4 +1,4 @@
-import { PostData } from "../../../models/Post";
+import { PostData, PostDataWithoutAuthorId } from "../../../models/Post";
 import { StyleSheet, View } from "react-native";
 import TextInput from "../../TextInput";
 import { useEffect, useState } from "react";
@@ -11,9 +11,8 @@ type EditPostProps = {
     buttonLabel: string;
 }
 
-const defaultData: PostData = {
+const defaultData: PostDataWithoutAuthorId = {
     content: "",
-    author_user_id: 0,
     photo_links: [],
 }
 
@@ -21,7 +20,7 @@ const CONTENT_MAX_LENGTH = 500;
 
 const EditPost: React.FC<EditPostProps> = ({initValues = defaultData, onSubmit, buttonLabel}) => {
 
-    const [data, setData] = useState<PostData>(initValues);
+    const [data, setData] = useState<PostDataWithoutAuthorId>(initValues);
     const [contentLen, setContentLen] = useState<number>(initValues.content.length);
 
     const onChangeContent = (content: string) => setData((oldValues) => ({...oldValues, content}));

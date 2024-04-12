@@ -7,3 +7,4 @@ export const PostDataSchema = z.object({
 });
 
 export type PostData = z.infer<typeof PostDataSchema>;
+export type PostDataWithoutAuthorId = Omit<PostData, "author_user_id">;
