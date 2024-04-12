@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Image } from "react-native"
 import { Post } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
 import { IconButton, Text } from "react-native-paper"
@@ -21,9 +21,8 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post}) => {
             </View>
             <Text style={style.content}>{post.content}</Text>
             {post.photo_links.length > 0 &&(
-                <ExpandibleImage 
-                    minimizedImageStyle={style.image}
-                    maximizedImageStyle={style.fullImage} 
+                <Image 
+                    style={style.image}
                     source={{uri: post.photo_links[0]}} 
                 />
             )}
@@ -51,11 +50,9 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-start',
-        borderWidth: 1,
         gap: 20,
         width: "100%",
-        flexBasis: "auto",
-        alignItems: "center"
+        alignItems: "center",
     },
     header: {
         justifyContent: "space-between",
@@ -67,7 +64,7 @@ const style = StyleSheet.create({
         fontSize: 15,
     },
     image: {
-        width: 320,
+        width: "100%",
         height: 240,
         borderRadius: 12,
     },

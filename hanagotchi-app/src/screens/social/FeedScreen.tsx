@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet } from "react-native"
+import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native"
 import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import { ActivityIndicator, FAB } from "react-native-paper";
 import { CompositeScreenProps } from "@react-navigation/native";
@@ -54,7 +54,13 @@ const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
 
     return (
         <SafeAreaView style={style.container}>
-            <ReducedPost post={mockPost!}/>
+            <FlatList 
+                data={[mockPost!, mockPost!, mockPost!]}
+                renderItem={({item}) => <ReducedPost post={item}/>}
+                keyExtractor={(item, index) => String(index)}
+                contentContainerStyle={{gap: 10}}
+            />
+
             <FAB 
                 icon={"plus"} 
                 mode="flat" 
