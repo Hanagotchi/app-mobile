@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image } from "react-native"
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native"
 import { Post } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
 import { IconButton, Text } from "react-native-paper"
@@ -14,35 +14,38 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post}) => {
     const [like, toggleLike] = useToggle(false);
 
     return (
-        <View style={style.container}>
-            <View style={style.header}>
-                <AuthorDetails author={post.author} />
-                <IconButton icon={"dots-horizontal"} onPress={() => console.log("options!")}/>
-            </View>
-            <Text style={style.content}>{post.content}</Text>
-            {post.photo_links.length > 0 &&(
-                <Image 
-                    style={style.image}
-                    source={{uri: post.photo_links[0]}} 
-                />
-            )}
-            <View style={style.footer}>
-                <View style={style.actions}>
-                    <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                        <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={toggleLike}/>
-                        <Text>{post.likes_count}</Text>
-                    </View>
-                    <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                        <IconButton icon={"comment"} onPress={() => console.log("like!")}/>
-                        <Text>0</Text>
-                    </View>
-                    <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
+        <TouchableOpacity>
+            <View style={style.container}>
+                <View style={style.header}>
+                    <AuthorDetails author={post.author} />
+                    <IconButton icon={"dots-horizontal"} onPress={() => console.log("options!")}/>
                 </View>
-                <View style={{justifyContent: "center"}}>
-                    <Text>{post.created_at.toLocaleString()}</Text>
+                <Text style={style.content}>{post.content}</Text>
+                {post.photo_links.length > 0 &&(
+                    <Image 
+                        style={style.image}
+                        source={{uri: post.photo_links[0]}} 
+                    />
+                )}
+                <View style={style.footer}>
+                    <View style={style.actions}>
+                        <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
+                            <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={toggleLike}/>
+                            <Text>{post.likes_count}</Text>
+                        </View>
+                        <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
+                            <IconButton icon={"comment"} onPress={() => console.log("like!")}/>
+                            <Text>0</Text>
+                        </View>
+                        <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
+                    </View>
+                    <View style={{justifyContent: "center"}}>
+                        <Text>{post.created_at.toLocaleString()}</Text>
+                    </View>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
+
     )
 }
 

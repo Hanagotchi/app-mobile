@@ -7,7 +7,7 @@ import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigat
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import ReducedPost from "../../components/social/posts/ReducedPost";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import useMyUser from "../../hooks/useMyUser";
 import { Post } from "../../models/Post";
 
@@ -25,6 +25,15 @@ const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const handleAddNewPost = () => navigation.navigate("CreatePost");
     
     const {isFetchingMyUser, myUser} = useMyUser();
+    const [refreshing, setRefreshing] = useState(false);
+
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const onRefresh = async () => {
+      setRefreshing(true);
+      await sleep(5000);
+      setRefreshing(false);
+    };
  
     const mockPost: Post | null = useMemo(() => {
 
@@ -59,8 +68,9 @@ const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
                 renderItem={({item}) => <ReducedPost post={item}/>}
                 keyExtractor={(item, index) => String(index)}
                 contentContainerStyle={{gap: 10}}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
             />
-
             <FAB 
                 icon={"plus"} 
                 mode="flat" 
