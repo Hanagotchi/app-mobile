@@ -15,6 +15,7 @@ import FeedScreen from "../screens/social/FeedScreen";
 import CreateLogScreen from "../screens/logs/CreateLogScreen";
 import { Log } from "../models/Log";
 import EditLogScreen from "../screens/logs/EditLogScreen";
+import CreatePostScreen from "../screens/social/CreatePostScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -107,6 +108,7 @@ export type RootStackParamsList = {
     CompleteLogin: { userId: number };
     CreateLog: undefined;
     EditLog: {log: Log};
+    CreatePost: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -138,6 +140,9 @@ const Navigator: React.FC = () => {
                         })}/>
                         <RootStack.Screen name="EditLog" component={EditLogScreen} options={() => ({
                             title: "Editar bitácora",
+                        })}/>
+                        <RootStack.Screen name="CreatePost" component={CreatePostScreen} options={({navigation}) => ({
+                            title: "Nueva publicación",
                         })}/>
                     </>
                 )}

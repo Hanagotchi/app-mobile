@@ -1,10 +1,19 @@
 import { SafeAreaView, StyleSheet } from "react-native"
 import { BACKGROUND_COLOR, GREEN } from "../../themes/globalThemes";
 import { FAB } from "react-native-paper";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const FeedScreen: React.FC = () => {
+type LogsScreenProps = CompositeScreenProps<
+    BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
+    NativeStackScreenProps<RootStackParamsList>
+>;
 
-    const handleAddNewPost = () => console.log("Navigate to add new post!");
+const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
+
+    const handleAddNewPost = () => navigation.navigate("CreatePost");;
  
     return (
         <SafeAreaView style={style.container}>
