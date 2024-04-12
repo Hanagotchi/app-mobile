@@ -14,6 +14,11 @@ export const logPhotoUrl = (plantId: number) => {
     return `plants/${plantId}/${date}`;
 }
 
+export const postPhotoUrl = (userId: number) => {
+    const date = new Date().getTime();
+    return `social/${userId}/posts/${date}`;
+}
+
 export type FirebaseContextProps = {
     uploadImage: (local_uri: string, firebaseFilepath: string) => Promise<string>;
     removeImage: (remote_uri: string) => Promise<void>;

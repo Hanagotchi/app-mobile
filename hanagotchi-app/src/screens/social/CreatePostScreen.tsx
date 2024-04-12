@@ -5,18 +5,28 @@ import { RootStackParamsList } from "../../navigation/Navigator";
 import EditPost from "../../components/social/posts/EditPost";
 import { PostData, PostDataWithoutAuthorId } from "../../models/Post";
 import * as SecureStore from "expo-secure-store";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import useFirebase from "../../hooks/useFirebase";
+import { postPhotoUrl } from "../../contexts/FirebaseContext";
 
 type CreatePostScreenProps = NativeStackScreenProps<RootStackParamsList, "CreatePost">
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = () => {
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = Number(SecureStore.getItem("userId"));
+    const api = useHanagotchiApi();
+    const {uploadImage} = useFirebase();
 
-    const handleSubmit = (data: PostDataWithoutAuthorId) => {
+    const handleSubmit = async (postData: PostDataWithoutAuthorId) => {
+        const photo_links = await Promise.all(
+            postData.photo_links.map(photo => uploadImage(photo, postPhotoUrl(userId)))
+        );
         const newPost: PostData = {
-            ...data,
-            author_user_id: userId
+            author_user_id: userId,
+            content: postData.content,
+            photo_links
         };
-        console.log(newPost);
+        api.createPost(newPost);
+        
     }
 
     return (
