@@ -11,7 +11,7 @@ import {
 } from "../models/hanagotchiApi";
 import { UpdateUserSchema, User, UserSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
-import { PostData } from "../models/Post";
+import { Post, PostData, PostSchema } from "../models/Post";
 
 
 export interface HanagotchiApi {
@@ -25,7 +25,7 @@ export interface HanagotchiApi {
     editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
     addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
-    createPost: (post: PostData) => Promise<void>;
+    createPost: (post: PostData) => Promise<Post>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -88,6 +88,23 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async createPost(body: PostData) {
         // TODO: add social urls support in gateway
+        // THIS IS A MOCKED RESPONSE!!!!!!!!!!!!!!!!!!!!!!
         // const { data } = await this.axiosInstance.post("/post", body);
+        const myUser: User = await this.getUser(body.author_user_id);
+        const data: Post = {
+            id: "ididididiidididid",
+            author: {
+                id: myUser.id,
+                name: myUser.name,
+                photo: myUser.photo,
+                nickname: myUser.nickname,
+            },
+            content: body.content,
+            likes_count: 0,
+            updated_at: new Date(),
+            created_at: new Date(),
+            photo_links: body.photo_links,
+        }
+        return PostSchema.parse(data);
     }
 }
