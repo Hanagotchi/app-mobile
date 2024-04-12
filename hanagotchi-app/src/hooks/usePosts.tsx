@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Post } from "../models/Post";
 
 export function usePosts(
@@ -9,13 +9,19 @@ export function usePosts(
     const [posts, setPosts] = useState<Post[]>([]);
     const [error, setError] = useState<Error | null>(null);
     const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [noMorePosts, setNoMorePosts] = useState<boolean>(false);
  
     useEffect(() => {
         const execFetch = async () => {
+            if (noMorePosts) return;
             try {
                 setIsFetching(true);
                 const newPage = await fetchPostsFn(pageNumber);
-                setPosts((oldPosts) => oldPosts.concat(newPage));
+                if (newPage.length === 0) {
+                    setNoMorePosts(true);
+                    return;
+                }
+                setPosts((oldPosts) => pageNumber === 1 ? newPage : oldPosts.concat(newPage));
             } catch (e) {
                 setError(e as Error);
             } finally {
@@ -26,9 +32,11 @@ export function usePosts(
         execFetch();
     }, [pageNumber]);
 
-    const next = () => setPageNumber(n => n+1);
-    const prev = () => setPageNumber(n => n-1);
-    const reset = () => setPageNumber(1);
+    const next = () => {
+        if (noMorePosts) return;
+        setPageNumber(n => n+1)
+    };
+    const restart = () => setPageNumber(1);
 
-    return { posts, isFetching, error, pageControl: { next, prev, reset } };
+    return { posts, isFetching, error, pageControl: { next, restart }, noMorePosts };
 }
