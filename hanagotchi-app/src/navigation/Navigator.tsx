@@ -10,6 +10,7 @@ import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN } from "../themes/globalTh
 import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
+import AddPlantScreen from "../screens/AddPlantScreen";
 import { formatDate } from "../common/dateUtils";
 
 const EmptyScreen: React.FC = ({ route }) => {
@@ -101,6 +102,7 @@ export type RootStackParamsList = {
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
+    AddPlant: undefined;
 
 }
 
@@ -128,6 +130,7 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>
+                        <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
                     </>
                 )}
             </RootStack.Navigator>
