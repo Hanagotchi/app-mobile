@@ -91,6 +91,11 @@ const MainScreens: React.FC = () => {
                 <Tab.Screen name="SocialNetwork" component={FeedScreen} options={{
                     tabBarLabel: "Red social",
                     tabBarIcon: SocialIcon,
+                    headerShown: true,
+                    headerStyle: styles.header,
+                    headerTintColor: BLACK,
+                    headerTitleAlign: "center",
+                    title: "Comunidad Hana",
                 }} />
                 <Tab.Screen name="Settings" component={SettingsScreen} options={{
                     tabBarLabel: "Configuración",
