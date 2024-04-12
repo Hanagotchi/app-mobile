@@ -11,7 +11,7 @@ import { postPhotoUrl } from "../../contexts/FirebaseContext";
 
 type CreatePostScreenProps = NativeStackScreenProps<RootStackParamsList, "CreatePost">
 
-const CreatePostScreen: React.FC<CreatePostScreenProps> = () => {
+const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
     const userId = Number(SecureStore.getItem("userId"));
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
@@ -29,7 +29,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = () => {
         };
         const createdPost = await api.createPost(newPost);
         console.log(createdPost)
-        
+        navigation.goBack();
     }
 
     return (
