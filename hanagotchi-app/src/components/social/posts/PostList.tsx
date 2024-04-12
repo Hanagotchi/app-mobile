@@ -7,8 +7,22 @@ import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
 import { PureComponent, useCallback } from "react";
 
+type ListFooterProps = {
+    isFetching: boolean,
+    noMorePosts: boolean,
+}
 
+const ListFooter: React.FC<ListFooterProps> = ({isFetching, noMorePosts}) => {
+    if (isFetching) {
+        return <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
+    }
 
+    if (noMorePosts) {
+        <Text>No hay mas publicaciones en este momento</Text>
+    }
+
+    return <></>
+}
 
 type PostListProps = {
     updatePosts: (page: number) => Promise<Post[]>;
@@ -20,19 +34,6 @@ const PostList: React.FC = () => {
     const {isFetching, posts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
 
     //const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-
-    const renderFooter = () => {
-        if (isFetching) {
-            return <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
-        }
-    
-        if (noMorePosts) {
-            <Text>No hay mas publicaciones en este momento</Text>
-        }
-    
-        return <></>
-    }
 
     const renderItem = useCallback(({item}) => (
         <ReducedPost post={item}/>
@@ -49,8 +50,6 @@ const PostList: React.FC = () => {
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
     }
 
-    console.log(isFetching)
-
     return (
             <FlatList 
                 data={posts}
@@ -61,7 +60,7 @@ const PostList: React.FC = () => {
                 refreshing={isFetching}
                 onEndReachedThreshold={0}
                 onEndReached={onRefresh}
-                ListFooterComponent={renderFooter}
+                ListFooterComponent={<ListFooter isFetching={isFetching} noMorePosts={noMorePosts} />}
                 maxToRenderPerBatch={10}
                 windowSize={10}
             />

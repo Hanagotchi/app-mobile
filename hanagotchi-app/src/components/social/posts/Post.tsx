@@ -5,9 +5,11 @@ import { IconButton, Text } from "react-native-paper"
 import { BROWN_DARK } from "../../../themes/globalThemes"
 import ExpandibleImage from "../../ExpandibleImage"
 import { useToggle } from "../../../hooks/useToggle"
+import React from "react"
 
 type ReducedPostProps = {
     post: Post
+    onDelete: (postId: string) => void;
 }
 
 const ReducedPost: React.FC<ReducedPostProps> = ({post}) => {
@@ -88,5 +90,5 @@ const style = StyleSheet.create({
     }
 });
 
-export default ReducedPost;
+export default React.memo(ReducedPost);
 
