@@ -100,7 +100,8 @@ const style = StyleSheet.create({
         alignItems: "center",
         paddingBottom: 20,
         gap: 20,
-        width: "100%"
+        width: "100%",
+        flexGrow: 1,
     },
     button: {
         borderRadius: 10,

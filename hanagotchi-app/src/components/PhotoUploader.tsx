@@ -8,9 +8,13 @@ type PhotoUploaderProps = {
     maxAmount?: number;
     photosFilepathList: string[];
     updatePhotosFilepathList: (photos: string[]) => void;
+    imageSize?: {
+        width: number,
+        height: number,
+    }
 }
 
-const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathList, updatePhotosFilepathList}) => {
+const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathList, updatePhotosFilepathList, imageSize}) => {
 
     const handleUploadPhoto = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -46,11 +50,15 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
                     ({item, index}) => 
                         <DeletableImage 
                             source={{uri: item}} 
-                            style={style.image} 
+                            style={{
+                                ...style.image, 
+                                width: imageSize ? imageSize.width : 100,
+                                height: imageSize ? imageSize.height : 100,
+                            }} 
                             onPressDelete={() => handleDeletePhoto(index)}
                         />
                 }
-                numColumns={2}
+                horizontal
                 style={style.photoList}
                 contentContainerStyle={style.photoListContent}
                 ListFooterComponent={
@@ -81,21 +89,17 @@ const style = StyleSheet.create({
         color: GREEN_DARK,
     },
     photoList: {
-        flexGrow: 0
+        flexGrow: 0,
+        marginHorizontal: "5%"
     },
     photoListContent: {
         alignItems: "center", 
         gap: 5,
-        rowGap: 5,
-        columnGap: 5,
     },
     image: {
-        width: 100,
-        height: 100,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: BROWN,
-
     },
     fab: {
         borderRadius: 10,

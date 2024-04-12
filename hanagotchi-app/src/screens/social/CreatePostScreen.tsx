@@ -3,13 +3,15 @@ import { Text } from "react-native-paper"
 import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../navigation/Navigator";
+import EditPost from "../../components/social/posts/EditPost";
 
-type CreateLogScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateLog">
+type CreatePostScreenProps = NativeStackScreenProps<RootStackParamsList, "CreatePost">
 
-const CreatePostScreen: React.FC<CreateLogScreenProps> = () => {
+const CreatePostScreen: React.FC<CreatePostScreenProps> = () => {
+
     return (
         <SafeAreaView style={style.container}>
-            <Text>Create post!!</Text>
+             <EditPost buttonLabel="PUBLICAR" onSubmit={() => {}}/>
         </SafeAreaView>
     )
 };
