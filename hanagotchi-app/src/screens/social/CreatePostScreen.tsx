@@ -17,15 +17,18 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = () => {
     const {uploadImage} = useFirebase();
 
     const handleSubmit = async (postData: PostDataWithoutAuthorId) => {
-        const photo_links = await Promise.all(
+        // TODO: use this when the gateway give support to social microservice!
+        /* const photo_links = await Promise.all(
             postData.photo_links.map(photo => uploadImage(photo, postPhotoUrl(userId)))
-        );
+        ); */
+        const photo_links = postData.photo_links;
         const newPost: PostData = {
             author_user_id: userId,
             content: postData.content,
             photo_links
         };
-        api.createPost(newPost);
+        const createdPost = await api.createPost(newPost);
+        console.log(createdPost)
         
     }
 
