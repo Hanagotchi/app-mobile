@@ -28,7 +28,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
             photo_links
         };
         const createdPost = await api.createPost(newPost);
-        console.log(createdPost)
         navigation.goBack();
     }
 

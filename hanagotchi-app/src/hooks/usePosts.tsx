@@ -36,7 +36,10 @@ export function usePosts(
         if (noMorePosts) return;
         setPageNumber(n => n+1)
     };
-    const restart = () => setPageNumber(1);
+    const restart = () => {
+        setNoMorePosts(false);
+        setPageNumber(1)
+    };
 
-    return { posts, isFetching, error, pageControl: { next, restart }, noMorePosts };
+    return { posts, setPosts, isFetching, error, pageControl: { next, restart }, noMorePosts };
 }

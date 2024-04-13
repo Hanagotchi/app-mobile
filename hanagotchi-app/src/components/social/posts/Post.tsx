@@ -29,7 +29,7 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
                         onDismiss={toggleMenu}
                         anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
                     >
-                        {iAmTheAuthor && <Menu.Item title="Eliminar Post" onPress={onDelete} />}
+                        {iAmTheAuthor && <Menu.Item title="Eliminar Post" onPress={() => onDelete(post.id)} />}
                     </Menu>
                     
                 </View>

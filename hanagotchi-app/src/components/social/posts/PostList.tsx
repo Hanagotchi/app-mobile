@@ -31,20 +31,23 @@ type PostListProps = {
 const PostList: React.FC = () => {
 
     const api = useHanagotchiApi();
-    const {isFetching, posts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
-    const userId = Number(SecureStore.getItem("userId"))
-
-    //const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
+    const userId = Number(SecureStore.getItem("userId"));
 
     const renderItem = useCallback(({item}) => (
-        <ReducedPost post={item} myId={userId} onDelete={() => console.log("Eliminado!")}/>
+        <ReducedPost post={item} myId={userId} onDelete={handleDelete}/>
       ), []);
 
     if (error) throw error;
 
-    const onRefresh = async () => {
-        pageControl.next()
-    };
+    const loadNextPage = async () => pageControl.next();
+    const resetPages = async () => pageControl.restart();
+
+    const handleDelete = async (postId: string) => {
+        await api.deletePost(postId);
+        console.log("Eliminacionnnnn");
+        setPosts((posts) => posts.filter(p => p.id !== postId));
+    }
 
     if (isFetching && posts.length === 0) {
         console.log("hola");
@@ -59,8 +62,9 @@ const PostList: React.FC = () => {
                 contentContainerStyle={{gap: 20}}
                 removeClippedSubviews
                 refreshing={isFetching}
+                onRefresh={resetPages}
                 onEndReachedThreshold={0}
-                onEndReached={onRefresh}
+                onEndReached={loadNextPage}
                 ListFooterComponent={<ListFooter isFetching={isFetching} noMorePosts={noMorePosts} />}
                 maxToRenderPerBatch={10}
                 windowSize={10}

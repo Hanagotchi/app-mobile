@@ -39,7 +39,7 @@ const generateDummyData = () => {
     return dummyData;
 };
 
-const dummyPosts = generateDummyData();
+let dummyPosts = generateDummyData();
   
 
 export interface HanagotchiApi {
@@ -54,6 +54,7 @@ export interface HanagotchiApi {
     addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     createPost: (post: PostData) => Promise<Post>;
+    deletePost: (postId: string) => Promise<void>;
     dummyGetPosts: (page: number, size: number) => Promise<Post[]>;
 }
 
@@ -121,7 +122,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         // const { data } = await this.axiosInstance.post("/post", body);
         const myUser: User = await this.getUser(body.author_user_id);
         const data: Post = {
-            id: "ididididiidididid",
+            id: (new Date()).toString(),
             author: {
                 id: myUser.id,
                 name: myUser.name,
@@ -136,6 +137,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         }
         dummyPosts.unshift(data);
         return PostSchema.parse(data);
+    }
+
+    async deletePost(postId: string) {
+        dummyPosts = dummyPosts.filter(p => p.id !== postId);
     }
 
     async dummyGetPosts(page: number, size: number) {
