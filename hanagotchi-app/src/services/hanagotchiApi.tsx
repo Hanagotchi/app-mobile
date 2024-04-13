@@ -134,6 +134,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
             created_at: new Date(),
             photo_links: body.photo_links,
         }
+        dummyPosts.unshift(data);
         return PostSchema.parse(data);
     }
 

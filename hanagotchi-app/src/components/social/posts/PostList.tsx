@@ -5,7 +5,7 @@ import { BROWN_DARK } from "../../../themes/globalThemes";
 import { Post } from "../../../models/Post";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
-import { PureComponent, useCallback } from "react";
+import { useCallback } from "react";
 
 type ListFooterProps = {
     isFetching: boolean,

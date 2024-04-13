@@ -1,26 +1,35 @@
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native"
 import { Post } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
-import { IconButton, Text } from "react-native-paper"
+import { IconButton, Menu, Text } from "react-native-paper"
 import { BROWN_DARK } from "../../../themes/globalThemes"
 import ExpandibleImage from "../../ExpandibleImage"
 import { useToggle } from "../../../hooks/useToggle"
 import React from "react"
 
 type ReducedPostProps = {
-    post: Post
+    post: Post;
+    myId: number;
     onDelete: (postId: string) => void;
 }
 
 const ReducedPost: React.FC<ReducedPostProps> = ({post}) => {
     const [like, toggleLike] = useToggle(false);
+    const [menuOpen, toggleMenu] = useToggle(false);
 
     return (
         <TouchableOpacity>
             <View style={style.container}>
                 <View style={style.header}>
                     <AuthorDetails author={post.author} />
-                    <IconButton icon={"dots-horizontal"} onPress={() => console.log("options!")}/>
+                    <Menu
+                        visible={menuOpen}
+                        onDismiss={toggleMenu}
+                        anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
+                    >
+                        <Menu.Item title="Eliminar Post" onPress={() => console.log("Eliminado!")} />
+                    </Menu>
+                    
                 </View>
                 <Text style={style.content}>{post.content}</Text>
                 {post.photo_links.length > 0 &&(
@@ -67,6 +76,8 @@ const style = StyleSheet.create({
     content: {
         color: BROWN_DARK,
         fontSize: 15,
+        textAlign: "left",
+        alignSelf: "flex-start"
     },
     image: {
         width: "100%",

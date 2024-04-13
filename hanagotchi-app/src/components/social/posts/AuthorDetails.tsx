@@ -4,6 +4,7 @@ import defaultProfilePhoto from "../../../assets/defaultProfilePhoto";
 import ProfilePicture from "../../ProfilePicture";
 import {Text} from "react-native-paper"
 import { BROWN, BROWN_LIGHT } from "../../../themes/globalThemes";
+import React from "react";
 
 type AuthorDetailsProp = {
     author: PostAuthor
@@ -38,4 +39,4 @@ const style = StyleSheet.create({
     }
 });
 
-export default AuthorDetails;
+export default React.memo(AuthorDetails);
