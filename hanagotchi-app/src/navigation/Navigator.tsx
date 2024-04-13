@@ -11,6 +11,7 @@ import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import AddPlantScreen from "../screens/AddPlantScreen";
+import AddSensorScreen from "../screens/AddSensorScreen";
 import { formatDate } from "../common/dateUtils";
 
 const EmptyScreen: React.FC = ({ route }) => {
@@ -103,6 +104,7 @@ export type RootStackParamsList = {
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
     AddPlant: undefined;
+    AddSensor: undefined;
 
 }
 
@@ -131,6 +133,7 @@ const Navigator: React.FC = () => {
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
+                        <RootStack.Screen name="AddSensor" component={AddSensorScreen} options={{ headerShown: true, title: "Asociar un sensor"}} />
                     </>
                 )}
             </RootStack.Navigator>
