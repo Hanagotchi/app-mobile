@@ -8,8 +8,8 @@ interface HanagotchiAxiosRequestHeaders extends AxiosRequestHeaders {
 }
 
 const axiosInstance = axios.create({
-  baseURL: env.hanagotchiPlantServiceURL,
-  //baseURL: env.hanagotchiUserServiceURL,
+  // baseURL: env.hanagotchiPlantServiceURL,
+  baseURL: env.hanagotchiGatewayUrl,
 });
 
 const api: HanagotchiApi = new HanagotchiApiImpl(axiosInstance);

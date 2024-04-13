@@ -2,37 +2,65 @@ import { SafeAreaView, StyleSheet, View } from "react-native"
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamsList } from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT } from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
 import { Plant } from "../models/Plant"
 import { PlantType } from "../models/PlantType"
+import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
+import {useApiFetch} from "../hooks/useApiFetch";
 
 
 type AddPlantProps = NativeStackScreenProps<RootStackParamsList, "AddPlant">;
 
-const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
-    const types = [
-        { key: "tipo_1", value: "tipo_1" },
-        { key: "tipo_2", value: "tipo_2" },
-        { key: "tipo_n", value: "tipo_n" },
-    ];
-    // const types = plantList.map(plant => ({
-    //     key: plant.common_name,
-    //     value: plant.common_name
-    //   }));
-    const[name, setName] = useState("");
-    const[type, setType] = useState("");
-    const[plantTypes, setPlantTypes] = useState<PlantType[]>([]);
+interface SelectOption {
+    key: string;
+    value: string;
+}
 
-    console.log(name);
+const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
+    const api = useHanagotchiApi();
+    const [types, setTypes] = useState<SelectOption[]>([]);
+    const[name, setName] = useState("");
+    const[option, setOption] = useState("");
+
+    const createPlant = async () => {
+/*         const plant = {
+            id_user: 0,
+            name: name,
+            scientific_name: option,
+        }
+        await api.createPlant();
+        navigation.navigate("Home"); */
+    }
+    const {isFetching, fetchedData: plantTypes, error} = useApiFetch(
+        () => api.getPlantTypes(),
+        [{
+            id: 0,
+            botanical_name: "",
+            common_name: "",
+            description: "",
+            photo_link: "",
+        }]
+    );
+
+    useEffect(() => {
+        if (plantTypes && plantTypes.length > 0) {
+            const updatedTypes = plantTypes.map(plant => ({
+                key: plant.botanical_name,
+                value: plant.botanical_name
+            }));
+            setTypes(updatedTypes);
+        }
+    }, [plantTypes]);
+    console.log(types)
     return <SafeAreaView style={style.container}>
         <TextInput label={`NOMBRE`} value={name} onChangeText={(text) => setName(text)} />
         <SelectBox
                 label="TIPO DE PLANTA"
                 data={types}
-                setSelected={(option) => setType(option)}
+                setSelected={(option) => setOption(option)}
                 save="key"
                 defaultOption={{ key: "---", value: "---" }}
             />
@@ -40,7 +68,7 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
             <LoaderButton 
                 mode="contained" 
                 uppercase style={style.button} 
-                onPress={() => navigation.navigate("AddPlant")}
+                onPress={() => createPlant()}
                 labelStyle={{fontSize: 17}}
             >
                 Crear

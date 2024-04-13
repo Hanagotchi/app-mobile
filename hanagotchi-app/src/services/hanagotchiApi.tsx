@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
-import { LoginResponse, LoginResponseSchema, GetLogsByUserResponseSchema, GetLogsByUserResponse, GetLogByIdResponse, GetLogByIdResponseSchema } from "../models/hanagotchiApi";
+import { LoginResponse, LoginResponseSchema, GetLogsByUserResponseSchema, GetLogsByUserResponse, GetLogByIdResponse, GetLogByIdResponseSchema, GetPlantTypesResponseSchema, GetPlantTypesResponse } from "../models/hanagotchiApi";
 import { UpdateUserSchema, User, UserSchema } from "../models/User";
+import { Plant, PlantSchema } from "../models/Plant";
 
 
 export interface HanagotchiApi {
@@ -8,7 +9,9 @@ export interface HanagotchiApi {
     getUser: (userId: number) => Promise<User>;
     patchUser: (user: User) => Promise<void>;
     getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
-    getLogById: (log_id: number) => Promise<GetLogByIdResponse>
+    getLogById: (log_id: number) => Promise<GetLogByIdResponse>;
+    getPlantTypes: () => Promise<GetPlantTypesResponse>;
+    createPlant: (id_user: number, name: string, scientific_name: string) => Promise<Plant>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -30,6 +33,11 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return UserSchema.parse(data?.message);
     }
 
+    async createPlant(id_user: number, name: string, scientific_name: string): Promise<Plant> {
+        const { data } = await this.axiosInstance.post(`/plants`, { id_user, name, scientific_name });
+        return PlantSchema.parse(data);
+    }
+
     async patchUser(user: User): Promise<void> {
         const updateUser = UpdateUserSchema.parse(user);
         await this.axiosInstance.patch(`/users/${user.id}`, updateUser);
@@ -43,5 +51,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getLogById(log_id: number): Promise<GetLogByIdResponse> {
         const { data } = await this.axiosInstance.get(`/logs/${log_id}`);
         return GetLogByIdResponseSchema.parse(data);
+    }
+
+    async getPlantTypes(): Promise<GetPlantTypesResponse>{
+        const { data } = await this.axiosInstance.get(`/plant-type`);
+        return GetPlantTypesResponseSchema.parse(data);
     }
 }
