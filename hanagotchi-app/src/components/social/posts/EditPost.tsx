@@ -26,7 +26,6 @@ const EditPost: React.FC<EditPostProps> = ({initValues = defaultData, onSubmit, 
     const onChangeContent = (content: string) => setData((oldValues) => ({...oldValues, content}));
     useEffect(() => setContentLen(data.content.length), [data.content]);
     const onChangePhotos = (photo_links: string[]) => setData((oldValues) => ({...oldValues, photo_links}));
-    console.log(data)
 
     return (
         <View style={style.container}>

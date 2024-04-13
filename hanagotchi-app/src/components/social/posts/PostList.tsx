@@ -31,7 +31,7 @@ type PostListProps = {
 const PostList: React.FC = () => {
 
     const api = useHanagotchiApi();
-    const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
+    const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 30));
     const userId = Number(SecureStore.getItem("userId"));
 
     const renderItem = useCallback(({item}) => (
@@ -63,10 +63,11 @@ const PostList: React.FC = () => {
                 removeClippedSubviews
                 refreshing={isFetching}
                 onRefresh={resetPages}
-                onEndReachedThreshold={0}
+                onEndReachedThreshold={2}
                 onEndReached={loadNextPage}
                 ListFooterComponent={<ListFooter isFetching={isFetching} noMorePosts={noMorePosts} />}
                 maxToRenderPerBatch={10}
+                initialNumToRender={4}
                 windowSize={10}
             />
     );
