@@ -126,7 +126,7 @@ const Navigator: React.FC = () => {
                 ) : (
                     <>
                         <RootStack.Screen name="MainScreens" component={MainScreens} options={{ headerShown: false }} />
-                        <RootStack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}}/>
+                        <RootStack.Screen name="Profile" component={ProfileScreen} options={{headerShown: true, title: "Editar perfil"}}/>
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>

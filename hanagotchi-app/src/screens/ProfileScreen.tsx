@@ -1,10 +1,8 @@
-import {ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
-import {Icon} from 'react-native-paper';
+import {ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, View} from "react-native";
 import {BROWN_DARK, theme} from "../themes/globalThemes";
 import {RootStackParamsList} from "../navigation/Navigator";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import React, {useEffect, useState} from "react";
-import back from "../assets/backicon.png";
 import {User} from "../models/User";
 import {useApiFetch} from "../hooks/useApiFetch";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
@@ -57,15 +55,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     return (
         <SafeAreaView style={style.safeArea}>
             <ScrollView contentContainerStyle={style.scrollViewContent} keyboardShouldPersistTaps="handled">
-                <View style={style.container}>
-                    <View style={style.header}>
-                        <Pressable onPress={() => navigation.goBack()}>
-                            <Icon size={24} source={back}/>
-                        </Pressable>
-                        <Text style={style.title}>Editar perfil</Text>
-                    </View>
-                </View>
-
                 {isFetching ? (
                     <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={style.activityIndicator} />
                 ) : (
@@ -101,13 +90,14 @@ const style = StyleSheet.create({
     safeArea: {
         flexGrow: 1,
         backgroundColor: theme.colors.background,
+
     },
     activityIndicator: {
         justifyContent: "center",
         flexGrow: 1,
     },
     scrollViewContent: {
-        paddingTop: 50,
+        paddingBottom: 20
     },
     header: {
         flexDirection: 'row',

@@ -1,14 +1,13 @@
-import {Pressable, SafeAreaView, StyleSheet, Text, View} from "react-native"
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native"
 import useAuth from "../hooks/useAuth";
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainTabParamsList, RootStackParamsList} from "../navigation/Navigator";
-import type {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import type {CompositeScreenProps} from '@react-navigation/native';
-import arrow from "../assets/arrowicon.png";
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { CompositeScreenProps } from '@react-navigation/native';
 import LoaderButton from "../components/LoaderButton";
-import React from "react";
-import {BACKGROUND_COLOR} from "../themes/globalThemes";
-import {Icon} from "react-native-paper";
+import { Icon } from 'react-native-paper';
+import chevronRight from "../assets/chevron_right.png";
+import { BACKGROUND_COLOR } from "../themes/globalThemes";
 
 
 type SettingsScreenProps = CompositeScreenProps<
@@ -24,36 +23,40 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
         navigation.navigate("Login");
     }
 
-
-    return <SafeAreaView style={style.area}>
-        <View style={style.container}>
-            <Pressable style={style.option} onPress={()=>navigation.navigate("Profile")}>
-                <Text style={style.text}>Editar mis datos</Text>
-                <Icon size={40} source={arrow}></Icon>
+    return <SafeAreaView style={style.container}>
+        <View style={style.items}>
+            <Pressable style={style.item} onPress={() => navigation.navigate("Profile")}>
+                <Text style={style.text}>Editar perfil</Text>
+                <Icon source={chevronRight} size={23}/>
             </Pressable>
-            <View style={style.buttonContainer}>
-                <LoaderButton mode="contained" uppercase style={style.button} onPress={handleSignOut} labelStyle={{ fontSize: 17 }}>
-                    Cerrar sesión
-                </LoaderButton>
-            </View>
+        </View>
+
+        <View style={style.buttonContainer}>
+            <LoaderButton
+                mode="contained"
+                uppercase style={style.button}
+                onPress={handleSignOut}
+                labelStyle={{fontSize: 17}}
+            >
+                Cerrar sesión
+            </LoaderButton>
         </View>
     </SafeAreaView>
 }
 
 const style = StyleSheet.create({
-    area: {
-        flex: 1,
-        backgroundColor: BACKGROUND_COLOR,
-        justifyContent: "flex-end"
-    },
     container: {
-        marginTop: 100,
-        padding: 10,
+        flex: 1,
+        alignItems: "center",
+        paddingTop: 80,
+        backgroundColor: BACKGROUND_COLOR,
     },
-    option: {
-        display: "flex",
-        flexDirection: "row",
-        gap: -5
+    buttonContainer: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "absolute",
+        bottom: 20,
     },
     button: {
         borderRadius: 10,
@@ -61,12 +64,21 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: "center",
     },
-    text: {
-        fontSize: 22,
-        fontFamily: "Roboto",
+    items: {
+
     },
-    buttonContainer: {
-        alignItems: 'center'
+    text: {
+        fontSize: 20,
+        fontWeight: "bold",
+        alignSelf: "flex-start",
+    },
+    item: {
+        padding: 15,
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        flex: 1,
     },
 })
 
