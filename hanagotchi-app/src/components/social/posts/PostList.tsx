@@ -68,7 +68,7 @@ const PostList: React.FC = () => {
                 ListFooterComponent={<ListFooter isFetching={isFetching} noMorePosts={noMorePosts} />}
                 maxToRenderPerBatch={10}
                 initialNumToRender={4}
-                windowSize={10}
+                windowSize={5}
             />
     );
 }
