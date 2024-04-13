@@ -6,6 +6,8 @@ import { BROWN_DARK } from '../themes/globalThemes';
 import BackgroundCard from './BackgroundCard';
 import { Entypo } from '@expo/vector-icons';
 
+export const ARG_TIMEZONE_OFFSET = 60 * 1000;
+
 type DateButtonProps = {
     title: string;
     userDate: Date | null;
@@ -29,11 +31,10 @@ const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate }) => 
     };
 
     const handleDateConfirm = (newDate: Date) => {
-        const userTimezoneOffset = newDate.getTimezoneOffset() * 60000;
-        const localDate = new Date(newDate.getTime() - userTimezoneOffset);
+        newDate.setTime(newDate.getTime() + newDate.getTimezoneOffset() * ARG_TIMEZONE_OFFSET);
         setOpen(false);
-        setDate(localDate);
-        setselectedDate(localDate);
+        setDate(newDate);
+        setselectedDate(newDate);
     };
 
     const handleDateCancel = () => {

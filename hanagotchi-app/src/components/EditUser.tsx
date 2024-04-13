@@ -92,7 +92,7 @@ const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteE
                 data={genders}
                 setSelected={handleGender}
                 save="key"
-                defaultOption={{ key: "---", value: "---" }}
+                defaultOption={{ key: user.gender ?? "---", value: user.gender ?? "---" }}
             />
             <EditLocation title="MI UBICACIÓN (OPCIONAL)" onRegionChange={handleRegionChange} />
             {requeriedFieldMessage ? <Text style={styles.requiredField}>{requeriedFieldMessage}</Text> : null}

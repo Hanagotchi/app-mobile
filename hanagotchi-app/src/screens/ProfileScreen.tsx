@@ -31,7 +31,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
     useEffect(() => {
         const requestLocationOnce = async () => {
-            console.log("Requesting location - Login Screen!");
+            console.log("Requesting location - Profile Screen!");
             await requestLocation();
         };
         requestLocationOnce();

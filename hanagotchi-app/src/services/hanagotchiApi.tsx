@@ -21,13 +21,11 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async logIn(authCode: string): Promise<LoginResponse> {
         const { data } = await this.axiosInstance.post("/login", { auth_code: authCode });
-        data.message.birthdate = new Date(data.message.birthdate);
         return LoginResponseSchema.parse(data);
     }
 
     async getUser(userId: number): Promise<User> {
         const { data } = await this.axiosInstance.get(`/users/${userId}`);
-        data.message.birthdate = new Date(data.message.birthdate);
         return UserSchema.parse(data?.message);
     }
 
