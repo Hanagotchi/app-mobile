@@ -6,7 +6,7 @@ import { Post } from "../../../models/Post";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
 import { useCallback } from "react";
-
+import * as SecureStore from "expo-secure-store";
 type ListFooterProps = {
     isFetching: boolean,
     noMorePosts: boolean,
@@ -32,11 +32,12 @@ const PostList: React.FC = () => {
 
     const api = useHanagotchiApi();
     const {isFetching, posts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
+    const userId = Number(SecureStore.getItem("userId"))
 
     //const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const renderItem = useCallback(({item}) => (
-        <ReducedPost post={item}/>
+        <ReducedPost post={item} myId={userId} onDelete={() => console.log("Eliminado!")}/>
       ), []);
 
     if (error) throw error;

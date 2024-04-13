@@ -13,9 +13,11 @@ type ReducedPostProps = {
     onDelete: (postId: string) => void;
 }
 
-const ReducedPost: React.FC<ReducedPostProps> = ({post}) => {
+const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
     const [like, toggleLike] = useToggle(false);
     const [menuOpen, toggleMenu] = useToggle(false);
+
+    const iAmTheAuthor = post.author.id === myId;
 
     return (
         <TouchableOpacity>
@@ -27,7 +29,7 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post}) => {
                         onDismiss={toggleMenu}
                         anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
                     >
-                        <Menu.Item title="Eliminar Post" onPress={() => console.log("Eliminado!")} />
+                        {iAmTheAuthor && <Menu.Item title="Eliminar Post" onPress={onDelete} />}
                     </Menu>
                     
                 </View>
