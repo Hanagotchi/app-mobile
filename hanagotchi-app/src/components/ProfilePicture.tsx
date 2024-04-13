@@ -8,7 +8,7 @@ type ProfilePictureProps = {
 }
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ uri }) => {
     return (
-        <TouchableWithoutFeedback onPress={() => console.log('...presiono:', uri)}>
+        <TouchableWithoutFeedback>
             <Image source={{ uri }} style={style.profileImage} />
         </TouchableWithoutFeedback>
     )
