@@ -1,15 +1,14 @@
-import { SafeAreaView, StyleSheet, View } from "react-native"
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamsList } from "../navigation/Navigator";
+import {SafeAreaView, StyleSheet, View} from "react-native"
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
-import { useState, useEffect } from "react";
-import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT } from "../themes/globalThemes";
+import {useEffect, useState} from "react";
+import {BACKGROUND_COLOR} from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
-import { Plant } from "../models/Plant"
-import { PlantType } from "../models/PlantType"
-import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
+import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
+import * as SecureStore from "expo-secure-store";
 
 
 type AddPlantProps = NativeStackScreenProps<RootStackParamsList, "AddPlant">;
@@ -21,20 +20,16 @@ interface SelectOption {
 
 const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
     const api = useHanagotchiApi();
+    const userId = Number(SecureStore.getItem("userId"))
     const [types, setTypes] = useState<SelectOption[]>([]);
     const[name, setName] = useState("");
     const[option, setOption] = useState("");
 
     const createPlant = async () => {
-/*         const plant = {
-            id_user: 0,
-            name: name,
-            scientific_name: option,
-        }
-        await api.createPlant();
-        navigation.navigate("Home"); */
+        await api.createPlant(userId, name, option);
+        navigation.goBack();
     }
-    const {isFetching, fetchedData: plantTypes, error} = useApiFetch(
+    const {fetchedData: plantTypes} = useApiFetch(
         () => api.getPlantTypes(),
         [{
             id: 0,
@@ -54,7 +49,6 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
             setTypes(updatedTypes);
         }
     }, [plantTypes]);
-    console.log(types)
     return <SafeAreaView style={style.container}>
         <TextInput label={`NOMBRE`} value={name} onChangeText={(text) => setName(text)} />
         <SelectBox
