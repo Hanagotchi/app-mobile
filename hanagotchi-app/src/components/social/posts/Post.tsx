@@ -27,10 +27,17 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
                         visible={menuOpen}
                         onDismiss={toggleMenu}
                         anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
-                        contentStyle={{backgroundColor: BEIGE}}
+                        contentStyle={style.menu}
                     >
-                        {iAmTheAuthor && <Menu.Item title="Eliminar Post" onPress={() => onDelete(post.id)} />}
-                        {<Menu.Item title={`id: ${post.id}`} onPress={() => {}} />}
+                        {iAmTheAuthor && <Menu.Item
+                          titleStyle={style.itemTitle} 
+                          title="ELIMINAR POST" 
+                          onPress={() => onDelete(post.id)}
+                          style={{minWidth: "50%"}} 
+                        />}
+                        <Menu.Item 
+                            title={`Id: ${post.id}`} 
+                        />
                     </Menu>
                     
                 </View>
@@ -75,6 +82,15 @@ const style = StyleSheet.create({
         justifyContent: "space-between",
         flexDirection: "row",
         width: "100%"
+    },
+    menu: {
+        backgroundColor: BEIGE,
+        alignItems: "center",
+        borderRadius: 12,
+    },
+    itemTitle: {
+        color: BROWN_DARK,
+        fontWeight: "bold"
     },
     content: {
         color: BROWN_DARK,

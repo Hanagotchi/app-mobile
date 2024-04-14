@@ -48,7 +48,7 @@ const PostList: React.FC = () => {
         setPosts((posts) => posts.filter(p => p.id !== postId));
     }
 
-    if (isFetching && posts.length === 0) {
+    if (!error && posts.length === 0) {
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
     }
 
