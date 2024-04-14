@@ -5,7 +5,7 @@ import { ARG_TIMEZONE_OFFSET } from "../components/DatePicker";
 const adjustBirthdateFormat = (value: string | Date) => {
     let date = new Date(value);
     date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET);
-    return date;
+    return new Date(date.toJSON().split("T")[0]);
 };
 
 export const UpdateUserSchema = z.object({
