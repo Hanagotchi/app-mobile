@@ -12,6 +12,7 @@ import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import AddPlantScreen from "../screens/AddPlantScreen";
 import { formatDate } from "../common/dateUtils";
+import DeletePlantScreen from "../screens/DeletePlantScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -103,7 +104,7 @@ export type RootStackParamsList = {
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
     AddPlant: undefined;
-
+    DeletePlant: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -131,6 +132,7 @@ const Navigator: React.FC = () => {
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
+                        <RootStack.Screen name="DeletePlant" component={DeletePlantScreen} options={{ headerShown: true, title: "Eliminar una planta"}} />
                     </>
                 )}
             </RootStack.Navigator>
