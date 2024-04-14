@@ -11,7 +11,6 @@ import * as ImagePicker from 'expo-image-picker';
 import useLocation from '../hooks/useLocation';
 import { User } from '../models/User';
 import { Text } from 'react-native-paper';
-import useFirebase from '../hooks/useFirebase';
 
 type EditUserProps = {
     user: User;
@@ -23,7 +22,6 @@ type EditUserProps = {
 const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteEdit, setUser }) => {
     const [requeriedFieldMessage, setRequeriedFieldMessage] = React.useState<string | null>(null);
     const { changeLocation } = useLocation();
-    const { uploadImage } = useFirebase();
 
     const genders = [
         { key: "HOMBRE", value: "HOMBRE" },

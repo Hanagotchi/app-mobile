@@ -7,11 +7,13 @@ import CompleteLoginScreen from "../screens/CompleteLoginScreen";
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
-import {BottomTabNavigationOptions, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StyleSheet, View} from "react-native";
 import {BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN} from "../themes/globalThemes";
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import ProfileScreen from "../screens/ProfileScreen";
+import CreateLogScreen from "../screens/logs/CreateLogScreen";
+import { Log } from "../models/Log";
+import EditLogScreen from "../screens/logs/EditLogScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -103,6 +105,8 @@ export type RootStackParamsList = {
     Profile: undefined;
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
+    CreateLog: undefined;
+    EditLog: {log: Log};
 }
 
 const Navigator: React.FC = () => {
@@ -129,6 +133,12 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="Profile" component={ProfileScreen} options={{headerShown: true, title: "Editar perfil"}}/>
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
+                        })}/>
+                        <RootStack.Screen name="CreateLog" component={CreateLogScreen} options={({navigation}) => ({
+                            title: "Nueva bitácora",
+                        })}/>
+                        <RootStack.Screen name="EditLog" component={EditLogScreen} options={() => ({
+                            title: "Editar bitácora",
                         })}/>
                     </>
                 )}
