@@ -120,8 +120,9 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         // TODO: add social urls support in gateway
         // THIS IS A MOCKED RESPONSE!!!!!!!!!!!!!!!!!!!!!!
         // const { data } = await this.axiosInstance.post("/post", body);
-        const myUser: User = await this.getUser(body.author_user_id);
-        const data: Post = {
+        const { data } = await this.axiosInstance.post(`/social/posts`, body);
+        const parsedData = PostSchema.parse(data);
+/*         const data: Post = {
             id: (new Date()).toString(),
             author: {
                 id: myUser.id,
@@ -134,12 +135,13 @@ export class HanagotchiApiImpl implements HanagotchiApi {
             updated_at: new Date(),
             created_at: new Date(),
             photo_links: body.photo_links,
-        }
-        dummyPosts.unshift(data);
-        return PostSchema.parse(data);
+        } */
+        dummyPosts.unshift(parsedData);
+        return parsedData;
     }
 
     async deletePost(postId: string) {
+        await this.axiosInstance.delete(`/social/posts/${postId}`);
         dummyPosts = dummyPosts.filter(p => p.id !== postId);
     }
 
