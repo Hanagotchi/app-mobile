@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { UserSchema } from "./User";
 import { LogSchema } from "./Log";
+import {PlantSchema} from "./Plant";
 
 export const LoginResponseSchema = z.object({
     status: z.number(),
@@ -14,6 +15,10 @@ export const GetUserSchema = z.object({
 });
 
 export type GetUserResponse = z.infer<typeof GetUserSchema>;
+export const GetPlantsResponseSchema = z.array(PlantSchema);
+export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
+
+
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
 export const GetLogsByUserResponseSchema = z.array(LogSchema);

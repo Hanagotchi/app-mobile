@@ -1,33 +1,61 @@
-import { SafeAreaView, StyleSheet, View } from "react-native"
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamsList } from "../navigation/Navigator";
+import {SafeAreaView, StyleSheet, View} from "react-native"
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
-import { useState } from "react";
-import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT } from "../themes/globalThemes";
+import React, {useEffect, useState} from "react";
+import {BACKGROUND_COLOR} from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
-import { Plant } from "../models/Plant"
-import { PlantType } from "../models/PlantType"
+import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
+import * as SecureStore from "expo-secure-store";
+import {useApiFetch} from "../hooks/useApiFetch";
 
+interface SelectOption {
+    key: number;
+    value: string;
+}
 
-type AddSensorProps = NativeStackScreenProps<RootStackParamsList, "AddPlant">;
+type AddSensorProps = NativeStackScreenProps<RootStackParamsList, "AddSensor">;
 
 const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
+    const api = useHanagotchiApi();
+    const userId = Number(SecureStore.getItem("userId"))
+    const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
+    const[option, setOption] = useState(0);
     const[serialNumber, setSerialNumber] = useState("");
-    // const[plants, setPlants] = useState<Plant[]>([]);
-    const plants = [
-        { key: "planta_1", value: "planta_1" },
-        { key: "planta_2", value: "planta_2" },
-        { key: "planta_n", value: "planta_n" },
-    ];
 
-    console.log(serialNumber);
+    const {fetchedData: plants} = useApiFetch(
+        () => api.getPlants(userId),
+        [{
+            id: 0,
+            id_user: 0,
+            name: "",
+            scientific_name: "",
+        }]
+    );
+
+    const createSensor = async () => {
+        if (option.toString() == "---" || serialNumber == "") return
+        await api.addSensor(serialNumber, option);
+        navigation.goBack();
+    }
+
+    useEffect(() => {
+        if (plants && plants.length > 0) {
+            const updatedPlants = plants.map(plant => ({
+                key: plant.id,
+                value: plant.name
+            }));
+            setPlantOptions(updatedPlants);
+        }
+    }, [plants]);
+
     return <SafeAreaView style={style.container}>
         <TextInput label={`NUMERO DE SERIE`} value={serialNumber} onChangeText={(text) => setSerialNumber(text)} />
         <SelectBox
                 label="PLANTA"
-                data={plants}
-                setSelected={(option) => console.log(option)}
+                data={plantOptions}
+                setSelected={(option) => setOption(option)}
                 save="key"
                 defaultOption={{ key: "---", value: "---" }}
             />
@@ -35,7 +63,7 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
             <LoaderButton 
                 mode="contained" 
                 uppercase style={style.button} 
-                onPress={() => console.log("Asocia3 !!")}
+                onPress={() => createSensor()}
                 labelStyle={{fontSize: 17}}
             >
                 Asociar
