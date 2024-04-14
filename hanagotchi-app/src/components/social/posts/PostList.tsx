@@ -31,7 +31,14 @@ type PostListProps = {
 const PostList: React.FC = () => {
 
     const api = useHanagotchiApi();
-    const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 30));
+    const {
+        isFetching,
+        posts,
+        setPosts,
+        error,
+        pageControl,
+        noMorePosts
+    } = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
     const userId = Number(SecureStore.getItem("userId"));
 
     const renderItem = useCallback(({item}) => (
