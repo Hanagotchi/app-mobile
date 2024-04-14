@@ -8,7 +8,7 @@ interface HanagotchiAxiosRequestHeaders extends AxiosRequestHeaders {
 }
 
 const axiosInstance = axios.create({
-  baseURL: env.hanagotchiPlantServiceURL,
+  baseURL: env.hanagotchiApiURL,
   //baseURL: env.hanagotchiUserServiceURL,
 });
 
@@ -39,7 +39,8 @@ export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children })
   // Add a request interceptor
   axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
     // Do something before request is sent
-    //  console.log("Request", request);
+    // console.log("Request", request);
+
     return updateHeader(request);
   });
 
@@ -48,8 +49,8 @@ export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children })
     function (response) {
       // Any status code that lie within the range of 2xx cause this function to trigger
       // Do something with response data
-
-      //  console.log("Response", response);
+      // console.log("Response", response);
+      
       return response;
     },
     function (error) {
