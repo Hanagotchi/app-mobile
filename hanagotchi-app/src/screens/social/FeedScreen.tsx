@@ -1,15 +1,10 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native"
-import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
-import { ActivityIndicator, FAB } from "react-native-paper";
+import { SafeAreaView, StyleSheet } from "react-native"
+import { BACKGROUND_COLOR, GREEN } from "../../themes/globalThemes";
+import { FAB } from "react-native-paper";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import ReducedPost from "../../components/social/posts/Post";
-
-import { useMemo, useState } from "react";
-import useMyUser from "../../hooks/useMyUser";
-import { Post } from "../../models/Post";
 import PostList from "../../components/social/posts/PostList";
 
 type LogsScreenProps = CompositeScreenProps<

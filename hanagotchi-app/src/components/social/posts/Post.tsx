@@ -2,8 +2,7 @@ import { View, StyleSheet, Image, TouchableOpacity } from "react-native"
 import { Post } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
 import { IconButton, Menu, Text } from "react-native-paper"
-import { BROWN_DARK } from "../../../themes/globalThemes"
-import ExpandibleImage from "../../ExpandibleImage"
+import { BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../../../themes/globalThemes"
 import { useToggle } from "../../../hooks/useToggle"
 import React from "react"
 
@@ -28,6 +27,7 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
                         visible={menuOpen}
                         onDismiss={toggleMenu}
                         anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
+                        contentStyle={{backgroundColor: BEIGE}}
                     >
                         {iAmTheAuthor && <Menu.Item title="Eliminar Post" onPress={() => onDelete(post.id)} />}
                         {<Menu.Item title={`id: ${post.id}`} onPress={() => {}} />}
@@ -54,7 +54,7 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
                         <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
                     </View>
                     <View style={{justifyContent: "center"}}>
-                        <Text>{post.created_at.toLocaleString()}</Text>
+                        <Text style={{color: GREEN}}>{post.created_at.toLocaleString()}</Text>
                     </View>
                 </View>
             </View>

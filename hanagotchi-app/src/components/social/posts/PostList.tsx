@@ -31,14 +31,7 @@ type PostListProps = {
 const PostList: React.FC = () => {
 
     const api = useHanagotchiApi();
-    const {
-        isFetching,
-        posts,
-        setPosts,
-        error,
-        pageControl,
-        noMorePosts
-    } = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
+    const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
     const userId = Number(SecureStore.getItem("userId"));
 
     const renderItem = useCallback(({item}) => (
@@ -52,12 +45,10 @@ const PostList: React.FC = () => {
 
     const handleDelete = async (postId: string) => {
         await api.deletePost(postId);
-        console.log("Eliminacionnnnn");
         setPosts((posts) => posts.filter(p => p.id !== postId));
     }
 
     if (isFetching && posts.length === 0) {
-        console.log("hola");
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
     }
 
