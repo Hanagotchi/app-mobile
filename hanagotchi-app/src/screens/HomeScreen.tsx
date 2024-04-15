@@ -52,6 +52,7 @@ const HomeScreen: React.FC = () => {
     const fetchedPlantType = await api.getPlantType(plants[currentPlant].scientific_name);
     setPlantType(fetchedPlantType);
   };
+
   const fetchMeasurement = async () => {
     setMeasurement(null)
     const fetchedMeasurement = await api.getLastMeasurement(plants[currentPlant].id);
@@ -90,13 +91,17 @@ const HomeScreen: React.FC = () => {
         <View style={style.container}>
           <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
-            <Pressable onPress={previousPlant}>
-              <Image source={left} style={style.arrow}/>
-            </Pressable>
+            {plants.length > 1 &&
+                <Pressable onPress={previousPlant}>
+                  <Image source={left} style={style.arrow}/>
+                </Pressable>
+            }
             <Image source={plantImage} style={style.image} />
-            <Pressable onPress={nextPlant}>
-              <Image source={right} style={style.arrow} />
-            </Pressable>
+            {plants.length > 1 &&
+              <Pressable onPress={nextPlant}>
+                <Image source={right} style={style.arrow} />
+              </Pressable>
+            }
           </View>
 
           <View style={style.box}>
