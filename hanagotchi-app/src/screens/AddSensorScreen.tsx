@@ -51,11 +51,8 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
 
     useEffect(() => {
         if (plants && plants.length > 0) {
-           // const filteredPlants = plants.filter((plant) => !devicePlants.some((it) => it.id_plant === plant.id));
-            console.log("device plants ", devicePlants)
-            console.log("plants ", plants)
-            //console.log("filtered: ", filteredPlants)
-            const updatedPlants = plants.map(plant => ({
+            const filteredPlants = plants.filter((plant) => !devicePlants.some((it) => it.id_plant === plant.id));
+            const updatedPlants = filteredPlants.map(plant => ({
                 key: plant.id,
                 value: plant.name
             }));
