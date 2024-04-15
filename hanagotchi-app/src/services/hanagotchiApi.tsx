@@ -20,6 +20,7 @@ export interface HanagotchiApi {
     patchUser: (user: User) => Promise<void>;
     getPlants: (userId: number) => Promise<GetPlantsResponse>;
     getDevicePlants: () => Promise<GetDevicePlantsResponse>
+    deleteDevice: (plantId: number) => Promise<void>
     getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
     getLogById: (log_id: number) => Promise<GetLogByIdResponse>
@@ -47,6 +48,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getDevicePlants(): Promise<GetDevicePlantsResponse> {
         const { data } = await this.axiosInstance.get(`/measurements/device-plant`);
         return GetDevicePlantsResponseSchema.parse(data);
+    }
+
+    async deleteDevice(plantId: number): Promise<void> {
+        await this.axiosInstance.delete(`/measurements/device-plant/${plantId}?type_id=id_plant`);
     }
 
     async getUser(userId: number): Promise<User> {

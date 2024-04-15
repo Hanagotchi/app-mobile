@@ -33,6 +33,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 <Text style={style.text}>Agregar sensor</Text>
                 <Icon source={chevronRight} size={23}/>
             </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("DeleteSensor")}>
+                <Text style={style.text}>Eliminar sensor</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
         </View>
     
         <View style={style.buttonContainer}>

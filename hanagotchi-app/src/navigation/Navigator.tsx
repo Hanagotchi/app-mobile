@@ -13,6 +13,7 @@ import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import AddPlantScreen from "../screens/AddPlantScreen";
 import AddSensorScreen from "../screens/AddSensorScreen";
 import { formatDate } from "../common/dateUtils";
+import DeleteSensorScreen from "../screens/DeleteSensorScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -105,7 +106,7 @@ export type RootStackParamsList = {
     CompleteLogin: { userId: number };
     AddPlant: undefined;
     AddSensor: undefined;
-
+    DeleteSensor: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -134,6 +135,7 @@ const Navigator: React.FC = () => {
                         })}/>
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
                         <RootStack.Screen name="AddSensor" component={AddSensorScreen} options={{ headerShown: true, title: "Asociar un sensor"}} />
+                        <RootStack.Screen name="DeleteSensor" component={DeleteSensorScreen} options={{ headerShown: true, title: "Eliminar un sensor"}} />
                     </>
                 )}
             </RootStack.Navigator>
