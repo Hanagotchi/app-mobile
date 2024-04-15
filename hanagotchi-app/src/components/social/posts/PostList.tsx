@@ -6,7 +6,7 @@ import { ReducedPost as ReducedPostType } from "../../../models/Post";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
 import { useCallback } from "react";
-import * as SecureStore from "expo-secure-store";
+
 type ListFooterProps = {
     isFetching: boolean,
     noMorePosts: boolean,
@@ -26,16 +26,16 @@ const ListFooter: React.FC<ListFooterProps> = ({isFetching, noMorePosts}) => {
 
 type PostListProps = {
     updatePosts: (page: number) => Promise<ReducedPostType[]>;
+    myId: number
 }
 
-const PostList: React.FC = () => {
+const PostList: React.FC<PostListProps> = ({updatePosts, myId}) => {
 
     const api = useHanagotchiApi();
-    const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts((pageNum: number) => api.dummyGetPosts(pageNum, 10));
-    const userId = Number(SecureStore.getItem("userId"));
-
+    const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts(updatePosts);
+   
     const renderItem = useCallback(({item}) => (
-        <ReducedPost post={item} myId={userId} onDelete={handleDelete}/>
+        <ReducedPost post={item} myId={myId} onDelete={handleDelete}/>
       ), []);
 
     if (error) throw error;

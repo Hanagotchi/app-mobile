@@ -6,6 +6,9 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import PostList from "../../components/social/posts/PostList";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import * as SecureStore from "expo-secure-store";
+import { useMemo } from "react";
 
 type LogsScreenProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
@@ -13,12 +16,16 @@ type LogsScreenProps = CompositeScreenProps<
 >;
 
 const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
-
+    const api = useHanagotchiApi();
+    const userId = useMemo(() => Number(SecureStore.getItem("userId")), []);
     const handleAddNewPost = () => navigation.navigate("CreatePost");
 
     return (
         <SafeAreaView style={style.container}>
-            <PostList />
+            <PostList
+                updatePosts={(pageNum: number) => api.dummyGetPosts(pageNum, 10)}
+                myId={userId}
+            />
             <FAB 
                 icon={"plus"} 
                 mode="flat" 
