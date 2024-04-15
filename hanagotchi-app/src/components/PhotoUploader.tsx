@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { FAB, Text } from "react-native-paper";
 import { BEIGE_LIGHT, BROWN, BROWN_LIGHT, GREEN_DARK } from "../themes/globalThemes";
 import DeletableImage from "./DeletableImage";
+import { useState } from "react";
 
 type PhotoUploaderProps = {
     maxAmount?: number;
@@ -15,12 +16,14 @@ type PhotoUploaderProps = {
 }
 
 const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathList, updatePhotosFilepathList, imageSize}) => {
-
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const handleUploadPhoto = async () => {
+        setIsUploading(true);
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {
             alert('¡Se requiere permiso para acceder a la galería de imágenes!');
+            setIsUploading(false);
             return;
         }
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -33,6 +36,8 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
         if (!result.canceled) {
             updatePhotosFilepathList(photosFilepathList.concat(result.assets.map(asset => asset.uri)))
         }
+
+        setIsUploading(false);
     };
 
     const handleDeletePhoto = async (indexToDelete: number) => {
@@ -43,7 +48,7 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
     return (
         <>
             <View style={{width: "80%"}}>
-                <Text style={style.subtitle}>Fotos</Text>
+                <Text style={style.subtitle}>Fotos{maxAmount ? ` ${photosFilepathList.length}/${maxAmount}` : ""}</Text>
             </View>
             <FlatList 
                 data={photosFilepathList}
@@ -74,6 +79,7 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
                             size="medium" 
                             onPress={handleUploadPhoto}
                             color={BEIGE_LIGHT}
+                            loading={isUploading}
                         /> 
                 }
             />
