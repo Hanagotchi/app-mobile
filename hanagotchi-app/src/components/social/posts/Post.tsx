@@ -1,10 +1,82 @@
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native"
-import { Post } from "../../../models/Post"
+import { Post, PostAuthor } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
 import { IconButton, Menu, Text } from "react-native-paper"
 import { BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../../../themes/globalThemes"
 import { useToggle } from "../../../hooks/useToggle"
 import React from "react"
+
+type PostHeaderProps = {
+    myId: number;
+    postId: string;
+    author: PostAuthor;
+    onDelete: (postId: string) => void;
+}
+
+const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete}) => {
+    const [menuOpen, toggleMenu] = useToggle(false);
+    const iAmTheAuthor = author.id === myId;
+
+    return (
+        <View style={style.header}>
+            <AuthorDetails author={author} />
+            <Menu
+                visible={menuOpen}
+                onDismiss={toggleMenu}
+                anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
+                contentStyle={style.menu}
+            >
+                {iAmTheAuthor && <Menu.Item
+                titleStyle={style.itemTitle} 
+                title="ELIMINAR POST" 
+                onPress={() => onDelete(postId)}
+                style={{minWidth: "50%"}} 
+                />}
+                <Menu.Item 
+                    title={`Id: ${postId}`} 
+                />
+            </Menu>
+        </View>
+    );
+};
+
+type PostActionsProps = {
+    likeCount: number;
+}
+
+const PostActions: React.FC<PostActionsProps> = ({likeCount}) => {
+    const [like, toggleLike] = useToggle(false);
+
+    return (
+        <View style={style.actions}>
+            <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
+                <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={toggleLike}/>
+                <Text>{likeCount}</Text>
+            </View>
+            <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
+                <IconButton icon={"comment"} onPress={() => console.log("like!")}/>
+                <Text>0</Text>
+            </View>
+            <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
+        </View>
+    );
+}
+
+type PostFooterProps = {
+    likeCount: number;
+    createdAt: Date;
+}
+
+const PostFooter: React.FC<PostFooterProps> = ({likeCount, createdAt}) => {
+    return (
+        <View style={style.footer}>
+            <PostActions likeCount={likeCount}/>
+            <View style={{justifyContent: "center"}}>
+                <Text style={{color: GREEN}}>{createdAt.toLocaleString()}</Text>
+            </View>
+        </View>
+    );
+}
 
 type ReducedPostProps = {
     post: Post;
@@ -13,34 +85,15 @@ type ReducedPostProps = {
 }
 
 const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
-    const [like, toggleLike] = useToggle(false);
-    const [menuOpen, toggleMenu] = useToggle(false);
-
-    const iAmTheAuthor = post.author.id === myId;
-
     return (
         <TouchableOpacity>
             <View style={style.container}>
-                <View style={style.header}>
-                    <AuthorDetails author={post.author} />
-                    <Menu
-                        visible={menuOpen}
-                        onDismiss={toggleMenu}
-                        anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
-                        contentStyle={style.menu}
-                    >
-                        {iAmTheAuthor && <Menu.Item
-                          titleStyle={style.itemTitle} 
-                          title="ELIMINAR POST" 
-                          onPress={() => onDelete(post.id)}
-                          style={{minWidth: "50%"}} 
-                        />}
-                        <Menu.Item 
-                            title={`Id: ${post.id}`} 
-                        />
-                    </Menu>
-                    
-                </View>
+                <PostHeader 
+                    myId={myId}
+                    postId={post.id}
+                    author={post.author}
+                    onDelete={onDelete}
+                />
                 <Text style={style.content}>{post.content}</Text>
                 {post.photo_links.length > 0 &&(
                     <Image 
@@ -48,22 +101,7 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
                         source={{uri: post.photo_links[0]}} 
                     />
                 )}
-                <View style={style.footer}>
-                    <View style={style.actions}>
-                        <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                            <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={toggleLike}/>
-                            <Text>{post.likes_count}</Text>
-                        </View>
-                        <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                            <IconButton icon={"comment"} onPress={() => console.log("like!")}/>
-                            <Text>0</Text>
-                        </View>
-                        <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
-                    </View>
-                    <View style={{justifyContent: "center"}}>
-                        <Text style={{color: GREEN}}>{post.created_at.toLocaleString()}</Text>
-                    </View>
-                </View>
+                <PostFooter likeCount={post.likes_count} createdAt={post.created_at}/>
             </View>
         </TouchableOpacity>
 
