@@ -23,7 +23,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     const[option, setOption] = useState(0);
 
     const deleteDevice = async () => {
-        if (option == 0) return
+        if (option.toString() == "---") return
         await api.deleteDevice(option);
         navigation.goBack();
     }
