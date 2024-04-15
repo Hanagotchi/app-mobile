@@ -23,7 +23,6 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const[option, setOption] = useState(0);
     const[serialNumber, setSerialNumber] = useState("");
-
     const {fetchedData: plants} = useApiFetch(
         () => api.getPlants(userId),
         [{
@@ -33,6 +32,15 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
             scientific_name: "",
         }]
     );
+    const {fetchedData: devicePlants} = useApiFetch(
+        () => api.getDevicePlants(),
+        [{
+            id_user: 0,
+            id_device: "",
+            id_plant: 0,
+            plant_type: "",
+        }]
+    );
 
     const createSensor = async () => {
         if (option.toString() == "---" || serialNumber == "") return
@@ -40,15 +48,20 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
         navigation.goBack();
     }
 
+
     useEffect(() => {
         if (plants && plants.length > 0) {
+           // const filteredPlants = plants.filter((plant) => !devicePlants.some((it) => it.id_plant === plant.id));
+            console.log("device plants ", devicePlants)
+            console.log("plants ", plants)
+            //console.log("filtered: ", filteredPlants)
             const updatedPlants = plants.map(plant => ({
                 key: plant.id,
                 value: plant.name
             }));
             setPlantOptions(updatedPlants);
         }
-    }, [plants]);
+    }, [devicePlants]);
 
     return <SafeAreaView style={style.container}>
         <TextInput label={`NUMERO DE SERIE`} value={serialNumber} onChangeText={(text) => setSerialNumber(text)} />

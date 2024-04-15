@@ -1,14 +1,17 @@
-import { AxiosInstance } from "axios";
+import {AxiosInstance} from "axios";
 import {
-    LoginResponse,
-    LoginResponseSchema,
-    GetLogsByUserResponseSchema,
-    GetLogsByUserResponse,
+    GetDevicePlantsResponse,
+    GetDevicePlantsResponseSchema,
     GetLogByIdResponse,
     GetLogByIdResponseSchema,
-    GetPlantsResponse, GetPlantsResponseSchema
+    GetLogsByUserResponse,
+    GetLogsByUserResponseSchema,
+    GetPlantsResponse,
+    GetPlantsResponseSchema,
+    LoginResponse,
+    LoginResponseSchema
 } from "../models/hanagotchiApi";
-import { UpdateUserSchema, User, UserSchema } from "../models/User";
+import {UpdateUserSchema, User, UserSchema} from "../models/User";
 
 
 export interface HanagotchiApi {
@@ -16,6 +19,7 @@ export interface HanagotchiApi {
     getUser: (userId: number) => Promise<User>;
     patchUser: (user: User) => Promise<void>;
     getPlants: (userId: number) => Promise<GetPlantsResponse>;
+    getDevicePlants: () => Promise<GetDevicePlantsResponse>
     getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
     getLogById: (log_id: number) => Promise<GetLogByIdResponse>
@@ -38,6 +42,11 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getPlants(userId: number): Promise<GetPlantsResponse> {
         const { data } = await this.axiosInstance.get(`/plants?id_user=${userId}`);
         return GetPlantsResponseSchema.parse(data);
+    }
+
+    async getDevicePlants(): Promise<GetDevicePlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/measurements/device-plant`);
+        return GetDevicePlantsResponseSchema.parse(data);
     }
 
     async getUser(userId: number): Promise<User> {
