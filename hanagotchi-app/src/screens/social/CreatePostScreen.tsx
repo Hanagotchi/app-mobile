@@ -8,11 +8,12 @@ import * as SecureStore from "expo-secure-store";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import useFirebase from "../../hooks/useFirebase";
 import { postPhotoUrl } from "../../contexts/FirebaseContext";
+import { useMemo } from "react";
 
 type CreatePostScreenProps = NativeStackScreenProps<RootStackParamsList, "CreatePost">
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
-    const userId = Number(SecureStore.getItem("userId"));
+    const userId = useMemo(() => Number(SecureStore.getItem("userId")), []);
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
 
