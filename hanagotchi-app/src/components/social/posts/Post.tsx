@@ -17,6 +17,11 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete})
     const [menuOpen, toggleMenu] = useToggle(false);
     const iAmTheAuthor = author.id === myId;
 
+    const handleDelete = () => {
+        onDelete(postId);
+        toggleMenu();
+    }
+
     return (
         <View style={style.header}>
             <AuthorDetails author={author} />
@@ -29,7 +34,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete})
                 {iAmTheAuthor && <Menu.Item
                 titleStyle={style.itemTitle} 
                 title="ELIMINAR POST" 
-                onPress={() => onDelete(postId)}
+                onPress={handleDelete}
                 style={{minWidth: "50%"}} 
                 />}
                 <Menu.Item 
