@@ -29,3 +29,15 @@ export const PostSchema = z.object({
 })
 
 export type Post = z.infer<typeof PostSchema>;
+
+export const ReducedPostSchema = z.object({
+    id: z.string(),
+    author: PostAuthorSchema,
+    content: z.string(),
+    likes_count: z.number(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date(),
+    main_photo: z.string().url(),
+})
+
+export type ReducedPost = z.infer<typeof ReducedPostSchema>;
