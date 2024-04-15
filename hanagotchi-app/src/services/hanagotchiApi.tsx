@@ -11,13 +11,13 @@ import {
 } from "../models/hanagotchiApi";
 import { UpdateUserSchema, User, UserSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
-import { Post, PostData, PostSchema } from "../models/Post";
+import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
 
 const generateDummyData = () => {
-    const dummyData: Post[] = [];
+    const dummyData: ReducedPost[] = [];
   
     for (let i = 0; i < 50; i++) {
-      const postData: Post = {
+      const postData: ReducedPost = {
         id: String(i),
         author: {
             id: i,
@@ -29,17 +29,17 @@ const generateDummyData = () => {
         likes_count: Math.floor(Math.random() * 100),
         created_at: new Date(),
         updated_at: new Date(),
-        photo_links: Math.random() < 0.5 ? [
+        main_photo: Math.random() < 0.5 ? 
           "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/plants%2F5%2F1712438363124?alt=media&token=9cdd20c2-43f0-4327-9eb9-8135e6b5a306"
-        ] : [],
+         : undefined,
       };
-      dummyData.push(PostSchema.parse(postData));
+      dummyData.push(ReducedPostSchema.parse(postData));
     }
   
     return dummyData;
 };
 
-let dummyPosts = generateDummyData();
+let dummyPosts: ReducedPost[] = generateDummyData();
   
 
 export interface HanagotchiApi {
@@ -55,7 +55,7 @@ export interface HanagotchiApi {
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     createPost: (post: PostData) => Promise<Post>;
     deletePost: (postId: string) => Promise<void>;
-    dummyGetPosts: (page: number, size: number) => Promise<Post[]>;
+    dummyGetPosts: (page: number, size: number) => Promise<ReducedPost[]>;
 
 }
 
@@ -136,7 +136,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
             created_at: new Date(),
             photo_links: body.photo_links,
         } */
-        dummyPosts.unshift(parsedData);
+        dummyPosts.unshift(ReducedPostSchema.passthrough().parse({
+            ...parsedData,
+            main_photo: parsedData.photo_links.length > 0 ? parsedData.photo_links[0] : undefined,
+        }));
         return parsedData;
     }
 

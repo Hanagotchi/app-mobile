@@ -2,7 +2,7 @@ import { FlatList } from "react-native"
 import ReducedPost from "./Post";
 import { ActivityIndicator, Text } from "react-native-paper";
 import { BROWN_DARK } from "../../../themes/globalThemes";
-import { Post } from "../../../models/Post";
+import { ReducedPost as ReducedPostType } from "../../../models/Post";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
 import { useCallback } from "react";
@@ -25,7 +25,7 @@ const ListFooter: React.FC<ListFooterProps> = ({isFetching, noMorePosts}) => {
 }
 
 type PostListProps = {
-    updatePosts: (page: number) => Promise<Post[]>;
+    updatePosts: (page: number) => Promise<ReducedPostType[]>;
 }
 
 const PostList: React.FC = () => {

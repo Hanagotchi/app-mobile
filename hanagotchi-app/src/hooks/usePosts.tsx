@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Post } from "../models/Post";
+import { useEffect, useState } from "react";
+import { ReducedPost } from "../models/Post";
 
 export function usePosts(
-    fetchPostsFn: (pageNum: number) => Promise<Post[]>,
+    fetchPostsFn: (pageNum: number) => Promise<ReducedPost[]>,
 ) {
 
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [posts, setPosts] = useState<Post[]>([]);
+    const [posts, setPosts] = useState<ReducedPost[]>([]);
     const [error, setError] = useState<Error | null>(null);
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [noMorePosts, setNoMorePosts] = useState<boolean>(false);

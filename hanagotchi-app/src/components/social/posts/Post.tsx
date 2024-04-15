@@ -1,8 +1,8 @@
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native"
-import { Post, PostAuthor } from "../../../models/Post"
+import { ReducedPost as ReducedPostType, PostAuthor } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
 import { IconButton, Menu, Text } from "react-native-paper"
-import { BEIGE, BROWN_DARK, BROWN_LIGHT, GREEN } from "../../../themes/globalThemes"
+import { BEIGE, BROWN_DARK, GREEN } from "../../../themes/globalThemes"
 import { useToggle } from "../../../hooks/useToggle"
 import React from "react"
 
@@ -79,7 +79,7 @@ const PostFooter: React.FC<PostFooterProps> = ({likeCount, createdAt}) => {
 }
 
 type ReducedPostProps = {
-    post: Post;
+    post: ReducedPostType;
     myId: number;
     onDelete: (postId: string) => void;
 }
@@ -95,10 +95,10 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
                     onDelete={onDelete}
                 />
                 <Text style={style.content}>{post.content}</Text>
-                {post.photo_links.length > 0 &&(
+                {post.main_photo &&(
                     <Image 
                         style={style.image}
-                        source={{uri: post.photo_links[0]}} 
+                        source={{uri: post.main_photo}} 
                     />
                 )}
                 <PostFooter likeCount={post.likes_count} createdAt={post.created_at}/>
