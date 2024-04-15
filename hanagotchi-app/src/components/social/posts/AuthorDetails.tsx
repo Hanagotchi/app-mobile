@@ -15,8 +15,8 @@ const AuthorDetails: React.FC<AuthorDetailsProp> = ({author}) => {
         <View style={style.container}>
             <ProfilePicture uri={author.photo ?? "https://th.bing.com/th/id/OIP.Cl56H6WgxJ8npVqyhefTdQHaHa?rs=1&pid=ImgDetMain"} />
             <View>
-                <Text style={style.name}>{author.name?.toUpperCase() ?? "John Doe"}</Text>
-                <Text style={style.nickname}>@{author.nickname ?? "johnDoe123"}</Text>
+                <Text style={style.name}>{author.name?.toUpperCase() ?? "undefined"}</Text>
+                <Text style={style.nickname}>@{author.nickname ?? "undefined"}</Text>
             </View>
         </View>
     );
