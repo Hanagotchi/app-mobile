@@ -21,6 +21,7 @@ const ExpandibleImage: React.FC<ExpandibleImageProps> = ({source, minimizedImage
                 </Modal>
             </Portal>
             <TouchableOpacity onPress={toggleOpen} disabled={loading}>
+
                 <Image
                     source={source} 
                     style={minimizedImageStyle}

@@ -22,9 +22,7 @@ const EditLocation: React.FC<EditLocationProps> = ({ title, onRegionChange }) =>
 
     // If the android geoLocation has changed: then update the MapView and the user's location with onRegionChange 
     useEffect(() => {
-        console.log("OAOAEEA 1");
         if (location && regionSelected.latitude !== location.latitude && regionSelected.longitude !== location.longitude) {
-            console.log("OAOAA 2");
             setRegionSelected({
                 latitude: location.latitude,
                 longitude: location.longitude,

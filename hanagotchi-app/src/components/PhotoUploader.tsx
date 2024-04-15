@@ -16,6 +16,7 @@ type PhotoUploaderProps = {
 
 const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathList, updatePhotosFilepathList, imageSize}) => {
 
+
     const handleUploadPhoto = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {

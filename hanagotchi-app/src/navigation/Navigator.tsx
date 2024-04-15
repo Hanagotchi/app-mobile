@@ -1,21 +1,22 @@
 import useAuth from "../hooks/useAuth";
-import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {NavigationContainer, NavigatorScreenParams} from "@react-navigation/native";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import CompleteLoginScreen from "../screens/CompleteLoginScreen";
-import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, View } from "react-native";
-import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN } from "../themes/globalThemes";
-import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
 import FeedScreen from "../screens/social/FeedScreen";
+import CreatePostScreen from "../screens/social/CreatePostScreen";
+import {StyleSheet, View} from "react-native";
+import {BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN} from "../themes/globalThemes";
+import {Entypo, Ionicons} from '@expo/vector-icons';
+import ProfileScreen from "../screens/ProfileScreen";
 import CreateLogScreen from "../screens/logs/CreateLogScreen";
 import { Log } from "../models/Log";
 import EditLogScreen from "../screens/logs/EditLogScreen";
-import CreatePostScreen from "../screens/social/CreatePostScreen";
+import { BottomTabNavigationOptions, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -109,6 +110,7 @@ const MainScreens: React.FC = () => {
 export type RootStackParamsList = {
     Login: undefined;
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
+    Profile: undefined;
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
     CreateLog: undefined;
@@ -137,6 +139,7 @@ const Navigator: React.FC = () => {
                 ) : (
                     <>
                         <RootStack.Screen name="MainScreens" component={MainScreens} options={{ headerShown: false }} />
+                        <RootStack.Screen name="Profile" component={ProfileScreen} options={{headerShown: true, title: "Editar perfil"}}/>
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>

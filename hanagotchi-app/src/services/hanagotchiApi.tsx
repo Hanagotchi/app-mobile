@@ -56,6 +56,7 @@ export interface HanagotchiApi {
     createPost: (post: PostData) => Promise<Post>;
     deletePost: (postId: string) => Promise<void>;
     dummyGetPosts: (page: number, size: number) => Promise<Post[]>;
+
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -68,7 +69,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async logIn(authCode: string): Promise<LoginResponse> {
         const { data } = await this.axiosInstance.post("/login", { auth_code: authCode });
-        data.message.birthdate = new Date(data.message.birthdate);
         return LoginResponseSchema.parse(data);
     }
 
@@ -148,5 +148,4 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async dummyGetPosts(page: number, size: number) {
         return dummyPosts.slice(size*(page-1), size*page)
     }
-    
 }
