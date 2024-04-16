@@ -21,14 +21,10 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
     const userId = Number(SecureStore.getItem("userId"))
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const[option, setOption] = useState(0);
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false)
 
-    const deletePlant = async () => {
-        if (option == 0) return
-        await api.deletePlant(option);
-        navigation.goBack();
-    }
     const {isFetching, fetchedData: plants} = useApiFetch(
-        () => api.getPlants(userId),
+        () => api.getPlants({id_user: userId}),
         [{
             id: 0,
             id_user: 0,
@@ -36,6 +32,13 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
             scientific_name: "",
         }]
     );
+    useEffect(() => {
+        if (option.toString() == "---") {
+            setIsButtonEnabled(false)
+            return
+        }
+        setIsButtonEnabled(true)
+    }, [option]);
 
     useEffect(() => {
         if (plants && plants.length > 0) {
@@ -46,6 +49,13 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
             setPlantOptions(updatedPlants);
         }
     }, [plants]);
+
+
+    const deletePlant = async () => {
+        if (option == 0) return
+        await api.deletePlant(option);
+        navigation.goBack();
+    }
 
     return <SafeAreaView style={style.container}>
         {isFetching ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
@@ -63,6 +73,7 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
                         uppercase style={style.button}
                         onPress={() => deletePlant()}
                         labelStyle={{fontSize: 17}}
+                        disabled={!isButtonEnabled}
                     >
                         Eliminar
                     </LoaderButton>
@@ -76,7 +87,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        paddingTop: 80,
+        paddingTop: 40,
         backgroundColor: BACKGROUND_COLOR,
         gap: 30,
     },

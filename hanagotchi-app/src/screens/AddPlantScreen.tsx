@@ -1,9 +1,9 @@
-import {SafeAreaView, StyleSheet, View} from "react-native"
+import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native"
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
 import {useEffect, useState} from "react";
-import {BACKGROUND_COLOR} from "../themes/globalThemes";
+import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
@@ -24,12 +24,9 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
     const [types, setTypes] = useState<SelectOption[]>([]);
     const[name, setName] = useState("");
     const[option, setOption] = useState("");
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false)
 
-    const createPlant = async () => {
-        await api.createPlant(userId, name, option);
-        navigation.goBack();
-    }
-    const {fetchedData: plantTypes} = useApiFetch(
+    const {isFetching, fetchedData: plantTypes} = useApiFetch(
         () => api.getPlantTypes(),
         [{
             id: 0,
@@ -39,6 +36,18 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
             photo_link: "",
         }]
     );
+    const createPlant = async () => {
+        await api.createPlant(userId, name, option);
+        navigation.goBack();
+    }
+
+    useEffect(() => {
+        if (option.toString() == "---" || name == "") {
+            setIsButtonEnabled(false)
+            return
+        }
+        setIsButtonEnabled(true)
+    }, [option, name]);
 
     useEffect(() => {
         if (plantTypes && plantTypes.length > 0) {
@@ -49,25 +58,31 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
             setTypes(updatedTypes);
         }
     }, [plantTypes]);
+
     return <SafeAreaView style={style.container}>
-        <TextInput label={`NOMBRE`} value={name} onChangeText={(text) => setName(text)} />
-        <SelectBox
-                label="TIPO DE PLANTA"
-                data={types}
-                setSelected={(option) => setOption(option)}
-                save="key"
-                defaultOption={{ key: "---", value: "---" }}
-            />
-        <View style={style.buttonContainer}>
-            <LoaderButton 
-                mode="contained" 
-                uppercase style={style.button} 
-                onPress={() => createPlant()}
-                labelStyle={{fontSize: 17}}
-            >
-                Crear
-            </LoaderButton>
-        </View>
+        {isFetching ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/> :
+            <>
+                <TextInput label={`NOMBRE`} value={name} onChangeText={(text) => setName(text)} />
+                <SelectBox
+                        label="TIPO DE PLANTA"
+                        data={types}
+                        setSelected={(option) => setOption(option)}
+                        save="key"
+                        defaultOption={{ key: "---", value: "---" }}
+                    />
+                <View style={style.buttonContainer}>
+                    <LoaderButton
+                        mode="contained"
+                        uppercase style={style.button}
+                        onPress={() => createPlant()}
+                        labelStyle={{fontSize: 17}}
+                        disabled={!isButtonEnabled}
+                    >
+                        Crear
+                    </LoaderButton>
+                </View>
+            </>
+        }
     </SafeAreaView>
 }
 
@@ -75,7 +90,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        paddingTop: 80,
+        paddingTop: 40,
         backgroundColor: BACKGROUND_COLOR,
         gap: 30,
     },
