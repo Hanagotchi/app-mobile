@@ -1,18 +1,20 @@
-import { AxiosInstance } from "axios";
+import {AxiosInstance} from "axios";
 import {
-    LoginResponse,
-    LoginResponseSchema,
-    GetLogsByUserResponseSchema,
-    GetLogsByUserResponse,
+    GetDevicePlantsResponse,
+    GetDevicePlantsResponseSchema,
     GetLogByIdResponse,
     GetLogByIdResponseSchema,
+    GetLogsByUserResponse,
+    GetLogsByUserResponseSchema,
     GetPlantTypesResponseSchema,
-    GetPlantTypesResponse,
-    GetPlantsResponse, GetPlantsResponseSchema
+    GetPlantTypesResponse,GetPlantsResponse,
+    GetPlantsResponseSchema,
+    LoginResponse,
+    LoginResponseSchema,
 } from "../models/hanagotchiApi";
-import { UpdateUserSchema, User, UserSchema } from "../models/User";
-import { Plant, PlantSchema } from "../models/Plant";
-import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
+import {UpdateUserSchema, User, UserSchema} from "../models/User";
+import {Plant, PlantSchema } from "../models/Plant";
+import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
 
 
 export interface HanagotchiApi {
@@ -29,7 +31,9 @@ export interface HanagotchiApi {
     editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
     addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
-
+    getDevicePlants: () => Promise<GetDevicePlantsResponse>
+    deleteDevice: (plantId: number) => Promise<void>
+    addSensor: (deviceId: string, plantId: number) => Promise<void>
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -54,6 +58,15 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetPlantsResponseSchema.parse(data)
     }
 
+    async getDevicePlants(): Promise<GetDevicePlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/measurements/device-plant`);
+        return GetDevicePlantsResponseSchema.parse(data);
+    }
+
+    async deleteDevice(plantId: number): Promise<void> {
+        await this.axiosInstance.delete(`/measurements/device-plant/${plantId}?type_id=id_plant`);
+    }
+
     async getUser(userId: number): Promise<User> {
         const { data } = await this.axiosInstance.get(`/users/${userId}`);
         return UserSchema.parse(data?.message);
@@ -67,6 +80,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async patchUser(user: User): Promise<void> {
         const updateUser = UpdateUserSchema.parse(user);
         await this.axiosInstance.patch(`/users/${user.id}`, updateUser);
+    }
+
+    async addSensor(deviceId: string, plantId: number): Promise<void> {
+        await this.axiosInstance.post(`/measurements/device-plant`, {id_device: deviceId, id_plant: plantId});
     }
 
     async getLogsByUser(userId: number, params: {year: number, month?: number} ): Promise<GetLogsByUserResponse> {

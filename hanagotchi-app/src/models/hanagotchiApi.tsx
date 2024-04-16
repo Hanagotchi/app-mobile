@@ -3,6 +3,7 @@ import { z } from "zod";
 import { UserSchema } from "./User";
 import { LogSchema } from "./Log";
 import { PlantSchema } from "./Plant";
+import {DevicePlantSchema} from "./DevicePlant";
 
 export const LoginResponseSchema = z.object({
     status: z.number(),
@@ -16,6 +17,10 @@ export const GetUserSchema = z.object({
 });
 
 export type GetUserResponse = z.infer<typeof GetUserSchema>;
+
+export const GetDevicePlantsResponseSchema = z.array(DevicePlantSchema);
+export type GetDevicePlantsResponse = z.infer<typeof GetDevicePlantsResponseSchema>;
+
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
 export const GetPlantsResponseSchema = z.array(PlantSchema);
