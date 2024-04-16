@@ -23,7 +23,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     const[option, setOption] = useState(0);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false)
     const {isFetching: isFetchingPlants, fetchedData: plants} = useApiFetch(
-        () => api.getPlants(userId),
+        () => api.getPlants({id_user: userId}),
         [{
             id: 0,
             id_user: 0,

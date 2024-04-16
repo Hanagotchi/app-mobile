@@ -1,18 +1,22 @@
 import useAuth from "../hooks/useAuth";
-import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {NavigationContainer, NavigatorScreenParams} from "@react-navigation/native";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import CompleteLoginScreen from "../screens/CompleteLoginScreen";
-import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, View } from "react-native";
-import { BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN } from "../themes/globalThemes";
-import { Entypo, Ionicons   } from '@expo/vector-icons';
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import AddPlantScreen from "../screens/AddPlantScreen";
 import AddSensorScreen from "../screens/AddSensorScreen";
-import { formatDate } from "../common/dateUtils";
+import {formatDate} from "../common/dateUtils";
+import {BottomTabNavigationOptions, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {StyleSheet, View} from "react-native";
+import {BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN} from "../themes/globalThemes";
+import {Entypo, Ionicons} from '@expo/vector-icons';
+import ProfileScreen from "../screens/ProfileScreen";
+import CreateLogScreen from "../screens/logs/CreateLogScreen";
+import {Log} from "../models/Log";
+import EditLogScreen from "../screens/logs/EditLogScreen";
 import DeleteSensorScreen from "../screens/DeleteSensorScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
@@ -102,11 +106,14 @@ const MainScreens: React.FC = () => {
 export type RootStackParamsList = {
     Login: undefined;
     MainScreens: NavigatorScreenParams<MainTabParamsList>;
+    Profile: undefined;
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
     AddPlant: undefined;
     AddSensor: undefined;
     DeleteSensor: undefined;
+    CreateLog: undefined;
+    EditLog: {log: Log};
 }
 
 const Navigator: React.FC = () => {
@@ -130,12 +137,19 @@ const Navigator: React.FC = () => {
                 ) : (
                     <>
                         <RootStack.Screen name="MainScreens" component={MainScreens} options={{ headerShown: false }} />
+                        <RootStack.Screen name="Profile" component={ProfileScreen} options={{headerShown: true, title: "Editar perfil"}}/>
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
                         <RootStack.Screen name="AddSensor" component={AddSensorScreen} options={{ headerShown: true, title: "Asociar un sensor"}} />
                         <RootStack.Screen name="DeleteSensor" component={DeleteSensorScreen} options={{ headerShown: true, title: "Eliminar un sensor"}} />
+                        <RootStack.Screen name="CreateLog" component={CreateLogScreen} options={({navigation}) => ({
+                            title: "Nueva bitácora",
+                        })}/>
+                        <RootStack.Screen name="EditLog" component={EditLogScreen} options={() => ({
+                            title: "Editar bitácora",
+                        })}/>
                     </>
                 )}
             </RootStack.Navigator>

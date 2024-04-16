@@ -9,16 +9,21 @@ import {
     GetPlantsResponse,
     GetPlantsResponseSchema,
     LoginResponse,
-    LoginResponseSchema
+    LoginResponseSchema,
 } from "../models/hanagotchiApi";
 import {UpdateUserSchema, User, UserSchema} from "../models/User";
+import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
 
 
 export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
     getUser: (userId: number) => Promise<User>;
     patchUser: (user: User) => Promise<void>;
-    getPlants: (userId: number) => Promise<GetPlantsResponse>;
+    getPlants: (params: {id_user?: number, limit?: number}) => Promise<GetPlantsResponse>;
+    createLog: (log: CreateLog) => Promise<Log>;
+    editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
+    addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
+    deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     getDevicePlants: () => Promise<GetDevicePlantsResponse>
     deleteDevice: (plantId: number) => Promise<void>
     getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
@@ -38,11 +43,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         const { data } = await this.axiosInstance.post("/login", { auth_code: authCode });
         data.message.birthdate = new Date(data.message.birthdate);
         return LoginResponseSchema.parse(data);
-    }
-
-    async getPlants(userId: number): Promise<GetPlantsResponse> {
-        const { data } = await this.axiosInstance.get(`/plants?id_user=${userId}`);
-        return GetPlantsResponseSchema.parse(data);
     }
 
     async getDevicePlants(): Promise<GetDevicePlantsResponse> {
@@ -73,8 +73,32 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetLogsByUserResponseSchema.parse(data);
     }
 
-    async getLogById(log_id: number): Promise<GetLogByIdResponse> {
-        const { data } = await this.axiosInstance.get(`/logs/${log_id}`);
+    async getLogById(logId: number): Promise<GetLogByIdResponse> {
+        const { data } = await this.axiosInstance.get(`/logs/${logId}`);
         return GetLogByIdResponseSchema.parse(data);
+    }
+
+    async getPlants(params: {id_user?: number, limit?: number}): Promise<GetPlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/plants`, {params});
+        return GetPlantsResponseSchema.parse(data)
+    }
+
+    async createLog(body: CreateLog): Promise<Log> {
+        const { data } = await this.axiosInstance.post("/logs", body);
+        return LogSchema.parse(data);
+    }
+
+    async editLog(logId: number, updateSet: PartialUpdateLog): Promise<Log> {
+        const { data } = await this.axiosInstance.patch(`/logs/${logId}`, updateSet);
+        return LogSchema.parse(data);
+    }
+
+    async addPhotoToLog(logId: number, body: {photo_link: string}): Promise<Log> {
+        const { data } = await this.axiosInstance.post(`/logs/${logId}/photos`, body);
+        return LogSchema.parse(data);
+    }
+
+    async deletePhotoFromLog(logId: number, photoId: number) {
+        await this.axiosInstance.delete(`/logs/${logId}/photos/${photoId}`);
     }
 }

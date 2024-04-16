@@ -1,5 +1,6 @@
 import { AxiosError } from "axios"
 import { ToastAndroid } from "react-native"
+import { ZodError } from "zod";
 
 function handleAxiosError(err: AxiosError) {
     switch (err.code) {
@@ -15,11 +16,18 @@ function handleAxiosError(err: AxiosError) {
     }
 }
 
+function handleZodError(err: ZodError) {
+    err.issues.map(issue => ToastAndroid.show(issue.message, ToastAndroid.LONG))
+}
+
 
 export function handleError(err: Error) {
     switch (err.constructor) {
         case AxiosError:
             handleAxiosError(err as AxiosError);
+            break;
+        case ZodError:
+            handleZodError(err as ZodError);
             break;
         default:
             console.log(err.name, err.message)

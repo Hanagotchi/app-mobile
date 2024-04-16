@@ -25,6 +25,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
     return <SafeAreaView style={style.container}>
         <View style={style.items}>
+            <Pressable style={style.item} onPress={() => navigation.navigate("Profile")}>
+                <Text style={style.text}>Editar perfil</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
             <Pressable style={style.item} onPress={() => navigation.navigate("AddPlant")}>
                 <Text style={style.text}>Agregar planta</Text>
                 <Icon source={chevronRight} size={23}/>
@@ -38,11 +42,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 <Icon source={chevronRight} size={23}/>
             </Pressable>
         </View>
-    
+
         <View style={style.buttonContainer}>
-            <LoaderButton 
-                mode="contained" 
-                uppercase style={style.button} 
+            <LoaderButton
+                mode="contained"
+                uppercase style={style.button}
                 onPress={handleSignOut}
                 labelStyle={{fontSize: 17}}
             >
@@ -73,7 +77,7 @@ const style = StyleSheet.create({
         justifyContent: "center",
     },
     items: {
-        
+
     },
     text: {
         fontSize: 20,
