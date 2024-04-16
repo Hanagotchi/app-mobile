@@ -13,16 +13,7 @@ import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
 import NoContent from "../components/NoContent";
-
-interface Measurement {
-  id: number;
-  id_plant: number;
-  temperature: number;
-  humidity: number;
-  light: number;
-  watering: number;
-  time_stamp: string;
-}
+import {Measurement} from "../models/Measurement";
 
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
@@ -49,6 +40,8 @@ const HomeScreen: React.FC = () => {
   );
 
   const fetchPlantType = async () => {
+    console.log(plants)
+    console.log(plants[currentPlant])
     const fetchedPlantType = await api.getPlantType(plants[currentPlant].scientific_name);
     setPlantType(fetchedPlantType);
   };
@@ -60,8 +53,9 @@ const HomeScreen: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log("entro a este use de cuando cambuio current plant")
     fetchPlantType();
-    fetchMeasurement()
+    fetchMeasurement();
   }, [currentPlant]);
 
   if (!isFetching && error) {
@@ -85,6 +79,9 @@ const HomeScreen: React.FC = () => {
         <NoContent/>
       </View>
   )
+
+  console.log("current: ", currentPlant)
+  console.log("plants ", plants)
 
   return (
       <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>

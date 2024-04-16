@@ -50,7 +50,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
     async getPlantType(name: string): Promise<GetPlantTypeResponse> {
         const encodedName = encodeURIComponent(name);
-        const { data } = await this.axiosInstance.get(`/plant-type/${encodedName}`);
+        console.log("name: ", name)
+        const { data, status } = await this.axiosInstance.get(`/plant-type/${encodedName}`);
+        //console.log("status: ", status)
+        //console.log("data: ", data)
         return GetPlantTypeResponseSchema.parse(data);
     }
 
@@ -59,7 +62,9 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return UserSchema.parse(data?.message);
     }
     async getLastMeasurement(plantId: number): Promise<Measurement> {
-        const { data } = await this.axiosInstance.get(`/measurements/${plantId}/last`);
+        const { data, status } = await this.axiosInstance.get(`/measurements/${plantId}/last`);
+        //console.log(status)
+        //console.log("data: ", data)
         return MeasurementSchema.parse(data);
     }
 
