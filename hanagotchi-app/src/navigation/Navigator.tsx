@@ -3,17 +3,20 @@ import {NavigationContainer, NavigatorScreenParams} from "@react-navigation/nati
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CompleteLoginScreen from "../screens/CompleteLoginScreen";
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
-import { formatDate } from "../common/dateUtils";
+import AddPlantScreen from "../screens/AddPlantScreen";
+import {formatDate} from "../common/dateUtils";
 import {StyleSheet, View} from "react-native";
 import {BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN} from "../themes/globalThemes";
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import ProfileScreen from "../screens/ProfileScreen";
 import CreateLogScreen from "../screens/logs/CreateLogScreen";
-import { Log } from "../models/Log";
+import {Log} from "../models/Log";
 import EditLogScreen from "../screens/logs/EditLogScreen";
+import DeletePlantScreen from "../screens/DeletePlantScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -107,6 +110,8 @@ export type RootStackParamsList = {
     CompleteLogin: { userId: number };
     CreateLog: undefined;
     EditLog: {log: Log};
+    AddPlant: undefined;
+    DeletePlant: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -140,6 +145,8 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="EditLog" component={EditLogScreen} options={() => ({
                             title: "Editar bitácora",
                         })}/>
+                        <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
+                        <RootStack.Screen name="DeletePlant" component={DeletePlantScreen} options={{ headerShown: true, title: "Eliminar una planta"}} />
                     </>
                 )}
             </RootStack.Navigator>
