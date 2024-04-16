@@ -1,8 +1,8 @@
-import {z} from "zod";
-import {UserSchema} from "./User";
-import {LogSchema} from "./Log";
 import {PlantTypeSchema} from "./PlantType"
-import {PlantSchema} from "./Plant";
+import { z } from "zod";
+import { UserSchema } from "./User";
+import { LogSchema } from "./Log";
+import { PlantSchema } from "./Plant";
 
 export const LoginResponseSchema = z.object({
     status: z.number(),
