@@ -2,7 +2,7 @@ import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native"
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
@@ -21,13 +21,8 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     const userId = Number(SecureStore.getItem("userId"))
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const[option, setOption] = useState(0);
-
-    const deleteDevice = async () => {
-        if (option.toString() == "---") return
-        await api.deleteDevice(option);
-        navigation.goBack();
-    }
-    const {isFetching, fetchedData: plants} = useApiFetch(
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false)
+    const {isFetching: isFetchingPlants, fetchedData: plants} = useApiFetch(
         () => api.getPlants(userId),
         [{
             id: 0,
@@ -37,7 +32,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
         }]
     );
 
-    const {fetchedData: devicePlants} = useApiFetch(
+    const {isFetching: isFetchingDevices, fetchedData: devicePlants} = useApiFetch(
         () => api.getDevicePlants(),
         [{
             id_user: 0,
@@ -48,6 +43,20 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     );
 
     useEffect(() => {
+        if (option.toString() == "---") {
+            setIsButtonEnabled(false)
+            return
+        }
+        setIsButtonEnabled(true)
+    }, [option]);
+
+    const deleteDevice = async () => {
+        if (option.toString() == "---") return
+        await api.deleteDevice(option);
+        navigation.goBack();
+    }
+
+    useEffect(() => {
         if (plants && plants.length > 0) {
             const filteredPlants = plants.filter((plant) => devicePlants.some((it) => it.id_plant === plant.id));
             const updatedPlants = filteredPlants.map(plant => ({
@@ -56,10 +65,10 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
             }));
             setPlantOptions(updatedPlants);
         }
-    }, [plants]);
+    }, [plants, devicePlants]);
 
     return <SafeAreaView style={style.container}>
-        {isFetching ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
+        {(isFetchingPlants || isFetchingDevices) ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
             (<>
                 <SelectBox
                     label="PLANTA"
@@ -69,14 +78,24 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
                     defaultOption={{ key: "---", value: "---" }}
                 />
                 <View style={style.buttonContainer}>
-                    <LoaderButton
-                        mode="contained"
-                        uppercase style={style.button}
-                        onPress={() => deleteDevice()}
-                        labelStyle={{fontSize: 17}}
-                    >
-                        Eliminar
-                    </LoaderButton>
+                    { isButtonEnabled ?
+                        <LoaderButton
+                            mode="contained"
+                            uppercase style={style.button}
+                            onPress={() => deleteDevice()}
+                            labelStyle={{fontSize: 17}}
+                        >
+                            Eliminar
+                        </LoaderButton> :
+                        <LoaderButton
+                            mode="contained"
+                            uppercase style={style.disabledButton}
+                            onPress={() => {}}
+                            labelStyle={{fontSize: 17}}
+                        >
+                            Eliminar
+                        </LoaderButton>
+                    }
                 </View>
             </>)
         }
@@ -99,6 +118,13 @@ const style = StyleSheet.create({
         bottom: 20,
     },
     button: {
+        borderRadius: 10,
+        width: "50%",
+        height: 50,
+        justifyContent: "center",
+    },
+    disabledButton: {
+        backgroundColor: "grey",
         borderRadius: 10,
         width: "50%",
         height: 50,
