@@ -21,8 +21,9 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     const api = useHanagotchiApi();
     const userId = Number(SecureStore.getItem("userId"))
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
-    const[option, setOption] = useState(0);
-    const[serialNumber, setSerialNumber] = useState("");
+    const [option, setOption] = useState(0);
+    const [serialNumber, setSerialNumber] = useState("");
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false)
     const {isFetching: isFetchingPlant, fetchedData: plants} = useApiFetch(
         () => api.getPlants(userId),
         [{
@@ -48,6 +49,14 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
         navigation.goBack();
     }
 
+    useEffect(() => {
+        if (option.toString() == "---" || serialNumber == "") {
+            setIsButtonEnabled(false)
+            return
+        }
+        setIsButtonEnabled(true)
+    }, [option, serialNumber]);
+
 
     useEffect(() => {
         if (plants && plants.length > 0) {
@@ -72,14 +81,24 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
                     defaultOption={{ key: "---", value: "---" }}
                 />
                 <View style={style.buttonContainer}>
-                    <LoaderButton
-                        mode="contained"
-                        uppercase style={style.button}
-                        onPress={() => createSensor()}
-                        labelStyle={{fontSize: 17}}
-                    >
-                        Asociar
-                    </LoaderButton>
+                    { isButtonEnabled ?
+                        <LoaderButton
+                            mode="contained"
+                            uppercase style={style.button}
+                            onPress={() => createSensor()}
+                            labelStyle={{fontSize: 17}}
+                        >
+                            Asociar
+                        </LoaderButton> :
+                        <LoaderButton
+                            mode="contained"
+                            uppercase style={style.disabledButton}
+                            onPress={() => {}}
+                            labelStyle={{fontSize: 17}}
+                        >
+                            Asociar
+                        </LoaderButton>
+                    }
                 </View>
             </>
         }
@@ -103,6 +122,13 @@ const style = StyleSheet.create({
         bottom: 20,
     },
     button: {
+        borderRadius: 10,
+        width: "50%",
+        height: 50,
+        justifyContent: "center",
+    },
+    disabledButton: {
+        backgroundColor: "grey",
         borderRadius: 10,
         width: "50%",
         height: 50,
