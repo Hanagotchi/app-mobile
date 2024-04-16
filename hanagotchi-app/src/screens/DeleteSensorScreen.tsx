@@ -78,24 +78,15 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
                     defaultOption={{ key: "---", value: "---" }}
                 />
                 <View style={style.buttonContainer}>
-                    { isButtonEnabled ?
-                        <LoaderButton
-                            mode="contained"
-                            uppercase style={style.button}
-                            onPress={() => deleteDevice()}
-                            labelStyle={{fontSize: 17}}
-                        >
-                            Eliminar
-                        </LoaderButton> :
-                        <LoaderButton
-                            mode="contained"
-                            uppercase style={style.disabledButton}
-                            onPress={() => {}}
-                            labelStyle={{fontSize: 17}}
-                        >
-                            Eliminar
-                        </LoaderButton>
-                    }
+                    <LoaderButton
+                        mode="contained"
+                        uppercase style={style.button}
+                        onPress={() => deleteDevice()}
+                        labelStyle={{fontSize: 17}}
+                        disabled={!isButtonEnabled}
+                    >
+                        Eliminar
+                    </LoaderButton>
                 </View>
             </>)
         }
@@ -118,13 +109,6 @@ const style = StyleSheet.create({
         bottom: 20,
     },
     button: {
-        borderRadius: 10,
-        width: "50%",
-        height: 50,
-        justifyContent: "center",
-    },
-    disabledButton: {
-        backgroundColor: "grey",
         borderRadius: 10,
         width: "50%",
         height: 50,
