@@ -1,9 +1,9 @@
-import {SafeAreaView, StyleSheet, View} from "react-native"
+import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native"
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
 import React, {useEffect, useState} from "react";
-import {BACKGROUND_COLOR} from "../themes/globalThemes";
+import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
@@ -23,7 +23,7 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const[option, setOption] = useState(0);
     const[serialNumber, setSerialNumber] = useState("");
-    const {fetchedData: plants} = useApiFetch(
+    const {isFetching: isFetchingPlant, fetchedData: plants} = useApiFetch(
         () => api.getPlants(userId),
         [{
             id: 0,
@@ -32,7 +32,7 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
             scientific_name: "",
         }]
     );
-    const {fetchedData: devicePlants} = useApiFetch(
+    const {isFetching: isFetchingDevices, fetchedData: devicePlants} = useApiFetch(
         () => api.getDevicePlants(),
         [{
             id_user: 0,
@@ -58,27 +58,32 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
             }));
             setPlantOptions(updatedPlants);
         }
-    }, [devicePlants]);
+    }, [devicePlants, plants]);
 
     return <SafeAreaView style={style.container}>
-        <TextInput label={`NUMERO DE SERIE`} value={serialNumber} onChangeText={(text) => setSerialNumber(text)} />
-        <SelectBox
-                label="PLANTA"
-                data={plantOptions}
-                setSelected={(option) => setOption(option)}
-                save="key"
-                defaultOption={{ key: "---", value: "---" }}
-            />
-        <View style={style.buttonContainer}>
-            <LoaderButton 
-                mode="contained" 
-                uppercase style={style.button} 
-                onPress={() => createSensor()}
-                labelStyle={{fontSize: 17}}
-            >
-                Asociar
-            </LoaderButton>
-        </View>
+        {(isFetchingPlant || isFetchingDevices) ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/> :
+            <>
+                <TextInput label={`NUMERO DE SERIE`} value={serialNumber} onChangeText={(text) => setSerialNumber(text)} />
+                <SelectBox
+                    label="PLANTA"
+                    data={plantOptions}
+                    setSelected={(option) => setOption(option)}
+                    save="key"
+                    defaultOption={{ key: "---", value: "---" }}
+                />
+                <View style={style.buttonContainer}>
+                    <LoaderButton
+                        mode="contained"
+                        uppercase style={style.button}
+                        onPress={() => createSensor()}
+                        labelStyle={{fontSize: 17}}
+                    >
+                        Asociar
+                    </LoaderButton>
+                </View>
+            </>
+        }
+
     </SafeAreaView>
 }
 
