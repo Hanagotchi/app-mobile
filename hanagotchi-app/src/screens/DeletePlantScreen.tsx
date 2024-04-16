@@ -4,84 +4,81 @@ import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
 import {useEffect, useState} from "react";
 import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
-import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 
-
-type AddPlantProps = NativeStackScreenProps<RootStackParamsList, "AddPlant">;
-
 interface SelectOption {
-    key: string;
+    key: number;
     value: string;
 }
 
-const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
+type DeletePlantProps = NativeStackScreenProps<RootStackParamsList, "DeletePlant">;
+
+const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
     const api = useHanagotchiApi();
     const userId = Number(SecureStore.getItem("userId"))
-    const [types, setTypes] = useState<SelectOption[]>([]);
-    const[name, setName] = useState("");
-    const[option, setOption] = useState("");
+    const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
+    const[option, setOption] = useState(0);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false)
 
-    const {isFetching, fetchedData: plantTypes} = useApiFetch(
-        () => api.getPlantTypes(),
+    const {isFetching, fetchedData: plants} = useApiFetch(
+        () => api.getPlants({id_user: userId}),
         [{
             id: 0,
-            botanical_name: "",
-            common_name: "",
-            description: "",
-            photo_link: "",
+            id_user: 0,
+            name: "",
+            scientific_name: "",
         }]
     );
-    const createPlant = async () => {
-        await api.createPlant(userId, name, option);
-        navigation.goBack();
-    }
-
     useEffect(() => {
-        if (option.toString() == "---" || name == "") {
+        if (option.toString() == "---") {
             setIsButtonEnabled(false)
             return
         }
         setIsButtonEnabled(true)
-    }, [option, name]);
+    }, [option]);
 
     useEffect(() => {
-        if (plantTypes && plantTypes.length > 0) {
-            const updatedTypes = plantTypes.map(plant => ({
-                key: plant.botanical_name,
-                value: plant.botanical_name
+        if (plants && plants.length > 0) {
+            const updatedPlants = plants.map(plant => ({
+                key: plant.id,
+                value: plant.name
             }));
-            setTypes(updatedTypes);
+            setPlantOptions(updatedPlants);
         }
-    }, [plantTypes]);
+    }, [plants]);
+
+
+    const deletePlant = async () => {
+        if (option == 0) return
+        await api.deletePlant(option);
+        navigation.goBack();
+    }
 
     return <SafeAreaView style={style.container}>
-        {isFetching ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/> :
-            <>
-                <TextInput label={`NOMBRE`} value={name} onChangeText={(text) => setName(text)} />
+        {isFetching ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
+            (<>
                 <SelectBox
-                        label="TIPO DE PLANTA"
-                        data={types}
-                        setSelected={(option) => setOption(option)}
-                        save="key"
-                        defaultOption={{ key: "---", value: "---" }}
-                    />
+                    label="PLANTA"
+                    data={plantOptions}
+                    setSelected={(option) => setOption(option)}
+                    save="key"
+                    defaultOption={{ key: "---", value: "---" }}
+                />
                 <View style={style.buttonContainer}>
                     <LoaderButton
                         mode="contained"
                         uppercase style={style.button}
-                        onPress={() => createPlant()}
+                        onPress={() => deletePlant()}
                         labelStyle={{fontSize: 17}}
                         disabled={!isButtonEnabled}
                     >
-                        Crear
+                        Eliminar
                     </LoaderButton>
                 </View>
-            </>
+            </>)
         }
     </SafeAreaView>
 }
@@ -125,4 +122,4 @@ const style = StyleSheet.create({
     },
 })
 
-export default AddPlantScreen;
+export default DeletePlantScreen;

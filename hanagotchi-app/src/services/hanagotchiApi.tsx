@@ -6,12 +6,14 @@ import {
     GetLogByIdResponseSchema,
     GetLogsByUserResponse,
     GetLogsByUserResponseSchema,
-    GetPlantsResponse,
+    GetPlantTypesResponseSchema,
+    GetPlantTypesResponse,GetPlantsResponse,
     GetPlantsResponseSchema,
     LoginResponse,
     LoginResponseSchema,
 } from "../models/hanagotchiApi";
 import {UpdateUserSchema, User, UserSchema} from "../models/User";
+import {Plant, PlantSchema } from "../models/Plant";
 import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
 
 
@@ -19,6 +21,11 @@ export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
     getUser: (userId: number) => Promise<User>;
     patchUser: (user: User) => Promise<void>;
+    getPlantTypes: () => Promise<GetPlantTypesResponse>;
+    createPlant: (id_user: number, name: string, scientific_name: string) => Promise<Plant>;
+    deletePlant: (plantId: number) => Promise<void>;
+    getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>;
+    getLogById: (logId: number) => Promise<GetLogByIdResponse>;
     getPlants: (params: {id_user?: number, limit?: number}) => Promise<GetPlantsResponse>;
     createLog: (log: CreateLog) => Promise<Log>;
     editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
@@ -26,13 +33,10 @@ export interface HanagotchiApi {
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     getDevicePlants: () => Promise<GetDevicePlantsResponse>
     deleteDevice: (plantId: number) => Promise<void>
-    getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
-    getLogById: (log_id: number) => Promise<GetLogByIdResponse>
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
-
     private axiosInstance: AxiosInstance;
 
     constructor(axiosInstance: AxiosInstance) {
@@ -43,6 +47,15 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         const { data } = await this.axiosInstance.post("/login", { auth_code: authCode });
         data.message.birthdate = new Date(data.message.birthdate);
         return LoginResponseSchema.parse(data);
+    }
+
+    async deletePlant(plantId: number): Promise<void> {
+        await this.axiosInstance.delete(`/plants/${plantId}`)
+    }
+
+    async getPlants(params: {id_user?: number, limit?: number}): Promise<GetPlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/plants`, {params});
+        return GetPlantsResponseSchema.parse(data)
     }
 
     async getDevicePlants(): Promise<GetDevicePlantsResponse> {
@@ -57,6 +70,11 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getUser(userId: number): Promise<User> {
         const { data } = await this.axiosInstance.get(`/users/${userId}`);
         return UserSchema.parse(data?.message);
+    }
+
+    async createPlant(id_user: number, name: string, scientific_name: string): Promise<Plant> {
+        const { data } = await this.axiosInstance.post(`/plants`, { id_user, name, scientific_name });
+        return PlantSchema.parse(data);
     }
 
     async patchUser(user: User): Promise<void> {
@@ -78,11 +96,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetLogByIdResponseSchema.parse(data);
     }
 
-    async getPlants(params: {id_user?: number, limit?: number}): Promise<GetPlantsResponse> {
-        const { data } = await this.axiosInstance.get(`/plants`, {params});
-        return GetPlantsResponseSchema.parse(data)
-    }
-
     async createLog(body: CreateLog): Promise<Log> {
         const { data } = await this.axiosInstance.post("/logs", body);
         return LogSchema.parse(data);
@@ -100,5 +113,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async deletePhotoFromLog(logId: number, photoId: number) {
         await this.axiosInstance.delete(`/logs/${logId}/photos/${photoId}`);
+    }
+
+    async getPlantTypes(): Promise<GetPlantTypesResponse>{
+        const { data } = await this.axiosInstance.get(`/plant-type`);
+        return GetPlantTypesResponseSchema.parse(data);
     }
 }
