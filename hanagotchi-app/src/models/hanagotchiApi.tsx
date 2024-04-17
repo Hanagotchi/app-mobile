@@ -6,8 +6,13 @@ import { PlantSchema } from "./Plant";
 import {DevicePlantSchema} from "./DevicePlant";
 
 export const LoginResponseSchema = z.object({
-    status: z.number(),
-    message: UserSchema,
+    data: z.object({
+        status: z.number(),
+        message: UserSchema,
+    }),
+    headers: z.object({
+        "x-access-token": z.string()
+    }),
 });
 
 

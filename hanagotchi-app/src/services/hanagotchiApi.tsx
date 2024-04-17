@@ -44,9 +44,8 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async logIn(authCode: string): Promise<LoginResponse> {
-        const { data } = await this.axiosInstance.post("/login", { auth_code: authCode });
-        data.message.birthdate = new Date(data.message.birthdate);
-        return LoginResponseSchema.parse(data);
+        const { data, headers } = await this.axiosInstance.post("/login", { auth_code: authCode });
+        return LoginResponseSchema.parse({data, headers});
     }
 
     async deletePlant(plantId: number): Promise<void> {

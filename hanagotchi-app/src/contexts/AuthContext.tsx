@@ -55,9 +55,16 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             // Get the users ID token
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
             
-            const { message: user} : LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
+            const { 
+                data: {
+                    message: user
+                }, 
+                headers: {
+                    "x-access-token": accessToken
+                }
+            } : LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
             await set("userId", user.id.toString());
-            createSession(user.id, `tokentoken${user.id}`);
+            createSession(user.id, accessToken);
 
             // Create a Google credential with the token
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
