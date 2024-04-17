@@ -5,7 +5,6 @@ import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { LoginResponse } from "../models/hanagotchiApi";
 import env from "../environment/loader";
 import { User, UserSchema } from "../models/User";
-import useLocalStorage from "../hooks/useLocalStorage";
 import { useSession } from "../hooks/useSession";
 
 export type AuthContextProps = {
@@ -25,8 +24,6 @@ export const AuthContext = createContext<AuthContextProps>({
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const hanagotchiApi = useHanagotchiApi();
-    const { set } = useLocalStorage();
-    const { remove } = useLocalStorage();
     const [createSession, deleteSession, loadFromSecureStore] = useSession((state) => [state.createSession, state.deleteSession, state.loadFromSecureStore])
 
     useEffect(() => {
@@ -63,7 +60,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                     "x-access-token": accessToken
                 }
             } : LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
-            await set("userId", user.id.toString());
             createSession(user.id, accessToken);
 
             // Create a Google credential with the token
@@ -74,7 +70,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             return UserSchema.parse(user);
 
         } catch (err) {
-            await remove("userId");
             await deleteSession();
 
             if (await GoogleSignin.isSignedIn()) {
@@ -88,7 +83,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         await GoogleSignin.signOut();
         await auth().signOut()
         await deleteSession();
-        await remove("userId");
         setLoggedIn(false);
     };
 
