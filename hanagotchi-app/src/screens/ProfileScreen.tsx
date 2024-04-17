@@ -6,18 +6,18 @@ import React, {useEffect, useState} from "react";
 import {User} from "../models/User";
 import {useApiFetch} from "../hooks/useApiFetch";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import * as SecureStore from "expo-secure-store";
 import EditUser from "../components/EditUser";
 import useLocation from "../hooks/useLocation";
 import useFirebase from "../hooks/useFirebase";
 import {DEFAULT_PHOTO} from "../components/ProfilePicture";
 import {handleError} from "../common/errorHandling";
+import { useSession } from "../hooks/useSession";
 
 type ProfileScreenProps = NativeStackScreenProps<RootStackParamsList, "Profile">
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = useSession((state) => state.session?.userId)!;
     const { requestLocation } = useLocation();
     const { uploadImage } = useFirebase();
     const [user, setUser] = useState<User>();

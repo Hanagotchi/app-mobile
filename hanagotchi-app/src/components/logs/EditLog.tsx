@@ -9,7 +9,7 @@ import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { GetPlantsResponse } from "../../models/hanagotchiApi";
 import { BROWN_DARK } from "../../themes/globalThemes";
 import SelectBox, { SelectOption } from "../SelectBox";
-import * as SecureStore from "expo-secure-store";
+import { useSession } from "../../hooks/useSession";
 
 type EditLogProps = {
     initValues?: LogData;
@@ -30,7 +30,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
 
     const [data, setData] = useState<LogData>(initValues);
     const [contentLen, setContentLen] = useState<number>(initValues.content.length);
-    const id_user = Number(SecureStore.getItem("userId"));
+    const id_user = useSession((state) => state.session?.userId)!;
     const api = useHanagotchiApi()
     const {isFetching, fetchedData, error} = useApiFetch<GetPlantsResponse>(() => api.getPlants({id_user, limit: 1024}), []);
     const myPlants: SelectOption[] = useMemo(() => {

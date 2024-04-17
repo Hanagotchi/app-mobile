@@ -8,7 +8,7 @@ import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
-import * as SecureStore from "expo-secure-store";
+import { useSession } from "../hooks/useSession";
 
 
 type AddPlantProps = NativeStackScreenProps<RootStackParamsList, "AddPlant">;
@@ -20,7 +20,7 @@ interface SelectOption {
 
 const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
     const api = useHanagotchiApi();
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = useSession((state) => state.session?.userId)!;
     const [types, setTypes] = useState<SelectOption[]>([]);
     const[name, setName] = useState("");
     const[option, setOption] = useState("");
