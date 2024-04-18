@@ -42,7 +42,6 @@ export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children })
     // Do something before request is sent
     //  console.log("Request", request);
     const req = updateHeader(request)
-    console.log("Request", request);
     return req;
   });
 

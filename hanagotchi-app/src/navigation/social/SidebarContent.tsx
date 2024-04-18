@@ -8,6 +8,17 @@ import useMyUser from '../../hooks/useMyUser';
 import AuthorDetails from '../../components/social/posts/AuthorDetails';
 import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN } from '../../themes/globalThemes';
 import { StyleSheet, View } from 'react-native';
+import { useHanagotchiApi } from '../../hooks/useHanagotchiApi';
+import { useApiFetch } from '../../hooks/useApiFetch';
+import { useSession } from '../../hooks/useSession';
+import { UserProfile } from '../../models/User';
+
+const drawerItemColor = (color: string) => ({ colors: {
+    onSecondaryContainer: color,
+    onSurfaceVariant: color,
+}});
+
+const mockedTags = ["plantas", "Hola"];
 
 type SidebarContentProps = {
     state: DrawerNavigationState<ParamListBase>;
@@ -15,44 +26,32 @@ type SidebarContentProps = {
     descriptors: DrawerDescriptorMap;
 };
 
-const mockedTags = ["plantas", "Hola"];
-const mockedUsers = [
-    {
-        id: 1,
-        name: "Federico Pacheco",
-    },
-    {
-        id: 2,
-        name: "Sofia Feijoo",
-    },
-    {
-        id: 3,
-        name: "Violeta Perez Andrade",
-    }
-]
-
 const SidebarContent: React.FC<SidebarContentProps> = (props) => {
+    const api = useHanagotchiApi()
+    const myId = useSession((state) => state.session?.userId)
     const {isFetchingMyUser, myUser} = useMyUser()
+    const {
+        isFetching: isFetchingUsersProfiles, 
+        fetchedData: userProfiles, 
+        error
+    } = useApiFetch<UserProfile[]>(() => api.getUsersProfiles({follower: myId}), [])
 
-    if (isFetchingMyUser || !myUser) {
-        return 
-    }
+    if (error) {
+        throw error
+    };
 
-    const drawerItemColor = (color: string) => ({ colors: {
-        onSecondaryContainer: color,
-        onSurfaceVariant: color,
-    }});
+    
 
     return (
         <DrawerContentScrollView {...props} style={style.container}>
-            {isFetchingMyUser
+            {isFetchingMyUser && isFetchingUsersProfiles
             ? <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
             : (<View style={{gap: 20}}>
                 <AuthorDetails author={{
-                    id: myUser.id,
-                    name: myUser.name,
-                    photo: myUser.photo,
-                    nickname: myUser.nickname,
+                    id: myUser!.id,
+                    name: myUser!.name,
+                    photo: myUser!.photo,
+                    nickname: myUser!.nickname,
                 }}/>
                 <View>
                     <Drawer.Item 
@@ -70,7 +69,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         onPress={() => props.navigation.navigate(
                             "SocialProfile", 
                             {
-                                profileId: myUser.id,
+                                profileId: myUser!.id,
                                 headerTitle: "Mi perfil"
                             }
                         )}
@@ -109,11 +108,11 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {mockedUsers.map((user) => (
+                            {userProfiles.map((user) => (
                                 <Drawer.Item
                                     id={user.id.toString()} 
                                     theme={drawerItemColor(BROWN)}
-                                    label={user.name}
+                                    label={user.name ?? ""}
                                     icon="account"
                                     style={style.hashtagItem}
                                     onPress={() => props.navigation.navigate(

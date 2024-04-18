@@ -1,4 +1,4 @@
-import { View, StyleSheet, SafeAreaView } from "react-native"
+import { StyleSheet, SafeAreaView } from "react-native"
 import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import { Text } from "react-native-paper";
 import { CompositeScreenProps } from "@react-navigation/native";

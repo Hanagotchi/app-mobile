@@ -11,9 +11,11 @@ import {
     GetPlantsResponseSchema,
     LoginResponse,
     LoginResponseSchema,
+    GetUsersProfileResponseSchema,
+    GetUsersProfileResponse,
 } from "../models/hanagotchiApi";
 
-import { UpdateUserSchema, User, UserSchema } from "../models/User";
+import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
@@ -67,6 +69,7 @@ export interface HanagotchiApi {
     getDevicePlants: () => Promise<GetDevicePlantsResponse>
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
+    getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -172,5 +175,13 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getPlantTypes(): Promise<GetPlantTypesResponse>{
         const { data } = await this.axiosInstance.get(`/plant-type`);
         return GetPlantTypesResponseSchema.parse(data);
+    }
+
+    async getUsersProfiles(params: {follower?: number, q?: string}): Promise<UserProfile[]> {
+        // TODO: Use this endpoint when it is created
+        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
+        const { data } = await this.axiosInstance.get(`/users`);
+        console.log(data)
+        return GetUsersProfileResponseSchema.parse(data).message; 
     }
 }
