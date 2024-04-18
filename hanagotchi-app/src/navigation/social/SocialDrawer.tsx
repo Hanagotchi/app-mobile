@@ -31,7 +31,10 @@ const SocialDrawer: React.FC<SocialDrawerProps> = (props) => {
                 headerTitleAlign: "center",
                 title: "Comunidad Hana",
             }} />
-            <Drawer.Screen name="SocialProfile" component={SocialProfileScreen} options={({route}) => ({
+            <Drawer.Screen name="SocialProfile" component={SocialProfileScreen} initialParams={{
+                profileId: 0, 
+                headerTitle: ""
+            }}options={({route}) => ({
                 headerShown: true,
                 headerStyle: styles.header,
                 headerTintColor: BLACK,

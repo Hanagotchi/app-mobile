@@ -27,31 +27,33 @@ type SidebarContentProps = {
 };
 
 const SidebarContent: React.FC<SidebarContentProps> = (props) => {
-    const api = useHanagotchiApi()
-    const myId = useSession((state) => state.session?.userId)
-    const {isFetchingMyUser, myUser} = useMyUser()
+    const api = useHanagotchiApi();
+    const myId = useSession((state) => state.session?.userId);
+    const {isFetchingMyUser, myUser} = useMyUser();
     const {
         isFetching: isFetchingUsersProfiles, 
         fetchedData: userProfiles, 
         error
-    } = useApiFetch<UserProfile[]>(() => api.getUsersProfiles({follower: myId}), [])
+    } = useApiFetch<UserProfile[]>(() => api.getUsersProfiles({follower: myId}), []);
 
     if (error) {
         throw error
     };
 
-    
+    if (isFetchingMyUser || isFetchingUsersProfiles || !userProfiles || !myUser) {
+        return <DrawerContentScrollView {...props} style={style.container}>
+            <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
+        </DrawerContentScrollView>
+    }
 
     return (
         <DrawerContentScrollView {...props} style={style.container}>
-            {isFetchingMyUser && isFetchingUsersProfiles
-            ? <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
-            : (<View style={{gap: 20}}>
+            <View style={{gap: 20}}>
                 <AuthorDetails author={{
-                    id: myUser!.id,
-                    name: myUser!.name,
-                    photo: myUser!.photo,
-                    nickname: myUser!.nickname,
+                    id: myUser.id,
+                    name: myUser.name,
+                    photo: myUser.photo,
+                    nickname: myUser.nickname,
                 }}/>
                 <View>
                     <Drawer.Item 
@@ -89,6 +91,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         >
                             {mockedTags.map((tag) => (
                                 <Drawer.Item
+                                    key={tag}
                                     id={tag} 
                                     theme={drawerItemColor(BROWN)}
                                     label={`#${tag}`}
@@ -108,8 +111,9 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {userProfiles.map((user) => (
+                            {userProfiles.filter(u => u.id !== myId).map((user) => (
                                 <Drawer.Item
+                                    key={user.id.toString()}
                                     id={user.id.toString()} 
                                     theme={drawerItemColor(BROWN)}
                                     label={user.name ?? ""}
@@ -127,7 +131,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         </List.Accordion>
                     </List.AccordionGroup>
                 </View>
-            </View>)}
+            </View>
         </DrawerContentScrollView>
     )
 }
