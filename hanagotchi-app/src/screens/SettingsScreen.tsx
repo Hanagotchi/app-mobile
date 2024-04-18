@@ -29,6 +29,22 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 <Text style={style.text}>Editar perfil</Text>
                 <Icon source={chevronRight} size={23}/>
             </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("AddPlant")}>
+                <Text style={style.text}>Agregar planta</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("DeletePlant")}>
+                <Text style={style.text}>Eliminar planta</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("AddSensor")}>
+                <Text style={style.text}>Agregar sensor</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("DeleteSensor")}>
+                <Text style={style.text}>Eliminar sensor</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
         </View>
 
         <View style={style.buttonContainer}>
@@ -65,7 +81,6 @@ const style = StyleSheet.create({
         justifyContent: "center",
     },
     items: {
-
     },
     text: {
         fontSize: 20,
@@ -78,7 +93,7 @@ const style = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        flex: 1,
+        alignItems: "center",
     },
 })
 

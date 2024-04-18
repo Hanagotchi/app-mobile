@@ -2,9 +2,10 @@ import axios, { AxiosRequestHeaders, InternalAxiosRequestConfig } from "axios";
 import { PropsWithChildren, createContext } from "react";
 import env from "../environment/loader";
 import { HanagotchiApi, HanagotchiApiImpl } from "../services/hanagotchiApi";
+import { useSession } from "../hooks/useSession";
 
 interface HanagotchiAxiosRequestHeaders extends AxiosRequestHeaders {
-  token: string;
+  "x-access-token": string;
 }
 
 const axiosInstance = axios.create({
@@ -16,15 +17,15 @@ const api: HanagotchiApi = new HanagotchiApiImpl(axiosInstance);
 export const HanagotchiApiContext = createContext<HanagotchiApi | undefined>(api);
 
 export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const token = "tokentokentokentokentokentoken";
+  const accessToken = useSession((state) => state.session?.accessToken);
   // TODO: ver si es necesario realmente un token (y como pasarlo);
 
 
   const updateHeader = (request: InternalAxiosRequestConfig) => {
-    if (token) {
+    if (accessToken) {
       request.headers = {
         ...request.headers,
-        token: token,
+        "x-access-token": accessToken,
       } as HanagotchiAxiosRequestHeaders;
     }
 
@@ -39,9 +40,10 @@ export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children })
   // Add a request interceptor
   axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
     // Do something before request is sent
-    // console.log("Request", request);
-
-    return updateHeader(request);
+    //  console.log("Request", request);
+    const req = updateHeader(request)
+    console.log("Request", request);
+    return req;
   });
 
   // Add a response interceptor
@@ -50,7 +52,7 @@ export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children })
       // Any status code that lie within the range of 2xx cause this function to trigger
       // Do something with response data
       // console.log("Response", response);
-      
+
       return response;
     },
     function (error) {
