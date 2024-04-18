@@ -148,29 +148,15 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async createPost(body: PostData) {
-        // TODO: add social urls support in gateway
-        // THIS IS A MOCKED RESPONSE!!!!!!!!!!!!!!!!!!!!!!
-        // const { data } = await this.axiosInstance.post("/post", body);
         const { data } = await this.axiosInstance.post(`/social/posts`, body);
         const parsedData = PostSchema.parse(data);
-/*         const data: Post = {
-            id: (new Date()).toString(),
-            author: {
-                id: myUser.id,
-                name: myUser.name,
-                photo: myUser.photo,
-                nickname: myUser.nickname,
-            },
-            content: body.content,
-            likes_count: 0,
-            updated_at: new Date(),
-            created_at: new Date(),
-            photo_links: body.photo_links,
-        } */
+
+        // ELIMINAR CUANDO SE IMPLEMENTE UN FETCHEO DE PUBLICACIONES
         dummyPosts.unshift(ReducedPostSchema.passthrough().parse({
             ...parsedData,
             main_photo: parsedData.photo_links.length > 0 ? parsedData.photo_links[0] : undefined,
         }));
+
         return parsedData;
     }
 
