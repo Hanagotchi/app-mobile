@@ -3,20 +3,24 @@ import {NavigationContainer, NavigatorScreenParams} from "@react-navigation/nati
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import {BottomTabNavigationOptions, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import CompleteLoginScreen from "../screens/CompleteLoginScreen";
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
 import FeedScreen from "../screens/social/FeedScreen";
 import CreatePostScreen from "../screens/social/CreatePostScreen";
+import AddPlantScreen from "../screens/AddPlantScreen";
+import AddSensorScreen from "../screens/AddSensorScreen";
 import {StyleSheet, View} from "react-native";
 import {BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN} from "../themes/globalThemes";
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import ProfileScreen from "../screens/ProfileScreen";
 import CreateLogScreen from "../screens/logs/CreateLogScreen";
-import { Log } from "../models/Log";
+import {Log} from "../models/Log";
 import EditLogScreen from "../screens/logs/EditLogScreen";
-import { BottomTabNavigationOptions, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import DeletePlantScreen from "../screens/DeletePlantScreen";
+import DeleteSensorScreen from "../screens/DeleteSensorScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -113,9 +117,13 @@ export type RootStackParamsList = {
     Profile: undefined;
     LogDetails: {log_id: number, created_at: Date};
     CompleteLogin: { userId: number };
+    AddSensor: undefined;
+    DeleteSensor: undefined;
     CreateLog: undefined;
     EditLog: {log: Log};
     CreatePost: undefined;
+    AddPlant: undefined;
+    DeletePlant: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -143,6 +151,8 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="LogDetails" component={LogDetailsScreen} options={({ route }) => ({
                             title: formatDate(route.params.created_at).toLocaleUpperCase(),
                         })}/>
+                        <RootStack.Screen name="AddSensor" component={AddSensorScreen} options={{ headerShown: true, title: "Asociar un sensor"}} />
+                        <RootStack.Screen name="DeleteSensor" component={DeleteSensorScreen} options={{ headerShown: true, title: "Eliminar un sensor"}} />
                         <RootStack.Screen name="CreateLog" component={CreateLogScreen} options={({navigation}) => ({
                             title: "Nueva bitácora",
                         })}/>
@@ -152,6 +162,8 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="CreatePost" component={CreatePostScreen} options={({navigation}) => ({
                             title: "Nueva publicación",
                         })}/>
+                        <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
+                        <RootStack.Screen name="DeletePlant" component={DeletePlantScreen} options={{ headerShown: true, title: "Eliminar una planta"}} />
                     </>
                 )}
             </RootStack.Navigator>
