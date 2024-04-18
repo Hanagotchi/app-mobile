@@ -13,7 +13,7 @@ import { DrawerScreenProps } from "@react-navigation/drawer";
 import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
 
 type FeedScreenProps = CompositeScreenProps<
-        DrawerScreenProps<SocialDrawerList, "SocialProfile">,
+        DrawerScreenProps<SocialDrawerList, "Feed">,
         CompositeScreenProps<
             BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
             NativeStackScreenProps<RootStackParamsList>

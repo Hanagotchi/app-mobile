@@ -9,7 +9,7 @@ import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigat
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type SocialProfileScreenProps = CompositeScreenProps<
-        DrawerScreenProps<SocialDrawerList, "Feed">,
+        DrawerScreenProps<SocialDrawerList, "SocialProfile">,
         CompositeScreenProps<
             BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
             NativeStackScreenProps<RootStackParamsList>
