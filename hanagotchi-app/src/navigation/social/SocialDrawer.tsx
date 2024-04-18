@@ -11,7 +11,7 @@ import SocialProfileScreen from "../../screens/social/SocialProfileScreen";
 
 export type SocialDrawerList = {
     Feed: undefined;
-    SocialProfile: { profileId: number },
+    SocialProfile: { profileId: number, headerTitle: string },
 }
 
 type SocialDrawerProps = CompositeScreenProps<
@@ -31,7 +31,13 @@ const SocialDrawer: React.FC<SocialDrawerProps> = (props) => {
                 headerTitleAlign: "center",
                 title: "Comunidad Hana",
             }} />
-            <Drawer.Screen name="SocialProfile" component={SocialProfileScreen} />
+            <Drawer.Screen name="SocialProfile" component={SocialProfileScreen} options={({route}) => ({
+                headerShown: true,
+                headerStyle: styles.header,
+                headerTintColor: BLACK,
+                headerTitleAlign: "center",
+                title: route.params.headerTitle,
+            })}/>
         </Drawer.Navigator>
     )
 }

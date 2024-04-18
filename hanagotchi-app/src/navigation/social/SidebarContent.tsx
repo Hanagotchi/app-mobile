@@ -67,7 +67,13 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         label='MI PERFIL'
                         icon="account"
                         style={style.mainItem}
-                        onPress={() => props.navigation.navigate("SocialProfile", {profileId: myUser.id})}
+                        onPress={() => props.navigation.navigate(
+                            "SocialProfile", 
+                            {
+                                profileId: myUser.id,
+                                headerTitle: "Mi perfil"
+                            }
+                        )}
                     />
                     <List.AccordionGroup>
                         <List.Accordion 
@@ -110,7 +116,13 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                     label={user.name}
                                     icon="account"
                                     style={style.hashtagItem}
-                                    onPress={() => props.navigation.navigate("SocialProfile", {profileId: user.id})}
+                                    onPress={() => props.navigation.navigate(
+                                        "SocialProfile", 
+                                        {
+                                            profileId: user.id, 
+                                            headerTitle: user.name
+                                        }
+                                    )}
                                 />
                             ))}
                         </List.Accordion>
