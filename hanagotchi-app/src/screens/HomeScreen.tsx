@@ -99,9 +99,6 @@ const HomeScreen: React.FC = () => {
       </View>
   )
 
-  //console.log("current: ", currentPlant)
-  //console.log("plants ", plants)
-
   if (isFetching) {
     return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
   }
@@ -132,7 +129,11 @@ const HomeScreen: React.FC = () => {
                 <Text style={style.measurement}>Temperatura: {measurement.temperature}°C</Text>
                 <Text style={style.measurement}>Luz: {measurement.light}ftc</Text>
                 <Text style={style.measurement}>Riego: {measurement.watering}</Text>
-              </View> : <Text style={style.measurement}> No se registran {'\n'} mediciones</Text> }
+              </View> :
+              <View style={style.noMeasurements}>
+                <Text style={style.measurement}> No se registran {'\n'} mediciones</Text>
+              </View>
+              }
               <View style={{ justifyContent: "space-evenly" }}>
                 <Pressable onPress={navigate}>
                   <Icon size={30} source={plus} />
@@ -202,6 +203,11 @@ const style = StyleSheet.create({
     flex: 0.96,
     alignItems: "flex-start",
     justifyContent: "flex-start"
+  },
+  noMeasurements: {
+    flex: 0.96,
+    height: 104,
+    paddingTop: 22
   },
   box: {
     backgroundColor: '#E8DECF',
