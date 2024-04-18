@@ -9,11 +9,16 @@ import PostList from "../../components/social/posts/PostList";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import * as SecureStore from "expo-secure-store";
 import { useMemo } from "react";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
 
 type FeedScreenProps = CompositeScreenProps<
-    BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
-    NativeStackScreenProps<RootStackParamsList>
->;
+        DrawerScreenProps<SocialDrawerList, "SocialProfile">,
+        CompositeScreenProps<
+            BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
+            NativeStackScreenProps<RootStackParamsList>
+        >
+    >;
 
 const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();

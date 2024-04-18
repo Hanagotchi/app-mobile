@@ -8,7 +8,6 @@ import useMyUser from '../../hooks/useMyUser';
 import AuthorDetails from '../../components/social/posts/AuthorDetails';
 import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN } from '../../themes/globalThemes';
 import { StyleSheet, View } from 'react-native';
-import { Entypo } from '@expo/vector-icons';
 
 type SidebarContentProps = {
     state: DrawerNavigationState<ParamListBase>;
@@ -17,7 +16,20 @@ type SidebarContentProps = {
 };
 
 const mockedTags = ["plantas", "Hola"];
-const mockedUsers = ["Federico Pacheco", "Sofia Feijoo", "Violeta Perez Andrade"]
+const mockedUsers = [
+    {
+        id: 1,
+        name: "Federico Pacheco",
+    },
+    {
+        id: 2,
+        name: "Sofia Feijoo",
+    },
+    {
+        id: 3,
+        name: "Violeta Perez Andrade",
+    }
+]
 
 const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     const {isFetchingMyUser, myUser} = useMyUser()
@@ -26,10 +38,10 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         return 
     }
 
-    const brownTheme = { colors: {
-        onSecondaryContainer: BROWN,
-        onSurfaceVariant: BROWN,
-    }}
+    const drawerItemColor = (color: string) => ({ colors: {
+        onSecondaryContainer: color,
+        onSurfaceVariant: color,
+    }});
 
     return (
         <DrawerContentScrollView {...props} style={style.container}>
@@ -44,22 +56,18 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                 }}/>
                 <View>
                     <Drawer.Item 
-                        theme={{ colors: {
-                            onSecondaryContainer: GREEN,
-                            onSurfaceVariant: GREEN,
-                        }}}
+                        theme={drawerItemColor(GREEN)}
                         label='PRINCIPAL'
                         icon="leaf"
                         style={style.mainItem}
+                        onPress={() => props.navigation.navigate("Feed")}
                     />
                     <Drawer.Item 
-                        theme={{ colors: {
-                            onSecondaryContainer: GREEN,
-                            onSurfaceVariant: GREEN,
-                        }}}
+                        theme={drawerItemColor(GREEN)}
                         label='MI PERFIL'
                         icon="account"
                         style={style.mainItem}
+                        onPress={() => props.navigation.navigate("SocialProfile", {profileId: myUser.id})}
                     />
                     <List.AccordionGroup>
                         <List.Accordion 
@@ -77,7 +85,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             {mockedTags.map((tag) => (
                                 <Drawer.Item
                                     id={tag} 
-                                    theme={brownTheme}
+                                    theme={drawerItemColor(BROWN)}
                                     label={`#${tag}`}
                                     style={style.hashtagItem}
                                 />  
@@ -95,12 +103,14 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {mockedUsers.map((name) => (
-                                <Drawer.Item 
-                                    theme={brownTheme}
-                                    label={name}
+                            {mockedUsers.map((user) => (
+                                <Drawer.Item
+                                    id={user.id.toString()} 
+                                    theme={drawerItemColor(BROWN)}
+                                    label={user.name}
                                     icon="account"
                                     style={style.hashtagItem}
+                                    onPress={() => props.navigation.navigate("SocialProfile", {profileId: user.id})}
                                 />
                             ))}
                         </List.Accordion>

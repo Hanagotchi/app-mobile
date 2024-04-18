@@ -7,15 +7,11 @@ import { MainTabParamsList, RootStackParamsList } from "../Navigator";
 import SidebarContent from "./SidebarContent";
 import { BEIGE, BEIGE_LIGHT, BLACK } from "../../themes/globalThemes";
 import {StyleSheet, View} from "react-native" 
-
-const EmptyScreen: React.FC = ({ route }) => {
-    const { bgColor } = route.params;
-    return <View style={{ flex: 1, backgroundColor: bgColor }} />
-}
+import SocialProfileScreen from "../../screens/social/SocialProfileScreen";
 
 export type SocialDrawerList = {
     Feed: undefined;
-    Profile: { bgColor: string },
+    SocialProfile: { profileId: number },
 }
 
 type SocialDrawerProps = CompositeScreenProps<
@@ -27,7 +23,7 @@ const SocialDrawer: React.FC<SocialDrawerProps> = (props) => {
     const Drawer = createDrawerNavigator<SocialDrawerList>()
 
     return (
-        <Drawer.Navigator initialRouteName="Feed" drawerContent={(props) => <SidebarContent {...props} />}>
+        <Drawer.Navigator initialRouteName="Feed" drawerContent={(props) => <SidebarContent {...props} />} >
             <Drawer.Screen name="Feed" component={FeedScreen} options={{
                 headerShown: true,
                 headerStyle: styles.header,
@@ -35,7 +31,7 @@ const SocialDrawer: React.FC<SocialDrawerProps> = (props) => {
                 headerTitleAlign: "center",
                 title: "Comunidad Hana",
             }} />
-            <Drawer.Screen name="Profile" component={EmptyScreen} initialParams={{bgColor: "violet"}} />
+            <Drawer.Screen name="SocialProfile" component={SocialProfileScreen} />
         </Drawer.Navigator>
     )
 }
