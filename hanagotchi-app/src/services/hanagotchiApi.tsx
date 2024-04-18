@@ -20,7 +20,7 @@ export interface HanagotchiApi {
     getPlants: (userId: number) => Promise<GetPlantsResponse>;
     getPlantType: (name: string) => Promise<GetPlantTypeResponse>;
     getUser: (userId: number) => Promise<User>;
-    getLastMeasurement: (plantId: number) => Promise<Measurement>;
+    getLastMeasurement: (plantId: number) => Promise<Measurement | null>;
     patchUser: (user: User) => Promise<void>;
     getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>
     getLogById: (log_id: number) => Promise<GetLogByIdResponse>
@@ -50,10 +50,8 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
     async getPlantType(name: string): Promise<GetPlantTypeResponse> {
         const encodedName = encodeURIComponent(name);
-        console.log("name: ", name)
         const { data, status } = await this.axiosInstance.get(`/plant-type/${encodedName}`);
-        //console.log("status: ", status)
-        //console.log("data: ", data)
+
         return GetPlantTypeResponseSchema.parse(data);
     }
 
@@ -61,10 +59,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         const { data } = await this.axiosInstance.get(`/users/${userId}`);
         return UserSchema.parse(data?.message);
     }
-    async getLastMeasurement(plantId: number): Promise<Measurement> {
+    async getLastMeasurement(plantId: number): Promise<Measurement | null> {
         const { data, status } = await this.axiosInstance.get(`/measurements/${plantId}/last`);
-        //console.log(status)
-        //console.log("data: ", data)
+        data.time_stamp = new Date(data.time_stamp);
+        if (status == 204) return null
         return MeasurementSchema.parse(data);
     }
 

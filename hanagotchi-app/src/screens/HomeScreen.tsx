@@ -1,19 +1,28 @@
 import * as React from 'react';
 import {View, Text, StyleSheet, SafeAreaView, Image, Pressable, Modal} from 'react-native'
-import {theme} from "../themes/globalThemes";
+import {BROWN_DARK, theme} from "../themes/globalThemes";
 import plantImage from "../assets/plant.png";
 import plus from "../assets/plusicon.png";
 import info from "../assets/infoicon.png";
 import close from "../assets/closeicon.png";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
-import {Icon} from "react-native-paper";
+import {ActivityIndicator, Icon} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
 import NoContent from "../components/NoContent";
-import {Measurement} from "../models/Measurement";
+
+interface Measurement {
+  id: number;
+  id_plant: number;
+  temperature: number;
+  humidity: number;
+  light: number;
+  watering: number;
+  time_stamp: string;
+}
 
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
@@ -48,12 +57,22 @@ const HomeScreen: React.FC = () => {
 
   const fetchMeasurement = async () => {
     setMeasurement(null)
-    const fetchedMeasurement = await api.getLastMeasurement(plants[currentPlant].id);
-    setMeasurement(fetchedMeasurement);
+    const fetched = await api.getLastMeasurement(plants[currentPlant].id);
+    if (fetched) {
+      setMeasurement({
+        id: fetched.id,
+        id_plant: fetched.id_plant,
+        time_stamp: fetched.time_stamp.toTimeString(),
+        humidity: fetched.humidity,
+        temperature: fetched.temperature,
+        light: fetched.light,
+        watering: fetched.watering
+      });
+    }
   };
 
   useEffect(() => {
-    console.log("entro a este use de cuando cambuio current plant")
+    console.log("entro a este use de cuando cambio current plant")
     fetchPlantType();
     fetchMeasurement();
   }, [currentPlant]);
@@ -80,8 +99,12 @@ const HomeScreen: React.FC = () => {
       </View>
   )
 
-  console.log("current: ", currentPlant)
-  console.log("plants ", plants)
+  //console.log("current: ", currentPlant)
+  //console.log("plants ", plants)
+
+  if (isFetching) {
+    return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
+  }
 
   return (
       <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
