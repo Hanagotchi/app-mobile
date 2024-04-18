@@ -47,7 +47,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     }
 
     return (
-        <DrawerContentScrollView {...props} style={style.container}>
+        <DrawerContentScrollView {...props} style={style.container} contentContainerStyle={{width: "101%"}}>
             <View style={{gap: 20}}>
                 <AuthorDetails author={{
                     id: myUser.id,
@@ -96,6 +96,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                     theme={drawerItemColor(BROWN)}
                                     label={`#${tag}`}
                                     style={style.hashtagItem}
+                                    onPress={() => console.log("Navigate to tag search")}
                                 />  
                             ))}
                         </List.Accordion>
@@ -119,6 +120,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                     label={user.name ?? ""}
                                     icon="account"
                                     style={style.hashtagItem}
+                                    labelMaxFontSizeMultiplier={4}
                                     onPress={() => props.navigation.navigate(
                                         "SocialProfile", 
                                         {

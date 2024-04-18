@@ -181,7 +181,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         // TODO: Use this endpoint when it is created
         /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
         const { data } = await this.axiosInstance.get(`/users`);
-        console.log(data)
         return GetUsersProfileResponseSchema.parse(data).message; 
     }
 }
