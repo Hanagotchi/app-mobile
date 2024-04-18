@@ -3,19 +3,27 @@ import * as ImagePicker from 'expo-image-picker';
 import { FAB, Text } from "react-native-paper";
 import { BEIGE_LIGHT, BROWN, BROWN_LIGHT, GREEN_DARK } from "../themes/globalThemes";
 import DeletableImage from "./DeletableImage";
+import { useState } from "react";
 
 type PhotoUploaderProps = {
     maxAmount?: number;
     photosFilepathList: string[];
     updatePhotosFilepathList: (photos: string[]) => void;
+    imageSize?: {
+        width: number,
+        height: number,
+    }
 }
 
-const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathList, updatePhotosFilepathList}) => {
+const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathList, updatePhotosFilepathList, imageSize}) => {
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const handleUploadPhoto = async () => {
+        setIsUploading(true);
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {
             alert('¡Se requiere permiso para acceder a la galería de imágenes!');
+            setIsUploading(false);
             return;
         }
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -28,6 +36,8 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
         if (!result.canceled) {
             updatePhotosFilepathList(photosFilepathList.concat(result.assets.map(asset => asset.uri)))
         }
+
+        setIsUploading(false);
     };
 
     const handleDeletePhoto = async (indexToDelete: number) => {
@@ -38,7 +48,7 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
     return (
         <>
             <View style={{width: "80%"}}>
-                <Text style={style.subtitle}>Fotos</Text>
+                <Text style={style.subtitle}>Fotos{maxAmount ? ` ${photosFilepathList.length}/${maxAmount}` : ""}</Text>
             </View>
             <FlatList 
                 data={photosFilepathList}
@@ -46,11 +56,15 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
                     ({item, index}) => 
                         <DeletableImage 
                             source={{uri: item}} 
-                            style={style.image} 
+                            style={{
+                                ...style.image, 
+                                width: imageSize ? imageSize.width : 100,
+                                height: imageSize ? imageSize.height : 100,
+                            }} 
                             onPressDelete={() => handleDeletePhoto(index)}
                         />
                 }
-                numColumns={2}
+                horizontal
                 style={style.photoList}
                 contentContainerStyle={style.photoListContent}
                 ListFooterComponent={
@@ -65,6 +79,7 @@ const PhotoUploader: React.FC<PhotoUploaderProps> = ({maxAmount, photosFilepathL
                             size="medium" 
                             onPress={handleUploadPhoto}
                             color={BEIGE_LIGHT}
+                            loading={isUploading}
                         /> 
                 }
             />
@@ -81,21 +96,17 @@ const style = StyleSheet.create({
         color: GREEN_DARK,
     },
     photoList: {
-        flexGrow: 0
+        flexGrow: 0,
+        marginHorizontal: "5%"
     },
     photoListContent: {
         alignItems: "center", 
         gap: 5,
-        rowGap: 5,
-        columnGap: 5,
     },
     image: {
-        width: 100,
-        height: 100,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: BROWN,
-
     },
     fab: {
         borderRadius: 10,

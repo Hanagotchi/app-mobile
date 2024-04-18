@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ImageSourcePropType, Image, StyleSheet, Touchable, TouchableOpacity, ImageStyle, StyleProp, View, TouchableHighlight } from "react-native"
+import { ImageSourcePropType, Image, StyleSheet, TouchableOpacity, ImageStyle, StyleProp, View } from "react-native"
 import { ActivityIndicator, Modal, Portal } from "react-native-paper";
 
 type ExpandibleImageProps = {
@@ -20,7 +20,8 @@ const ExpandibleImage: React.FC<ExpandibleImageProps> = ({source, minimizedImage
                     <Image source={source} style={maximizedImageStyle} resizeMode="contain"/>   
                 </Modal>
             </Portal>
-            <TouchableOpacity style={{height: 0}} onPress={toggleOpen} disabled={loading}>
+            <TouchableOpacity onPress={toggleOpen} disabled={loading}>
+
                 <Image
                     source={source} 
                     style={minimizedImageStyle}

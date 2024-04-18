@@ -1,6 +1,6 @@
 import { LogData } from "../../models/Log";
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 import TextInput from "../TextInput";
 import PhotoUploader from "../PhotoUploader";
 import LoaderButton from "../LoaderButton";
@@ -57,7 +57,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
 
     return (
         <View style={style.container}>
-            <View style={style.container}>
+            <ScrollView style={style.form} contentContainerStyle={style.content}>
                 <TextInput label="TÍTULO *" value={data.title} onChangeText={onChangeTitle}/>
                 <SelectBox 
                     label="PLANTA" 
@@ -78,7 +78,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
                     photosFilepathList={data.photos} 
                     updatePhotosFilepathList={onChangePhotos}
                 />
-            </View>
+            </ScrollView>
             <LoaderButton
                 mode="contained"
                 uppercase
@@ -100,7 +100,19 @@ const style = StyleSheet.create({
         alignItems: "center",
         paddingBottom: 20,
         gap: 20,
-        width: "100%"
+        width: "100%",
+        flexGrow: 1,
+    },
+    form: {
+        flex: 1,
+        flexGrow: 1,
+        width: "100%",
+    },
+    content: {
+        justifyContent: 'flex-start',
+        alignItems: "center",
+        gap: 20,
+        width: "100%",
     },
     button: {
         borderRadius: 10,
