@@ -68,6 +68,7 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId}) => {
                 initialNumToRender={4}
                 windowSize={5}
                 ItemSeparatorComponent={() => <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />}
+                showsVerticalScrollIndicator={false}
             />
     );
 }
