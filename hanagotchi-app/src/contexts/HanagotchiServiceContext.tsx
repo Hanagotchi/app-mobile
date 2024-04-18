@@ -47,8 +47,8 @@ export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children })
     function (response) {
       // Any status code that lie within the range of 2xx cause this function to trigger
       // Do something with response data
+      // console.log("Response", response);
 
-      //  console.log("Response", response);
       return response;
     },
     function (error) {

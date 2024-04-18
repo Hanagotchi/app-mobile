@@ -39,7 +39,7 @@ const HomeScreen: React.FC = () => {
   let [currentPlant, setCurrentPlant] = useState(0);
 
   const {isFetching, fetchedData: plants, error} = useApiFetch(
-      () => api.getPlants(userId),
+      () => api.getPlants({id_user: userId}),
       [{
         id: 0,
         id_user: 0,
@@ -49,8 +49,6 @@ const HomeScreen: React.FC = () => {
   );
 
   const fetchPlantType = async () => {
-    console.log(plants)
-    console.log(plants[currentPlant])
     const fetchedPlantType = await api.getPlantType(plants[currentPlant].scientific_name);
     setPlantType(fetchedPlantType);
   };
@@ -72,7 +70,6 @@ const HomeScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("entro a este use de cuando cambio current plant")
     fetchPlantType();
     fetchMeasurement();
   }, [currentPlant]);

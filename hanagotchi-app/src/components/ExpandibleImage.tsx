@@ -1,6 +1,6 @@
-import {useCallback, useState} from "react";
-import {Image, ImageSourcePropType, ImageStyle, StyleProp, StyleSheet, TouchableOpacity, View} from "react-native"
-import {Modal, Portal} from "react-native-paper";
+import { useCallback, useState } from "react";
+import { ImageSourcePropType, Image, StyleSheet, Touchable, TouchableOpacity, ImageStyle, StyleProp, View, TouchableHighlight } from "react-native"
+import { ActivityIndicator, Modal, Portal } from "react-native-paper";
 
 type ExpandibleImageProps = {
     source: ImageSourcePropType;
@@ -9,8 +9,9 @@ type ExpandibleImageProps = {
 };
 
 const ExpandibleImage: React.FC<ExpandibleImageProps> = ({source, minimizedImageStyle, maximizedImageStyle}) => {
-    const [open, setOpen] = useState<boolean>(false)
-    const toggleOpen = useCallback(() => setOpen((prev) => !prev), [setOpen])
+    const [open, setOpen] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
+    const toggleOpen = useCallback(() => setOpen((prev) => !prev), [setOpen]);
     
      return (
         <View style={style.container}>
@@ -19,14 +20,16 @@ const ExpandibleImage: React.FC<ExpandibleImageProps> = ({source, minimizedImage
                     <Image source={source} style={maximizedImageStyle} resizeMode="contain"/>   
                 </Modal>
             </Portal>
-            <TouchableOpacity style={{height: 0}} onPress={toggleOpen}>
+            <TouchableOpacity style={{height: 0}} onPress={toggleOpen} disabled={loading}>
                 <Image
                     source={source} 
                     style={minimizedImageStyle}
                     resizeMode="cover"
+                    onLoadStart={() => setLoading(true)}
+                    onLoadEnd={() => setLoading(false)}
                 />
             </TouchableOpacity>
-            
+            {loading && <ActivityIndicator color="green" size="large" style={style.loader}/>}
         </View>
     ) 
     
@@ -40,6 +43,11 @@ const style = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         borderRadius: 12,
+    },
+    loader: {
+        position: "absolute",
+        bottom: "40%",
+        left: "42%"
     }
 });
 

@@ -1,13 +1,13 @@
-import { SafeAreaView, StyleSheet } from "react-native"
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native"
 import useAuth from "../hooks/useAuth";
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamsList, RootStackParamsList } from "../navigation/Navigator";
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import LoaderButton from "../components/LoaderButton";
-import { useEffect, useState } from "react";
-import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT } from "../themes/globalThemes";
-import TextInput from "../components/TextInput";
+import { Icon } from 'react-native-paper';
+import chevronRight from "../assets/chevron_right.png";
+import { BACKGROUND_COLOR } from "../themes/globalThemes";
 
 
 type SettingsScreenProps = CompositeScreenProps<
@@ -17,24 +17,6 @@ type SettingsScreenProps = CompositeScreenProps<
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     const {signOut} = useAuth();
-    const [name, setName] = useState("");
-    const [text, setText] = useState("");
-    const [lenght, setLenght] = useState(0);
-    const MAX_LENGHT = 500;
-
-    useEffect(() => {
-        const setInitialState = navigation.addListener('focus', () => {
-            setName("");
-            setText("");
-            setLenght(0);
-        });
-
-        return setInitialState;
-      }, [navigation]);
-
-    useEffect(() => {
-        setLenght(text.length)
-    }, [text])
 
     const handleSignOut = async () => {
         await signOut();
@@ -42,33 +24,55 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        <TextInput label={`NOMBRE`} value={name} onChangeText={(name) => setName(name)}/>
-        <TextInput 
-            label={`DESCRIPCIÓN    ${lenght}/${MAX_LENGHT}`} 
-            value={text} 
-            onChangeText={(text) => setText(text)}
-            numberOfLines={4}
-            maxLenght={500}
-        />
-        <LoaderButton 
-            mode="contained" 
-            uppercase style={style.button} 
-            onPress={handleSignOut}
-            labelStyle={{fontSize: 17}}
-        >
-            Cerrar sesión
-        </LoaderButton>
+        <View style={style.items}>
+            <Pressable style={style.item} onPress={() => navigation.navigate("Profile")}>
+                <Text style={style.text}>Editar perfil</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("AddPlant")}>
+                <Text style={style.text}>Agregar planta</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("DeletePlant")}>
+                <Text style={style.text}>Eliminar planta</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("AddSensor")}>
+                <Text style={style.text}>Agregar sensor</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("DeleteSensor")}>
+                <Text style={style.text}>Eliminar sensor</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
+        </View>
+
+        <View style={style.buttonContainer}>
+            <LoaderButton
+                mode="contained"
+                uppercase style={style.button}
+                onPress={handleSignOut}
+                labelStyle={{fontSize: 17}}
+            >
+                Cerrar sesión
+            </LoaderButton>
+        </View>
     </SafeAreaView>
 }
 
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-end',
         alignItems: "center",
-        paddingBottom: 20,
-        gap: 10,
+        paddingTop: 80,
         backgroundColor: BACKGROUND_COLOR,
+    },
+    buttonContainer: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "absolute",
+        bottom: 20,
     },
     button: {
         borderRadius: 10,
@@ -76,16 +80,21 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: "center",
     },
-    card: {
-        backgroundColor: BEIGE,
-        width: "80%",
-        gap: 0,
-        columnGap: 0,
+    items: {
     },
-    cardTitle: {
-        color: BROWN_LIGHT,
-        fontSize: 12,
-    }
+    text: {
+        fontSize: 20,
+        fontWeight: "bold",
+        alignSelf: "flex-start",
+    },
+    item: {
+        padding: 15,
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
 })
 
 export default SettingsScreen;

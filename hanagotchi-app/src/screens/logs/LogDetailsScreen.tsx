@@ -5,21 +5,33 @@ import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamsList} from "../../navigation/Navigator";
 import ExpandibleImage from "../../components/ExpandibleImage";
 import {useHanagotchiApi} from "../../hooks/useHanagotchiApi";
-import {useApiFetch} from "../../hooks/useApiFetch";
 import {GetLogByIdResponse} from "../../models/hanagotchiApi";
 import NoContent from "../../components/NoContent";
 import {handleError} from "../../common/errorHandling";
+import {useFocusApiFetch} from "../../hooks/useFocusApiFetch";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 
-const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
+const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) => {
     const {log_id} = route.params;
-
     const api = useHanagotchiApi();
-    const {isFetching, fetchedData: log, error} = useApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null)
+
+    const {
+        isFetching,
+        fetchedData: log,
+        error} = useFocusApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null, [log_id]);
 
     if (isFetching) {
-        return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
+        return (
+            <SafeAreaView style={style.container}>
+                <ActivityIndicator
+                    animating={true}
+                    color={BROWN_DARK}
+                    size={80}
+                    style={{justifyContent: "center", flexGrow: 1}}
+                />
+            </SafeAreaView>
+        );
     }
 
     if (error) {
@@ -33,27 +45,37 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route}) => {
 
     return (
         <SafeAreaView style={style.container}>
-            <Text style={style.title}>{log!.title}</Text>
-            <View style={{height: 240}}>
-                <FlatList 
-                    horizontal
-                    data={log!.photos}
-                    renderItem={({item}) => 
-                        <ExpandibleImage 
-                            minimizedImageStyle={style.image}
-                            maximizedImageStyle={style.fullImage} 
-                            source={{uri: item.photo_link}} 
-                        />
-                    }
-                    keyExtractor={(item, index) => String(index)}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={style.photoList}
-                />
-            </View>
+            <Text style={style.title}>{log.title}</Text>
+            {log.photos.length > 0 && (
+                <View style={{height: 240}}>
+                    <FlatList
+                        horizontal
+                        data={log.photos}
+                        renderItem={({item}) =>
+                            <ExpandibleImage
+                                minimizedImageStyle={style.image}
+                                maximizedImageStyle={style.fullImage}
+                                source={{uri: item.photo_link}}
+                            />
+                        }
+                        keyExtractor={(item, index) => String(index)}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={style.photoList}
+                    />
+                </View>
+            )}
             <ScrollView>
                 <Text style={style.content}>{log!.content}</Text>
             </ScrollView>
-            <FAB icon={"pencil"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
+            <FAB
+                icon={"pencil"}
+                mode="flat"
+                style={style.fab}
+                variant="primary"
+                size="medium"
+                color={BACKGROUND_COLOR}
+                onPress={() => navigation.navigate("EditLog", {log: log})}
+            />
         </SafeAreaView>
     )
 }

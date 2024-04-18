@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { UserSchema } from "./User";
 import { LogSchema } from "./Log";
+import {DevicePlantSchema} from "./DevicePlant";
 import {PlantSchema} from "./Plant";
 import {PlantTypeSchema} from "./PlantType";
 
@@ -16,7 +17,14 @@ export const GetUserSchema = z.object({
 });
 
 export type GetUserResponse = z.infer<typeof GetUserSchema>;
+
+export const GetDevicePlantsResponseSchema = z.array(DevicePlantSchema);
+export type GetDevicePlantsResponse = z.infer<typeof GetDevicePlantsResponseSchema>;
+
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+
+export const GetPlantsResponseSchema = z.array(PlantSchema);
+export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
 
 export const GetLogsByUserResponseSchema = z.array(LogSchema);
 export type GetLogsByUserResponse = z.infer<typeof GetLogsByUserResponseSchema>;
@@ -28,8 +36,8 @@ export type GetLogByIdResponse = z.infer<typeof GetLogByIdResponseSchema>;
 export const GetPlantResponseSchema = PlantSchema;
 export type GetPlantResponse = z.infer<typeof GetPlantResponseSchema>;
 
-export const GetPlantsResponseSchema = z.array(PlantSchema);
-export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
-
 export const GetPlantTypeResponseSchema = PlantTypeSchema
 export type GetPlantTypeResponse = z.infer<typeof GetPlantTypeResponseSchema>;
+
+export const GetPlantTypesResponseSchema = z.array(PlantTypeSchema);
+export type GetPlantTypesResponse = z.infer<typeof GetPlantTypesResponseSchema>;

@@ -2,17 +2,19 @@ import {SafeAreaView, ScrollView, StatusBar, StyleSheet, View} from "react-nativ
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MainTabParamsList, RootStackParamsList} from "../../navigation/Navigator";
 import type {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import type {CompositeScreenProps} from '@react-navigation/native';
-import {useState} from "react";
+import {type CompositeScreenProps} from '@react-navigation/native';
+import {useRef, useState} from "react";
 import {BACKGROUND_COLOR, BROWN_DARK, GREEN} from "../../themes/globalThemes";
 import {ActivityIndicator, Divider, FAB, Text} from 'react-native-paper';
 import SelectBox from "../../components/SelectBox";
 import LogPreview from "../../components/logs/LogPreview";
-import {useApiFetch} from "../../hooks/useApiFetch";
 import {useHanagotchiApi} from "../../hooks/useHanagotchiApi";
 import NoContent from "../../components/NoContent";
 import * as SecureStore from "expo-secure-store";
 import {monthList} from "../../common/dateUtils";
+import {useFocusApiFetch} from "../../hooks/useFocusApiFetch";
+import Dialog, {DialogRef} from "../../components/Dialog";
+import {useMyPlants} from "../../hooks/useMyPlants";
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -34,19 +36,42 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const [year, setYear] = useState<number>(currentYear); 
     const [month, setMonth] = useState<number>(currentMonth);
     const userId = Number(SecureStore.getItem("userId"))
+    const dialogRef = useRef<DialogRef>(null);
 
     const api = useHanagotchiApi();
-    const {isFetching, fetchedData, error} = useApiFetch(
+    const {isFetching, fetchedData, error} = useFocusApiFetch(
         () => api.getLogsByUser(userId, {year: year, month: month}),
         [],
         [year, month]
     );
+
+    const {isFetchingPlants, myPlants, fetchingPlantsError} = useMyPlants()
+
+    const handleAddNewLog = () => {
+        if (isFetchingPlants || fetchingPlantsError) return;
+
+        if (myPlants.length === 0) {
+            dialogRef.current?.showDialog();
+        } else {
+            navigation.navigate("CreateLog");
+        }
+    }
 
     if (!isFetching && error) {
         throw error;
     }
 
     return <SafeAreaView style={style.container}>
+        <Dialog
+            ref={dialogRef}
+            title="¡No tienes ningun hanagotchi!"
+            content="Crea un hanagotchi para comenzar a escribir tus bitacoras"
+            primaryButtonLabel="ACEPTAR"
+            primaryButtonProps={{
+                onPress: dialogRef.current?.hideDialog
+            }}
+            onDismiss={dialogRef.current?.hideDialog}
+        />
         <Text style={style.title}>Mis Bitácoras</Text>
         <View style={style.filters}>
             <SelectBox
@@ -87,7 +112,15 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
                 )
             )
         }
-        <FAB icon={"plus"} mode="flat" style={style.fab} variant="primary" size="medium" color={BACKGROUND_COLOR}/>
+        <FAB
+            icon={"plus"}
+            mode="flat"
+            style={style.fab}
+            variant="primary"
+            size="medium"
+            color={BACKGROUND_COLOR}
+            onPress={handleAddNewLog}
+        />
     </SafeAreaView>
 }
 

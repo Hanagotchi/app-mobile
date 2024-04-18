@@ -47,7 +47,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 <ImageBackground source={loginBackground} style={style.background} />
                 <LoaderButton
                     mode="contained"
-                    uppercase style={style.button}
+                    uppercase 
+                    style={style.button}
                     onPress={handleSignIn}
                     labelStyle={{ fontSize: 17 }}
                 >
