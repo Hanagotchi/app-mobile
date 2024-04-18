@@ -10,12 +10,12 @@ import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import * as SecureStore from "expo-secure-store";
 import { useMemo } from "react";
 
-type LogsScreenProps = CompositeScreenProps<
+type FeedScreenProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
     NativeStackScreenProps<RootStackParamsList>
 >;
 
-const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
+const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();
     const userId = useMemo(() => Number(SecureStore.getItem("userId")), []);
     const handleAddNewPost = () => navigation.navigate("CreatePost");

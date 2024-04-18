@@ -1,4 +1,5 @@
 import "expo-dev-client";
+import 'react-native-gesture-handler';
 import { theme } from './src/themes/globalThemes';
 import { PaperProvider, ThemeProvider } from 'react-native-paper';
 import { AuthProvider } from "./src/contexts/AuthContext";

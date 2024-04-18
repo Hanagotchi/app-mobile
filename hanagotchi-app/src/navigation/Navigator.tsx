@@ -17,6 +17,7 @@ import CreateLogScreen from "../screens/logs/CreateLogScreen";
 import { Log } from "../models/Log";
 import EditLogScreen from "../screens/logs/EditLogScreen";
 import { BottomTabNavigationOptions, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import SocialDrawer from "./social/SocialDrawer";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -77,7 +78,6 @@ export type MainTabParamsList = {
 
 const MainScreens: React.FC = () => {
     const Tab = createBottomTabNavigator<MainTabParamsList>();
-
     return (
         <Tab.Navigator screenOptions={screenOptions}>
             <Tab.Group>
@@ -89,10 +89,9 @@ const MainScreens: React.FC = () => {
                     tabBarLabel: "Bitácoras",
                     tabBarIcon: LogIcon,
                 }} />
-                <Tab.Screen name="SocialNetwork" component={FeedScreen} options={{
+                <Tab.Screen name="SocialNetwork" component={SocialDrawer} options={{
                     tabBarLabel: "Red social",
                     tabBarIcon: SocialIcon,
-                    headerShown: true,
                     headerStyle: styles.header,
                     headerTintColor: BLACK,
                     headerTitleAlign: "center",
