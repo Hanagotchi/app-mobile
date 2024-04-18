@@ -1,7 +1,7 @@
 import { FlatList } from "react-native"
 import ReducedPost from "./Post";
-import { ActivityIndicator, Text } from "react-native-paper";
-import { BROWN_DARK } from "../../../themes/globalThemes";
+import { ActivityIndicator, Divider, Text } from "react-native-paper";
+import { BEIGE_DARK, BROWN_DARK } from "../../../themes/globalThemes";
 import { ReducedPost as ReducedPostType } from "../../../models/Post";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
@@ -67,6 +67,7 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId}) => {
                 maxToRenderPerBatch={10}
                 initialNumToRender={4}
                 windowSize={5}
+                ItemSeparatorComponent={() => <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />}
             />
     );
 }
