@@ -19,7 +19,7 @@ type SocialProfileScreenProps = CompositeScreenProps<
 const SocialProfileScreen: React.FC<SocialProfileScreenProps> = ({route}) => {
     const profileId = route.params.profileId;
 
-    return <SafeAreaView>
+    return <SafeAreaView style={style.container}>
         <Text>Pantalla de perfil del usuario {profileId}</Text>
     </SafeAreaView>
 }
