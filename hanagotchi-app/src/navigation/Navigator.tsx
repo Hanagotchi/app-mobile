@@ -7,8 +7,10 @@ import {BottomTabNavigationOptions, createBottomTabNavigator} from '@react-navig
 import CompleteLoginScreen from "../screens/CompleteLoginScreen";
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
+import { formatDate } from "../common/dateUtils";
+import FeedScreen from "../screens/social/FeedScreen";
+import CreatePostScreen from "../screens/social/CreatePostScreen";
 import AddPlantScreen from "../screens/AddPlantScreen";
-import {formatDate} from "../common/dateUtils";
 import AddSensorScreen from "../screens/AddSensorScreen";
 import {StyleSheet, View} from "react-native";
 import {BEIGE, BEIGE_DARK, BEIGE_LIGHT, BLACK, GREEN} from "../themes/globalThemes";
@@ -73,8 +75,8 @@ const screenOptions: BottomTabNavigationOptions = {
 
 export type MainTabParamsList = {
     Home: { bgColor: string },
-    Logs: { bgColor: string },
-    SocialNetwork: { bgColor: string },
+    Logs: undefined,
+    SocialNetwork: undefined,
     Settings: undefined,
 }
 
@@ -88,13 +90,18 @@ const MainScreens: React.FC = () => {
                     tabBarLabel: "Home",
                     tabBarIcon: HomeIcon,
                 }} />
-                <Tab.Screen name="Logs" component={LogsScreen} initialParams={{bgColor: "green"}} options={{
+                <Tab.Screen name="Logs" component={LogsScreen} options={{
                     tabBarLabel: "Bitácoras",
                     tabBarIcon: LogIcon,
                 }} />
-                <Tab.Screen name="SocialNetwork" component={EmptyScreen} initialParams={{ bgColor: "red" }} options={{
+                <Tab.Screen name="SocialNetwork" component={FeedScreen} options={{
                     tabBarLabel: "Red social",
                     tabBarIcon: SocialIcon,
+                    headerShown: true,
+                    headerStyle: styles.header,
+                    headerTintColor: BLACK,
+                    headerTitleAlign: "center",
+                    title: "Comunidad Hana",
                 }} />
                 <Tab.Screen name="Settings" component={SettingsScreen} options={{
                     tabBarLabel: "Configuración",
@@ -115,6 +122,7 @@ export type RootStackParamsList = {
     DeleteSensor: undefined;
     CreateLog: undefined;
     EditLog: {log: Log};
+    CreatePost: undefined;
     AddPlant: undefined;
     DeletePlant: undefined;
 }
@@ -151,6 +159,9 @@ const Navigator: React.FC = () => {
                         })}/>
                         <RootStack.Screen name="EditLog" component={EditLogScreen} options={() => ({
                             title: "Editar bitácora",
+                        })}/>
+                        <RootStack.Screen name="CreatePost" component={CreatePostScreen} options={({navigation}) => ({
+                            title: "Nueva publicación",
                         })}/>
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
                         <RootStack.Screen name="DeletePlant" component={DeletePlantScreen} options={{ headerShown: true, title: "Eliminar una planta"}} />
