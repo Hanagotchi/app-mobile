@@ -6,6 +6,7 @@ import { LoginResponse } from "../models/hanagotchiApi";
 import env from "../environment/loader";
 import { User, UserSchema } from "../models/User";
 import useLocalStorage from "../hooks/useLocalStorage";
+import * as SecureStore from "expo-secure-store";
 
 export type AuthContextProps = {
     loggedIn: boolean;
@@ -34,6 +35,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
         });
 
+        const userId = SecureStore.getItem("userId");
         /* Get if user is logged in */
         const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn());
         validateSignIn();
