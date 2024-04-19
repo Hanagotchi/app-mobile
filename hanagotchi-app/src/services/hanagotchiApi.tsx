@@ -19,20 +19,15 @@ import {
     GetUsersProfileResponse,
 } from "../models/hanagotchiApi";
 
-<<<<<<< HEAD
+
 import {Measurement, MeasurementSchema} from "../models/Measurement";
 import {AxiosInstance} from "axios";
-import {UpdateUserSchema, User, UserSchema} from "../models/User";
 
-import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
-import {Post, PostData, PostSchema, ReducedPost, ReducedPostSchema} from "../models/Post";
-import {Plant, PlantSchema} from "../models/Plant";
-=======
 import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
->>>>>>> HAN-101
+
 
 const generateDummyData = () => {
     const dummyData: ReducedPost[] = [];
@@ -97,14 +92,8 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async logIn(authCode: string): Promise<LoginResponse> {
-<<<<<<< HEAD
-        const { data } = await this.axiosInstance.post("/login", {auth_code: authCode});
-        data.message.birthdate = new Date(data.message.birthdate);
-        return LoginResponseSchema.parse(data);
-=======
         const { data, headers } = await this.axiosInstance.post("/login", { auth_code: authCode });
         return LoginResponseSchema.parse({data, headers});
->>>>>>> HAN-101
     }
 
     async deletePlant(plantId: number): Promise<void> {
