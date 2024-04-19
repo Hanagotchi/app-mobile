@@ -4,16 +4,15 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../navigation/Navigator";
 import EditPost from "../../components/social/posts/EditPost";
 import { PostData, PostDataWithoutAuthorId } from "../../models/Post";
-import * as SecureStore from "expo-secure-store";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import useFirebase from "../../hooks/useFirebase";
 import { postPhotoUrl } from "../../contexts/FirebaseContext";
-import { useMemo } from "react";
+import { useSession } from "../../hooks/useSession";
 
 type CreatePostScreenProps = NativeStackScreenProps<RootStackParamsList, "CreatePost">
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
-    const userId = useMemo(() => Number(SecureStore.getItem("userId")), []);
+    const userId = useSession((state) => state.session!.userId);
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
 
