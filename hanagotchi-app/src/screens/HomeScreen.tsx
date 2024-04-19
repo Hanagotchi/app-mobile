@@ -9,10 +9,10 @@ import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
 import {ActivityIndicator, Icon} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
 import NoContent from "../components/NoContent";
+import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 
 interface Measurement {
   id: number;
@@ -38,7 +38,7 @@ const HomeScreen: React.FC = () => {
   const userId = Number(SecureStore.getItem("userId"))
   let [currentPlant, setCurrentPlant] = useState(0);
 
-  const {isFetching, fetchedData: plants, error} = useApiFetch(
+  const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
       [{
         id: 0,
