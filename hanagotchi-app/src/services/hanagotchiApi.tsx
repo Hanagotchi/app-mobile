@@ -15,8 +15,11 @@ import {
     GetPlantTypesResponseSchema,
     LoginResponse,
     LoginResponseSchema,
+    GetUsersProfileResponseSchema,
+    GetUsersProfileResponse,
 } from "../models/hanagotchiApi";
 
+<<<<<<< HEAD
 import {Measurement, MeasurementSchema} from "../models/Measurement";
 import {AxiosInstance} from "axios";
 import {UpdateUserSchema, User, UserSchema} from "../models/User";
@@ -24,7 +27,12 @@ import {UpdateUserSchema, User, UserSchema} from "../models/User";
 import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
 import {Post, PostData, PostSchema, ReducedPost, ReducedPostSchema} from "../models/Post";
 import {Plant, PlantSchema} from "../models/Plant";
-
+=======
+import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
+import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
+import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
+import {Plant, PlantSchema } from "../models/Plant";
+>>>>>>> HAN-101
 
 const generateDummyData = () => {
     const dummyData: ReducedPost[] = [];
@@ -78,6 +86,7 @@ export interface HanagotchiApi {
     getDevicePlants: () => Promise<GetDevicePlantsResponse>
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
+    getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -88,9 +97,14 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async logIn(authCode: string): Promise<LoginResponse> {
+<<<<<<< HEAD
         const { data } = await this.axiosInstance.post("/login", {auth_code: authCode});
         data.message.birthdate = new Date(data.message.birthdate);
         return LoginResponseSchema.parse(data);
+=======
+        const { data, headers } = await this.axiosInstance.post("/login", { auth_code: authCode });
+        return LoginResponseSchema.parse({data, headers});
+>>>>>>> HAN-101
     }
 
     async deletePlant(plantId: number): Promise<void> {
@@ -177,7 +191,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         await this.axiosInstance.delete(`/logs/${logId}/photos/${photoId}`);
     }
 
-
     async createPost(body: PostData) {
         const { data } = await this.axiosInstance.post(`/social/posts`, body);
         const parsedData = PostSchema.parse(data);
@@ -203,5 +216,12 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getPlantTypes(): Promise<GetPlantTypesResponse>{
         const { data } = await this.axiosInstance.get(`/plant-type`);
         return GetPlantTypesResponseSchema.parse(data);
+    }
+
+    async getUsersProfiles(params: {follower?: number, q?: string}): Promise<UserProfile[]> {
+        // TODO: Use this endpoint when it is created
+        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
+        const { data } = await this.axiosInstance.get(`/users`);
+        return GetUsersProfileResponseSchema.parse(data).message; 
     }
 }

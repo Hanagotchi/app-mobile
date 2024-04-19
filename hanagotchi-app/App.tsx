@@ -1,4 +1,5 @@
 import "expo-dev-client";
+import 'react-native-gesture-handler';
 import { theme } from './src/themes/globalThemes';
 import { PaperProvider, ThemeProvider } from 'react-native-paper';
 import { AuthProvider } from "./src/contexts/AuthContext";
@@ -9,7 +10,6 @@ import MyErrorBoundary from "./src/common/MyErrorBoundaries";
 import { ToastAndroid } from "react-native";
 import { LocationProvider } from "./src/contexts/LocationContext";
 import { FirebaseProvider } from "./src/contexts/FirebaseContext";
-import { LocalStorageProvider } from "./src/contexts/LocalStorageContext";
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 4000);
@@ -19,21 +19,19 @@ const handleError = (error: Error, stackTrace: string) => {
 }
 
 export default function App() {
-  return (
 
+  return (
   <PaperProvider>
       <ThemeProvider theme={theme}>
         <MyErrorBoundary onError={handleError}>
           <HanagotchiApiProvider>
-            <LocalStorageProvider>
-              <AuthProvider>
-                <FirebaseProvider>
-                  <LocationProvider>
-                    <Navigator />
-                  </LocationProvider>
-                </FirebaseProvider>
-              </AuthProvider>
-            </LocalStorageProvider>
+            <AuthProvider>
+              <FirebaseProvider>
+                <LocationProvider>
+                  <Navigator />
+                </LocationProvider>
+              </FirebaseProvider>
+            </AuthProvider>
           </HanagotchiApiProvider>
         </MyErrorBoundary>
       </ThemeProvider>

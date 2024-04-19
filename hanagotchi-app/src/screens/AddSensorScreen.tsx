@@ -7,8 +7,8 @@ import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import * as SecureStore from "expo-secure-store";
 import {useApiFetch} from "../hooks/useApiFetch";
+import { useSession } from "../hooks/useSession";
 
 interface SelectOption {
     key: number;
@@ -19,7 +19,7 @@ type AddSensorProps = NativeStackScreenProps<RootStackParamsList, "AddSensor">;
 
 const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     const api = useHanagotchiApi();
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = useSession((state) => state.session?.userId)!;
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const [option, setOption] = useState(0);
     const [serialNumber, setSerialNumber] = useState("");

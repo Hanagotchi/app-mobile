@@ -7,17 +7,21 @@ import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigat
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import PostList from "../../components/social/posts/PostList";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
-import * as SecureStore from "expo-secure-store";
-import { useMemo } from "react";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
+import { useSession } from "../../hooks/useSession";
 
-type LogsScreenProps = CompositeScreenProps<
-    BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
-    NativeStackScreenProps<RootStackParamsList>
->;
+type FeedScreenProps = CompositeScreenProps<
+        DrawerScreenProps<SocialDrawerList, "Feed">,
+        CompositeScreenProps<
+            BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
+            NativeStackScreenProps<RootStackParamsList>
+        >
+    >;
 
-const FeedScreen: React.FC<LogsScreenProps> = ({navigation}) => {
+const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();
-    const userId = useMemo(() => Number(SecureStore.getItem("userId")), []);
+    const userId = useSession((state) => state.session!.userId);
     const handleAddNewPost = () => navigation.navigate("CreatePost");
 
     return (

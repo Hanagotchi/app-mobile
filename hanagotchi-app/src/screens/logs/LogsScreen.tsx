@@ -10,11 +10,12 @@ import SelectBox from "../../components/SelectBox";
 import LogPreview from "../../components/logs/LogPreview";
 import {useHanagotchiApi} from "../../hooks/useHanagotchiApi";
 import NoContent from "../../components/NoContent";
-import * as SecureStore from "expo-secure-store";
-import {monthList} from "../../common/dateUtils";
-import {useFocusApiFetch} from "../../hooks/useFocusApiFetch";
-import Dialog, {DialogRef} from "../../components/Dialog";
-import {useMyPlants} from "../../hooks/useMyPlants";
+import { monthList } from "../../common/dateUtils";
+import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
+import Dialog, { DialogRef } from "../../components/Dialog";
+import { useMyPlants } from "../../hooks/useMyPlants";
+import { useSession } from "../../hooks/useSession";
+
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -35,7 +36,7 @@ type LogsScreenProps = CompositeScreenProps<
 const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     const [year, setYear] = useState<number>(currentYear); 
     const [month, setMonth] = useState<number>(currentMonth);
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = useSession((state) => state.session?.userId)!;
     const dialogRef = useRef<DialogRef>(null);
 
     const api = useHanagotchiApi();
