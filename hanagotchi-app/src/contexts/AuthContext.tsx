@@ -82,10 +82,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     };
 
     const signOut = async () => {
+        setLoggedIn(false);
         await GoogleSignin.signOut();
         await auth().signOut()
         await deleteSession();
-        setLoggedIn(false);
     };
 
     const authValues: AuthContextProps = {

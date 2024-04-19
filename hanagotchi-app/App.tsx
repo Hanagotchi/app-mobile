@@ -10,6 +10,7 @@ import MyErrorBoundary from "./src/common/MyErrorBoundaries";
 import { ToastAndroid } from "react-native";
 import { LocationProvider } from "./src/contexts/LocationContext";
 import { FirebaseProvider } from "./src/contexts/FirebaseContext";
+import { useSession } from "./src/hooks/useSession";
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 4000);
@@ -19,6 +20,8 @@ const handleError = (error: Error, stackTrace: string) => {
 }
 
 export default function App() {
+
+  useSession((state) => state.loadFromSecureStore)();
 
   return (
   <PaperProvider>

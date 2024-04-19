@@ -71,6 +71,7 @@ const HomeScreen: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log("HOJKASNDKAJSNDKAJSDKJS")
     fetchPlantType();
     fetchMeasurement();
   }, [currentPlant]);
@@ -109,19 +110,27 @@ const HomeScreen: React.FC = () => {
   return (
       <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <View style={style.container}>
+          <Pressable onPress={previousPlant} disabled={currentPlant == 0}>
+            <Image source={left} style={{
+              ...style.arrow, 
+              display: currentPlant > 0 ? "flex" : "none",
+              position: 'absolute',
+              left: -175,
+              top: 100,
+            }}/>
+          </Pressable>
+          <Pressable onPress={nextPlant} disabled={currentPlant == plants.length-1}>
+            <Image source={right} style={{
+              ...style.arrow, 
+              display: currentPlant < plants.length-1 ? "flex" : "none",
+              position: 'absolute',
+              right: -175,
+              top: 100,
+            }} />
+          </Pressable>
           <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
-            {plants.length > 1 && currentPlant > 0 &&
-                <Pressable onPress={previousPlant}>
-                  <Image source={left} style={style.arrow}/>
-                </Pressable>
-            }
             <Image source={plantImage} style={style.image} />
-            {plants.length > 1 && currentPlant < plants.length-1 &&
-              <Pressable onPress={nextPlant}>
-                <Image source={right} style={style.arrow} />
-              </Pressable>
-            }
           </View>
 
           <View style={style.box}>
