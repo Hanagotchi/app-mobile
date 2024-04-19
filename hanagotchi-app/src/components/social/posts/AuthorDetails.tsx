@@ -1,9 +1,8 @@
-import { View, StyleSheet } from "react-native"
-import { PostAuthor } from "../../../models/Post"
-import defaultProfilePhoto from "../../../assets/defaultProfilePhoto";
+import {StyleSheet, View} from "react-native"
+import {PostAuthor} from "../../../models/Post"
 import ProfilePicture from "../../ProfilePicture";
 import {Text} from "react-native-paper"
-import { BROWN, BROWN_LIGHT } from "../../../themes/globalThemes";
+import {BROWN, BROWN_LIGHT} from "../../../themes/globalThemes";
 import React from "react";
 
 type AuthorDetailsProp = {
