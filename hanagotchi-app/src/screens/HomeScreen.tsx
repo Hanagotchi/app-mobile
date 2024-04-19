@@ -13,6 +13,7 @@ import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
 import NoContent from "../components/NoContent";
+import { useSession } from '../hooks/useSession';
 
 interface Measurement {
   id: number;
@@ -35,7 +36,7 @@ const HomeScreen: React.FC = () => {
     photo_link: '',
   });
   const [measurement, setMeasurement] = useState<Measurement | null>(null);
-  const userId = Number(SecureStore.getItem("userId"))
+  const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
 
   const {isFetching, fetchedData: plants, error} = useApiFetch(
@@ -97,7 +98,12 @@ const HomeScreen: React.FC = () => {
   )
 
   if (isFetching) {
-    return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+        <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+      </SafeAreaView>
+
+    )
   }
 
   return (
@@ -105,13 +111,13 @@ const HomeScreen: React.FC = () => {
         <View style={style.container}>
           <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
-            {plants.length > 1 &&
+            {plants.length > 1 && currentPlant > 0 &&
                 <Pressable onPress={previousPlant}>
                   <Image source={left} style={style.arrow}/>
                 </Pressable>
             }
             <Image source={plantImage} style={style.image} />
-            {plants.length > 1 &&
+            {plants.length > 1 && currentPlant < plants.length-1 &&
               <Pressable onPress={nextPlant}>
                 <Image source={right} style={style.arrow} />
               </Pressable>
