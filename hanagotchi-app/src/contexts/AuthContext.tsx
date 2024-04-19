@@ -33,10 +33,12 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
         });
 
-        /* Get if user is logged in */
-        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn());
         /* Retrieve last session from Secure Store */
-        loadFromSecureStore();
+        const lastSession = loadFromSecureStore();
+
+        /* Get if user is logged in */
+        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
+
         validateSignIn();
     }, [])
 
