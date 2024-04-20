@@ -12,6 +12,7 @@ import { useHanagotchiApi } from '../../hooks/useHanagotchiApi';
 import { useApiFetch } from '../../hooks/useApiFetch';
 import { useSession } from '../../hooks/useSession';
 import { UserProfile } from '../../models/User';
+import { PostAuthor } from '../../models/Post';
 
 const drawerItemColor = (color: string) => ({ colors: {
     onSecondaryContainer: color,
@@ -49,12 +50,18 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     return (
         <DrawerContentScrollView {...props} style={style.container} contentContainerStyle={{width: "101%"}}>
             <View style={{gap: 20}}>
-                <AuthorDetails author={{
-                    id: myUser.id,
-                    name: myUser.name,
-                    photo: myUser.photo,
-                    nickname: myUser.nickname,
-                }}/>
+                <AuthorDetails 
+                    author={{
+                        id: myUser.id,
+                        name: myUser.name,
+                        photo: myUser.photo,
+                        nickname: myUser.nickname,
+                    }}
+                    onTouch={(me: PostAuthor) => props.navigation.navigate("SocialProfile", {
+                        profileId: myUser!.id,
+                        headerTitle: "Mi perfil"
+                    })}
+                />
                 <View>
                     <Drawer.Item 
                         theme={drawerItemColor(GREEN)}

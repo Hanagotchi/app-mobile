@@ -24,7 +24,12 @@ const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();
     const userId = useSession((state) => state.session!.userId);
     const handleAddNewPost = () => navigation.navigate("CreatePost");
-    const handleRedirectToProfile = (author: PostAuthor) => navigation.navigate("SocialProfile", {profileId: author.id, headerTitle: author.name!})
+    const handleRedirectToProfile = (author: PostAuthor) => {
+        navigation.navigate(
+            "SocialProfile", 
+            {profileId: author.id, headerTitle: author.id === userId ? "Mi perfil" : author.name!}
+        )
+    };
 
     return (
         <SafeAreaView style={style.container}>
