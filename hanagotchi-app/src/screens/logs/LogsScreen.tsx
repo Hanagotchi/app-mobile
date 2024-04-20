@@ -1,3 +1,4 @@
+
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native"
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
@@ -8,13 +9,14 @@ import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../../components/SelectBox";
 import LogPreview from "../../components/logs/LogPreview";
-import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import {useHanagotchiApi} from "../../hooks/useHanagotchiApi";
 import NoContent from "../../components/NoContent";
 import { monthList } from "../../common/dateUtils";
 import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
 import Dialog, { DialogRef } from "../../components/Dialog";
 import { useMyPlants } from "../../hooks/useMyPlants";
 import { useSession } from "../../hooks/useSession";
+
 
 const range = (start: any, end: any) => Array.from({length: (end - start)}, (v, k) => k + start);
 const currentYear = (new Date()).getFullYear();
@@ -64,7 +66,7 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
     return <SafeAreaView style={style.container}>
         <Dialog
             ref={dialogRef}
-            title="¡No tienes ningun hanagotchi!" 
+            title="¡No tienes ningun hanagotchi!"
             content="Crea un hanagotchi para comenzar a escribir tus bitacoras"
             primaryButtonLabel="ACEPTAR"
             primaryButtonProps={{
@@ -112,12 +114,12 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
                 )
             )
         }
-        <FAB 
-            icon={"plus"} 
-            mode="flat" 
+        <FAB
+            icon={"plus"}
+            mode="flat"
             style={style.fab}
             variant="primary"
-            size="medium" 
+            size="medium"
             color={BACKGROUND_COLOR}
             onPress={handleAddNewLog}
         />

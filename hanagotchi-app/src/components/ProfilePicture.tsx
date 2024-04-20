@@ -1,3 +1,4 @@
+import React from 'react';
 import { StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
 
 export const DEFAULT_PHOTO = "https://cdn-icons-png.flaticon.com/128/3033/3033143.png";
@@ -8,7 +9,7 @@ type ProfilePictureProps = {
 }
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ uri }) => {
     return (
-        <TouchableWithoutFeedback onPress={() => console.log('...presiono:', uri)}>
+        <TouchableWithoutFeedback>
             <Image source={{ uri }} style={style.profileImage} />
         </TouchableWithoutFeedback>
     )
@@ -22,4 +23,4 @@ const style = StyleSheet.create({
     },
 });
 
-export default ProfilePicture;
+export default React.memo(ProfilePicture);

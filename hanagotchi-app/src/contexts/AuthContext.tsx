@@ -7,6 +7,7 @@ import env from "../environment/loader";
 import { User, UserSchema } from "../models/User";
 import { useSession } from "../hooks/useSession";
 
+
 export type AuthContextProps = {
     loggedIn: boolean;
     signIn: () => Promise<User>
@@ -32,7 +33,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             webClientId: env.googleWebClientId,
             offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
         });
-
         /* Retrieve last session from Secure Store */
         const lastSession = loadFromSecureStore();
 
@@ -82,10 +82,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     };
 
     const signOut = async () => {
+        setLoggedIn(false);
         await GoogleSignin.signOut();
         await auth().signOut()
         await deleteSession();
-        setLoggedIn(false);
     };
 
     const authValues: AuthContextProps = {

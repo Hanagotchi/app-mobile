@@ -1,7 +1,5 @@
-import { TextInput as PaperTextInput } from "react-native-paper";
-import { TextInput as NativeTextInput } from "react-native";
-import {StyleSheet} from "react-native";
-import { BEIGE, BROWN_DARK } from "../themes/globalThemes";
+import {StyleSheet, TextInput as NativeTextInput} from "react-native";
+import {BROWN_DARK} from "../themes/globalThemes";
 import BackgroundCard from "./BackgroundCard";
 
 type TextInputProps = {
