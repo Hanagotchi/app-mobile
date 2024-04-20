@@ -3,16 +3,17 @@ import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
 import { Deviation, DeviationEnum, Measurement } from "../../models/Measurement";
-import {ActivityIndicator, Icon, Text} from "react-native-paper";
+import {ActivityIndicator, FAB, Icon, Text} from "react-native-paper";
 import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
 import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
-import { BROWN, BROWN_DARK, RED_DARK } from "../../themes/globalThemes";
+import { BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
 import { useOpenWeatherApi } from "../../hooks/useOpenWeatherApi";
 import useMyUser from "../../hooks/useMyUser";
+import { useToggle } from "../../hooks/useToggle";
 
 type PlantInfoProps = {
     plant: Plant;
@@ -33,7 +34,7 @@ interface InfoToShow {
 
 const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const [fromWeatherApi, setFromWeatherApi] = useState(false);
+    const [isFetchingWeatherApi, setFetchingWeatherApi] = useState(false);
     const hanagotchiApi = useHanagotchiApi()
     const openWeatherApi = useOpenWeatherApi()
     const {myUser} = useMyUser();
@@ -51,11 +52,11 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
 
     useEffect(() => {
         const maybeFetchWeather = async () => {
-            console.log(measurement)
             if (measurement) {
                 setPlantInfo(measurement);    
             } else {
                 try {
+                    setFetchingWeatherApi(true);
                     if (myUser?.location) {
                         const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
                         const timestamp = new Date(0);
@@ -68,6 +69,8 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
                     }
                 } catch (e) {
                     setPlantInfo(null)
+                } finally {
+                    setFetchingWeatherApi(false);
                 }
             }
         }
@@ -77,7 +80,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
     if (plantTypeError) throw plantTypeError;
     if (measurementError) throw measurementError;
 
-    if (isFetchingMeasurement || isFetchingPlantType) {
+    if (isFetchingMeasurement || isFetchingPlantType || isFetchingWeatherApi) {
         return (<View style={style.box}>
                     <ActivityIndicator
                         animating={true}
@@ -258,6 +261,10 @@ const style = StyleSheet.create({
       color: '#4F4C4F',
       fontSize: 22,
       fontFamily: "Roboto"
+    },
+    fab: {
+        borderRadius: 30,
+        backgroundColor: BROWN_LIGHT,
     }
   })
 
