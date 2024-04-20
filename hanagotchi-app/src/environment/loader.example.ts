@@ -2,7 +2,7 @@ const env = {
     hanagotchiMeasurementsServiceURL: "",
     hanagotchiPlantServiceURL: "",
     hanagotchiUserServiceURL: "",
-    hanagotchiApiURL: "",
+    hanagotchiGatewayUrl: "",
     googleWebClientId: "",
     revGeoCodeApId: "",
     revGeoCodeApiKey: "",

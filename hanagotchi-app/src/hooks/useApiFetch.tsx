@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 export function useApiFetch<ResponseDataType>(
-    apiCall: () => Promise<ResponseDataType>, 
-    initialValue: ResponseDataType, 
+    apiCall: () => Promise<ResponseDataType>,
+    initialValue: ResponseDataType,
     deps?: React.DependencyList
   ) {
   const [error, setError] = useState<Error | null>(null);

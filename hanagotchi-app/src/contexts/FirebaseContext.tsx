@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useEffect } from "react";
+import {createContext, PropsWithChildren, useEffect} from "react";
 import env from "../environment/loader";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/storage'
@@ -12,6 +12,11 @@ export const profilePictureUrl = (user_email: string, subfolder: string) => {
 export const logPhotoUrl = (plantId: number) => {
     const date = new Date().getTime();
     return `plants/${plantId}/${date}`;
+}
+
+export const postPhotoUrl = (userId: number) => {
+    const date = new Date().getTime();
+    return `social/${userId}/posts/${date}`;
 }
 
 export type FirebaseContextProps = {

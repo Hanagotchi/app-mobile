@@ -1,7 +1,7 @@
-import { StyleSheet, View } from "react-native";
-import { MaterialIcons } from '@expo/vector-icons';
-import { Text } from "react-native-paper";
-import { BEIGE, BEIGE_DARK, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
+import {StyleSheet, View} from "react-native";
+import {MaterialIcons} from '@expo/vector-icons';
+import {Text} from "react-native-paper";
+import {BEIGE} from "../themes/globalThemes";
 
 const NoContent: React.FC = () => {
     return <View style={style.container}>
