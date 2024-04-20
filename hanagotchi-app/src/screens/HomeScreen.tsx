@@ -13,6 +13,7 @@ import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
 import NoContent from "../components/NoContent";
+import messaging from '@react-native-firebase/messaging';
 
 interface Measurement {
   id: number;
@@ -72,6 +73,7 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
     fetchPlantType();
     fetchMeasurement();
+    requestUserPermission();
   }, [currentPlant]);
 
   if (!isFetching && error) {
@@ -88,6 +90,18 @@ const HomeScreen: React.FC = () => {
 
   function previousPlant() {
     if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
+  }
+
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      messaging().getToken().then(async token => {
+        await api.patchUser({ device_token: token });
+      })
+    }
+    return enabled
   }
 
   if (plants.length == 0 && !isFetching) return (

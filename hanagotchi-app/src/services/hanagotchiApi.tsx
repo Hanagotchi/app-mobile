@@ -19,7 +19,7 @@ import {
 
 import {Measurement, MeasurementSchema} from "../models/Measurement";
 import {AxiosInstance} from "axios";
-import {UpdateUserSchema, User, UserSchema} from "../models/User";
+import {UpdateUser, UpdateUserSchema, User, UserSchema} from "../models/User";
 
 import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
 import {Post, PostData, PostSchema, ReducedPost, ReducedPostSchema} from "../models/Post";
@@ -61,7 +61,7 @@ export interface HanagotchiApi {
     getPlantType: (name: string) => Promise<GetPlantTypeResponse>;
     getUser: (userId: number) => Promise<User>;
     getLastMeasurement: (plantId: number) => Promise<Measurement | null>;
-    patchUser: (user: User) => Promise<void>;
+    patchUser: (user: UpdateUser) => Promise<void>;
     getPlantTypes: () => Promise<GetPlantTypesResponse>;
     createPlant: (id_user: number, name: string, scientific_name: string) => Promise<Plant>;
     deletePlant: (plantId: number) => Promise<void>;
@@ -118,7 +118,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getPlantType(name: string): Promise<GetPlantTypeResponse> {
         const encodedName = encodeURIComponent(name);
-        const { data, status } = await this.axiosInstance.get(`/plant-type/${encodedName}`);
+        const { data } = await this.axiosInstance.get(`/plant-type/${encodedName}`);
 
         return GetPlantTypeResponseSchema.parse(data);
     }
@@ -139,9 +139,10 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return PlantSchema.parse(data);
     }
 
-    async patchUser(user: User): Promise<void> {
+    async patchUser(user: UpdateUser): Promise<void> {
         const updateUser = UpdateUserSchema.parse(user);
-        await this.axiosInstance.patch(`/users/${user.id}`, updateUser);
+        // TODO: CHANGE URL TO /ME
+        await this.axiosInstance.patch(`/users/11`, updateUser);
     }
 
     async addSensor(deviceId: string, plantId: number): Promise<void> {
