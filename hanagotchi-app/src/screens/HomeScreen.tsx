@@ -27,8 +27,6 @@ const HomeScreen: React.FC = () => {
       }]
   );
 
-  console.log(currentPlant);
-
   if (!isFetching && error) {
     throw error;
   }

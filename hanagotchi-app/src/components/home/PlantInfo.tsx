@@ -2,7 +2,7 @@ import { Plant } from "../../models/Plant"
 import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
-import { Measurement } from "../../models/Measurement";
+import { Deviation, DeviationEnum, Measurement } from "../../models/Measurement";
 import {ActivityIndicator, Icon, Text} from "react-native-paper";
 import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
@@ -10,7 +10,7 @@ import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
-import { BROWN_DARK } from "../../themes/globalThemes";
+import { BROWN, BROWN_DARK, RED_DARK } from "../../themes/globalThemes";
 import { useOpenWeatherApi } from "../../hooks/useOpenWeatherApi";
 import useMyUser from "../../hooks/useMyUser";
 
@@ -23,9 +23,11 @@ interface InfoToShow {
     humidity?: number;
     light?: number;
     watering?: number;
+    deviations?: Deviation;
     time_stamp?: Date;
 }
-  
+
+
 
 
 const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
@@ -89,18 +91,33 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
                 </View>);
     }
 
+    const parseParameter = (text: string, deviation?: DeviationEnum) => {
+        return <Text style={{
+            ...style.measurement,
+            color: !deviation ? BROWN : RED_DARK
+        }}>{text}</Text>
+    }
+
     return (<>
         <View style={style.box}>
             <View style={style.boxElements}>
             {plantInfo ?
                 <View style={style.measurements}>
-                    {plantInfo.humidity && <Text style={style.measurement}>Humedad: {plantInfo.humidity}%</Text>}
-                    {plantInfo.temperature && <Text style={style.measurement}>Temperatura: {plantInfo.temperature}°C</Text>}
-                    {plantInfo.light && <Text style={style.measurement}>Luz: {plantInfo.light}ftc</Text>}
-                    {plantInfo.watering && <Text style={style.measurement}>Riego: {plantInfo.watering}%</Text>}
+                    {plantInfo.humidity && 
+                        parseParameter(`Humedad: ${plantInfo.humidity}%`, plantInfo.deviations?.humidity)
+                    }
+                    {plantInfo.temperature && 
+                        parseParameter(`Temperatura: ${plantInfo.temperature}°C`, plantInfo.deviations?.temperature)
+                    }
+                    {plantInfo.light && 
+                        parseParameter(`Luz: ${plantInfo.light} ftc.`, plantInfo.deviations?.light)
+                    }
+                    {plantInfo.watering && 
+                        parseParameter(`Riego: ${plantInfo.watering}%`, plantInfo.deviations?.watering)
+                    }
                 </View> :
                 <View style={style.noMeasurements}>
-                    <Text style={style.measurement}> No se registran {'\n'} mediciones</Text>
+                    <Text style={{...style.measurement, color: BROWN}}> No se registran {'\n'} mediciones</Text>
                 </View>
                 }
                 <View style={{ gap: 20, justifyContent: "center" }}>
@@ -160,6 +177,7 @@ const style = StyleSheet.create({
       fontFamily: "Roboto",
       textAlign: 'center',
       color: '#4F4C4F',
+      fontStyle: "italic",
     },
     measurements: {
       flex: 0.96,
