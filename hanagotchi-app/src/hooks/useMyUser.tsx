@@ -1,10 +1,10 @@
-import * as SecureStore from "expo-secure-store";
 import { useHanagotchiApi } from "./useHanagotchiApi";
 import { useApiFetch } from "./useApiFetch";
 import { User } from "../models/User";
+import { useSession } from "./useSession";
 
 const useMyUser = () => {
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = useSession((state) => state.session!.userId);
 
     const api = useHanagotchiApi();
 

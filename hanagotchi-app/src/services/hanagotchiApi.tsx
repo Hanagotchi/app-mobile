@@ -15,15 +15,15 @@ import {
     GetPlantTypesResponseSchema,
     LoginResponse,
     LoginResponseSchema,
+    GetUsersProfileResponseSchema,
 } from "../models/hanagotchiApi";
 
+import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
+import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
+import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
+import {Plant, PlantSchema } from "../models/Plant";
 import {Measurement, MeasurementSchema} from "../models/Measurement";
 import {AxiosInstance} from "axios";
-import {UpdateUserSchema, User, UserSchema} from "../models/User";
-
-import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
-import {Post, PostData, PostSchema, ReducedPost, ReducedPostSchema} from "../models/Post";
-import {Plant, PlantSchema} from "../models/Plant";
 
 
 const generateDummyData = () => {
@@ -78,6 +78,7 @@ export interface HanagotchiApi {
     getDevicePlants: () => Promise<GetDevicePlantsResponse>
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
+    getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -176,7 +177,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         await this.axiosInstance.delete(`/logs/${logId}/photos/${photoId}`);
     }
 
-
     async createPost(body: PostData) {
         const { data } = await this.axiosInstance.post(`/social/posts`, body);
         const parsedData = PostSchema.parse(data);
@@ -202,5 +202,12 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getPlantTypes(): Promise<GetPlantTypesResponse>{
         const { data } = await this.axiosInstance.get(`/plant-type`);
         return GetPlantTypesResponseSchema.parse(data);
+    }
+
+    async getUsersProfiles(params: {follower?: number, q?: string}): Promise<UserProfile[]> {
+        // TODO: Use this endpoint when it is created
+        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
+        const { data } = await this.axiosInstance.get(`/users`);
+        return GetUsersProfileResponseSchema.parse(data).message; 
     }
 }

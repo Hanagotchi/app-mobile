@@ -15,7 +15,6 @@ export function usePosts(
         if (noMorePosts) return;
         try {
             setIsFetching(true);
-            console.log(pageNumber)
             const newPage = await fetchPostsFn(pageNumber);
             if (newPage.length === 0) {
                 setNoMorePosts(true);

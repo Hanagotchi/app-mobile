@@ -7,7 +7,6 @@ import env from "../environment/loader";
 import { User, UserSchema } from "../models/User";
 import { useSession } from "../hooks/useSession";
 
-
 export type AuthContextProps = {
     loggedIn: boolean;
     signIn: () => Promise<User>
@@ -35,10 +34,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         });
         /* Retrieve last session from Secure Store */
         const lastSession = loadFromSecureStore();
-
-        /* Get if user is logged in */
         const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
-
         validateSignIn();
     }, [])
 
