@@ -4,7 +4,7 @@ import { OpenWeatherApi, OpenWeatherApiImpl } from "../services/openWeatherApi";
 import { PropsWithChildren, createContext } from "react";
 
 const axiosInstance = axios.create({
-    baseURL: env.hanagotchiGatewayUrl
+    baseURL: env.openWeatherApiUrl
   });
   
 const api: OpenWeatherApi = new OpenWeatherApiImpl(axiosInstance, env.openWeatherAppId);

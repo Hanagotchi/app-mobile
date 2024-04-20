@@ -1,30 +1,16 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, SafeAreaView, Image, Pressable, Modal} from 'react-native'
-import {BACKGROUND_COLOR, BROWN_DARK, theme} from "../themes/globalThemes";
+import {View, Text, StyleSheet, SafeAreaView, Image} from 'react-native'
+import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import plantImage from "../assets/plant.png";
-import plus from "../assets/plusicon.png";
-import info from "../assets/infoicon.png";
-import close from "../assets/closeicon.png";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
 import {ActivityIndicator, Icon, IconButton} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
-import * as SecureStore from "expo-secure-store";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
 import PlantInfo from '../components/home/PlantInfo';
-
-interface Measurement {
-  id: number;
-  id_plant: number;
-  temperature: number;
-  humidity: number;
-  light: number;
-  watering: number;
-  time_stamp: string;
-}
 
 const HomeScreen: React.FC = () => {
   const api = useHanagotchiApi();
@@ -41,6 +27,7 @@ const HomeScreen: React.FC = () => {
       }]
   );
 
+  console.log(currentPlant);
 
   if (!isFetching && error) {
     throw error;

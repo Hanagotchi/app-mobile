@@ -8,16 +8,31 @@ import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
 import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BROWN_DARK } from "../../themes/globalThemes";
+import { useOpenWeatherApi } from "../../hooks/useOpenWeatherApi";
+import useMyUser from "../../hooks/useMyUser";
 
 type PlantInfoProps = {
     plant: Plant;
 }
 
+interface InfoToShow {
+    temperature?: number;
+    humidity?: number;
+    light?: number;
+    watering?: number;
+    time_stamp?: Date;
+}
+  
+
+
 const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const hanagotchiApi = useHanagotchiApi()
+    const openWeatherApi = useOpenWeatherApi()
+    const {myUser} = useMyUser();
+    const [plantInfo, setPlantInfo] = useState<InfoToShow>({});
     const {
         isFetching: isFetchingPlantType,
         fetchedData: plantType,
@@ -32,6 +47,27 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
     const navigate = async () => {
         console.log("navigate to create log");
     };
+
+    useEffect(() => {
+        const maybeFetchWeather = async () => {
+            console.log(measurement)
+            if (measurement) {
+                setPlantInfo(measurement);    
+            } else {
+                if (myUser?.location) {
+                    const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
+                    const timestamp = new Date(0);
+                    timestamp.setUTCSeconds(weatherData.dt);
+                    setPlantInfo({
+                        temperature: Math.round(weatherData.main.temp - 273.15),
+                        humidity: weatherData.main.humidity,
+                        time_stamp: timestamp,
+                    })
+                }
+            }
+        }
+        maybeFetchWeather();
+    }, [measurement]);
 
     if (plantTypeError) throw plantTypeError;
     if (measurementError) throw measurementError;
@@ -50,12 +86,12 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
     return (<>
         <View style={style.box}>
             <View style={style.boxElements}>
-            {measurement && plantType ?
+            {plantInfo && plantType ?
                 <View style={style.measurements}>
-                    <Text style={style.measurement}>Humedad: {measurement.humidity}%</Text>
-                    <Text style={style.measurement}>Temperatura: {measurement.temperature}°C</Text>
-                    <Text style={style.measurement}>Luz: {measurement.light}ftc</Text>
-                    <Text style={style.measurement}>Riego: {measurement.watering}</Text>
+                    <Text style={style.measurement}>Humedad: {plantInfo.humidity}%</Text>
+                    <Text style={style.measurement}>Temperatura: {plantInfo.temperature}°C</Text>
+                    <Text style={style.measurement}>Luz: {plantInfo.light}ftc</Text>
+                    <Text style={style.measurement}>Riego: {plantInfo.watering}</Text>
                 </View> :
                 <View style={style.noMeasurements}>
                     <Text style={style.measurement}> No se registran {'\n'} mediciones</Text>

@@ -5,6 +5,7 @@ export const GetCurrentWeatherResponseSchema = z.object({
         lon: z.number(),
         lat: z.number(),
     }),
+    dt: z.number(),
     main: z.object({
         temp: z.number(),
         feels_like: z.number(),
