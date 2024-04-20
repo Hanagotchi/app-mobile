@@ -6,18 +6,19 @@ import React, {useEffect, useState} from "react";
 import {User} from "../models/User";
 import {useApiFetch} from "../hooks/useApiFetch";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import * as SecureStore from "expo-secure-store";
 import EditUser from "../components/EditUser";
 import useLocation from "../hooks/useLocation";
 import useFirebase from "../hooks/useFirebase";
 import {DEFAULT_PHOTO} from "../components/ProfilePicture";
 import {handleError} from "../common/errorHandling";
+import { useSession } from "../hooks/useSession";
+import { profilePictureUrl } from "../contexts/FirebaseContext";
 
 type ProfileScreenProps = NativeStackScreenProps<RootStackParamsList, "Profile">
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = useSession((state) => state.session?.userId)!;
     const { requestLocation } = useLocation();
     const { uploadImage } = useFirebase();
     const [user, setUser] = useState<User>();
@@ -38,10 +39,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     }, []);
 
     const handleComplete = async () => {
+        if (!user) {
+            return;
+        }
         try {
+            const filepath = profilePictureUrl(user.email, 'avatar');
             const userUpdated: User = {
                 ...user,
-                photo: user?.photo?.startsWith('file://') ? await uploadImage(user?.photo ?? DEFAULT_PHOTO, user?.email ?? '', 'avatar') : user?.photo
+                photo: user?.photo?.startsWith('file://') ? await uploadImage(user.photo ?? DEFAULT_PHOTO, filepath) : user.photo
             } as User;
             await api.patchUser(userUpdated);
             navigation.navigate("MainScreens", { screen: "Settings" });

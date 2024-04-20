@@ -5,9 +5,8 @@ import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { LoginResponse } from "../models/hanagotchiApi";
 import env from "../environment/loader";
 import { User, UserSchema } from "../models/User";
-import useLocalStorage from "../hooks/useLocalStorage";
 import { useSession } from "../hooks/useSession";
-import * as SecureStore from "expo-secure-store";
+
 
 export type AuthContextProps = {
     loggedIn: boolean;
@@ -26,8 +25,6 @@ export const AuthContext = createContext<AuthContextProps>({
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const hanagotchiApi = useHanagotchiApi();
-    const { set } = useLocalStorage();
-    const { remove } = useLocalStorage();
     const [createSession, deleteSession, loadFromSecureStore] = useSession((state) => [state.createSession, state.deleteSession, state.loadFromSecureStore])
 
     useEffect(() => {
@@ -36,12 +33,12 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             webClientId: env.googleWebClientId,
             offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
         });
-
-        const userId = SecureStore.getItem("userId");
-        /* Get if user is logged in */
-        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn());
         /* Retrieve last session from Secure Store */
-        loadFromSecureStore();
+        const lastSession = loadFromSecureStore();
+
+        /* Get if user is logged in */
+        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
+
         validateSignIn();
     }, [])
 
@@ -65,7 +62,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                     "x-access-token": accessToken
                 }
             } : LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
-            await set("userId", user.id.toString());
             createSession(user.id, accessToken);
 
             // Create a Google credential with the token
@@ -76,7 +72,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             return UserSchema.parse(user);
 
         } catch (err) {
-            await remove("userId");
             await deleteSession();
 
             if (await GoogleSignin.isSignedIn()) {
@@ -87,11 +82,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     };
 
     const signOut = async () => {
+        setLoggedIn(false);
         await GoogleSignin.signOut();
         await auth().signOut()
         await deleteSession();
-        await remove("userId");
-        setLoggedIn(false);
     };
 
     const authValues: AuthContextProps = {
