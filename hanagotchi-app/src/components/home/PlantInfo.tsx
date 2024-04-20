@@ -8,6 +8,7 @@ import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
 import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
+import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
 import { BROWN_DARK } from "../../themes/globalThemes";
 import { useOpenWeatherApi } from "../../hooks/useOpenWeatherApi";
@@ -29,10 +30,11 @@ interface InfoToShow {
 
 const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
     const [modalOpen, setModalOpen] = useState(false);
+    const [fromWeatherApi, setFromWeatherApi] = useState(false);
     const hanagotchiApi = useHanagotchiApi()
     const openWeatherApi = useOpenWeatherApi()
     const {myUser} = useMyUser();
-    const [plantInfo, setPlantInfo] = useState<InfoToShow>({});
+    const [plantInfo, setPlantInfo] = useState<InfoToShow | null>(null);
     const {
         isFetching: isFetchingPlantType,
         fetchedData: plantType,
@@ -54,15 +56,19 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
             if (measurement) {
                 setPlantInfo(measurement);    
             } else {
-                if (myUser?.location) {
-                    const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
-                    const timestamp = new Date(0);
-                    timestamp.setUTCSeconds(weatherData.dt);
-                    setPlantInfo({
-                        temperature: Math.round(weatherData.main.temp - 273.15),
-                        humidity: weatherData.main.humidity,
-                        time_stamp: timestamp,
-                    })
+                try {
+                    if (myUser?.location) {
+                        const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
+                        const timestamp = new Date(0);
+                        timestamp.setUTCSeconds(weatherData.dt);
+                        setPlantInfo({
+                            temperature: Math.round(weatherData.main.temp - 273.15),
+                            humidity: weatherData.main.humidity,
+                            time_stamp: timestamp,
+                        })
+                    }
+                } catch (e) {
+                    setPlantInfo(null)
                 }
             }
         }
@@ -86,18 +92,18 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
     return (<>
         <View style={style.box}>
             <View style={style.boxElements}>
-            {plantInfo && plantType ?
+            {plantInfo ?
                 <View style={style.measurements}>
-                    <Text style={style.measurement}>Humedad: {plantInfo.humidity}%</Text>
-                    <Text style={style.measurement}>Temperatura: {plantInfo.temperature}°C</Text>
-                    <Text style={style.measurement}>Luz: {plantInfo.light}ftc</Text>
-                    <Text style={style.measurement}>Riego: {plantInfo.watering}</Text>
+                    {plantInfo.humidity && <Text style={style.measurement}>Humedad: {plantInfo.humidity}%</Text>}
+                    {plantInfo.temperature && <Text style={style.measurement}>Temperatura: {plantInfo.temperature}°C</Text>}
+                    {plantInfo.light && <Text style={style.measurement}>Luz: {plantInfo.light}ftc</Text>}
+                    {plantInfo.watering && <Text style={style.measurement}>Riego: {plantInfo.watering}%</Text>}
                 </View> :
                 <View style={style.noMeasurements}>
                     <Text style={style.measurement}> No se registran {'\n'} mediciones</Text>
                 </View>
                 }
-                <View style={{ justifyContent: "space-evenly" }}>
+                <View style={{ gap: 20, justifyContent: "center" }}>
                     <Pressable onPress={navigate}>
                         <Icon size={30} source={plus} />
                     </Pressable>
@@ -106,7 +112,19 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
                     </Pressable>
                 </View>
             </View>
-            {measurement && <Text style={style.time}>Última actualización {measurement.time_stamp.toDateString()}</Text>}
+            {plantInfo &&
+                <View>
+                    <Text style={style.time}>Última actualización:</Text>
+                    <Text style={style.time}>{plantInfo.time_stamp?.toLocaleString()}</Text>
+                </View>
+            }
+                {!measurement && <Image source={openWeatherLogo} style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                height: 22,
+                width: 51,
+            }}/>}
         </View>
         <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
             <View style={style.centeredView}>
@@ -142,7 +160,6 @@ const style = StyleSheet.create({
       fontFamily: "Roboto",
       textAlign: 'center',
       color: '#4F4C4F',
-      paddingTop: 10
     },
     measurements: {
       flex: 0.96,
@@ -156,6 +173,7 @@ const style = StyleSheet.create({
     },
     box: {
       backgroundColor: '#E8DECF',
+      justifyContent: "space-between",
       borderRadius: 8,
       padding: 20,
       marginTop: 50,
@@ -165,6 +183,7 @@ const style = StyleSheet.create({
     boxElements: {
       display: "flex",
       flexDirection: "row",
+      flexGrow: 1,
     },
     description: {
       display: "flex",
