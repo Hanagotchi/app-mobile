@@ -32,11 +32,9 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             webClientId: env.googleWebClientId,
             offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
         });
-
-        /* Get if user is logged in */
-        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn());
         /* Retrieve last session from Secure Store */
-        loadFromSecureStore();
+        const lastSession = loadFromSecureStore();
+        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
         validateSignIn();
     }, [])
 
@@ -80,10 +78,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     };
 
     const signOut = async () => {
+        setLoggedIn(false);
         await GoogleSignin.signOut();
         await auth().signOut()
         await deleteSession();
-        setLoggedIn(false);
     };
 
     const authValues: AuthContextProps = {

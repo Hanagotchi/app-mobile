@@ -1,33 +1,33 @@
-import { StyleSheet, SafeAreaView, ScrollView, Image, FlatList, View } from "react-native"
-import { ActivityIndicator, FAB, Text } from "react-native-paper";
-import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN, GREEN_DARK } from "../../themes/globalThemes";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamsList } from "../../navigation/Navigator";
+import {FlatList, SafeAreaView, ScrollView, StyleSheet, View} from "react-native"
+import {ActivityIndicator, FAB, Text} from "react-native-paper";
+import {BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN, GREEN_DARK} from "../../themes/globalThemes";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamsList} from "../../navigation/Navigator";
 import ExpandibleImage from "../../components/ExpandibleImage";
-import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
-import { GetLogByIdResponse } from "../../models/hanagotchiApi";
+import {useHanagotchiApi} from "../../hooks/useHanagotchiApi";
+import {GetLogByIdResponse} from "../../models/hanagotchiApi";
 import NoContent from "../../components/NoContent";
-import { handleError } from "../../common/errorHandling";
-import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
+import {handleError} from "../../common/errorHandling";
+import {useFocusApiFetch} from "../../hooks/useFocusApiFetch";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 
 const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) => {
     const {log_id} = route.params;
-    const api = useHanagotchiApi();    
+    const api = useHanagotchiApi();
 
     const {
-        isFetching, 
-        fetchedData: log, 
+        isFetching,
+        fetchedData: log,
         error} = useFocusApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null, [log_id]);
 
     if (isFetching) {
         return (
             <SafeAreaView style={style.container}>
-                <ActivityIndicator 
-                    animating={true} 
-                    color={BROWN_DARK} 
-                    size={80} 
+                <ActivityIndicator
+                    animating={true}
+                    color={BROWN_DARK}
+                    size={80}
                     style={{justifyContent: "center", flexGrow: 1}}
                 />
             </SafeAreaView>
@@ -48,14 +48,14 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) 
             <Text style={style.title}>{log.title}</Text>
             {log.photos.length > 0 && (
                 <View style={{height: 240}}>
-                    <FlatList 
+                    <FlatList
                         horizontal
                         data={log.photos}
-                        renderItem={({item}) => 
-                            <ExpandibleImage 
+                        renderItem={({item}) =>
+                            <ExpandibleImage
                                 minimizedImageStyle={style.image}
-                                maximizedImageStyle={style.fullImage} 
-                                source={{uri: item.photo_link}} 
+                                maximizedImageStyle={style.fullImage}
+                                source={{uri: item.photo_link}}
                             />
                         }
                         keyExtractor={(item, index) => String(index)}
@@ -67,12 +67,12 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) 
             <ScrollView>
                 <Text style={style.content}>{log!.content}</Text>
             </ScrollView>
-            <FAB 
-                icon={"pencil"} 
-                mode="flat" 
-                style={style.fab} 
-                variant="primary" 
-                size="medium" 
+            <FAB
+                icon={"pencil"}
+                mode="flat"
+                style={style.fab}
+                variant="primary"
+                size="medium"
                 color={BACKGROUND_COLOR}
                 onPress={() => navigation.navigate("EditLog", {log: log})}
             />

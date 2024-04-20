@@ -21,6 +21,7 @@ import { BottomTabNavigationOptions, createBottomTabNavigator } from "@react-nav
 import SocialDrawer from "./social/SocialDrawer";
 import DeletePlantScreen from "../screens/DeletePlantScreen";
 import DeleteSensorScreen from "../screens/DeleteSensorScreen";
+import HomeScreen from "../screens/HomeScreen";
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -84,7 +85,7 @@ const MainScreens: React.FC = () => {
     return (
         <Tab.Navigator screenOptions={screenOptions}>
             <Tab.Group>
-                <Tab.Screen name="Home" component={EmptyScreen} initialParams={{ bgColor: "blue" }} options={{
+                <Tab.Screen name="Home" component={HomeScreen} initialParams={{bgColor: "blue"}} options={{
                     tabBarLabel: "Home",
                     tabBarIcon: HomeIcon,
                 }} />

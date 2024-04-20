@@ -1,9 +1,9 @@
-import { FlatList, Image, StyleSheet, View } from "react-native"
+import {FlatList, StyleSheet, View} from "react-native"
 import * as ImagePicker from 'expo-image-picker';
-import { FAB, Text } from "react-native-paper";
-import { BEIGE_LIGHT, BROWN, BROWN_LIGHT, GREEN_DARK } from "../themes/globalThemes";
+import {FAB, Text} from "react-native-paper";
+import {BEIGE_LIGHT, BROWN, BROWN_LIGHT, GREEN_DARK} from "../themes/globalThemes";
 import DeletableImage from "./DeletableImage";
-import { useState } from "react";
+import {useState} from "react";
 
 type PhotoUploaderProps = {
     maxAmount?: number;
