@@ -13,6 +13,8 @@ export class OpenWeatherApiImpl {
     private weatherCache: {
         lastResponse: GetCurrentWeatherResponse,
         epoch: number,
+        lat: number,
+        lon: number,
     } | null;
 
     constructor(axiosInstance: AxiosInstance, appId: string) {
@@ -24,7 +26,12 @@ export class OpenWeatherApiImpl {
     async getCurrentWeather(lat: number, lon: number): Promise<GetCurrentWeatherResponse> {
         const timeSinceLastRequest = (new Date()).getTime() - (this.weatherCache?.epoch ?? (new Date()).getTime());
 
-        if (this.weatherCache && timeSinceLastRequest < FIVE_MINUTES) {
+        if (
+            this.weatherCache && 
+            timeSinceLastRequest < FIVE_MINUTES &&
+            this.weatherCache?.lat === lat &&
+            this.weatherCache?.lon === lon
+        ) {
             return this.weatherCache.lastResponse;
         }
 
@@ -37,6 +44,8 @@ export class OpenWeatherApiImpl {
         this.weatherCache = {
             lastResponse: weatherData,
             epoch: (new Date()).getTime(),
+            lat,
+            lon,
         }
         return weatherData;
     }

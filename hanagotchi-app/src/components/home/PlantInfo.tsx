@@ -30,8 +30,6 @@ interface InfoToShow {
 }
 
 
-
-
 const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [isFetchingWeatherApi, setFetchingWeatherApi] = useState(false);
@@ -135,7 +133,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
                     <Text style={style.time}>{plantInfo.time_stamp?.toLocaleString()}</Text>
                 </View>
             }
-                {!measurement && <Image source={openWeatherLogo} style={{
+            {!measurement && <Image source={openWeatherLogo} style={{
                 position: "absolute",
                 top: 10,
                 right: 10,
