@@ -16,6 +16,7 @@ import useMyUser from "../../hooks/useMyUser";
 
 type PlantInfoProps = {
     plant: Plant;
+    redirectToCreateLog: (plantId: number) => void;
 }
 
 interface InfoToShow {
@@ -30,7 +31,7 @@ interface InfoToShow {
 
 
 
-const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
+const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [fromWeatherApi, setFromWeatherApi] = useState(false);
     const hanagotchiApi = useHanagotchiApi()
@@ -47,10 +48,6 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
         fetchedData: measurement,
         error: measurementError,
     } = useApiFetch<Measurement | null>(() => hanagotchiApi.getLastMeasurement(plant.id), null, [plant]);
-
-    const navigate = async () => {
-        console.log("navigate to create log");
-    };
 
     useEffect(() => {
         const maybeFetchWeather = async () => {
@@ -121,7 +118,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant}) => {
                 </View>
                 }
                 <View style={{ gap: 20, justifyContent: "center" }}>
-                    <Pressable onPress={navigate}>
+                    <Pressable onPress={() => redirectToCreateLog(plant.id)}>
                         <Icon size={30} source={plus} />
                     </Pressable>
                     <Pressable onPress={() => setModalOpen(true)}>

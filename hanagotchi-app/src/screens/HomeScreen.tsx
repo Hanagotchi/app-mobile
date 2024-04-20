@@ -11,8 +11,17 @@ import { useState} from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
 import PlantInfo from '../components/home/PlantInfo';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { MainTabParamsList, RootStackParamsList } from '../navigation/Navigator';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const HomeScreen: React.FC = () => {
+type HomeScreenProps = CompositeScreenProps<
+    BottomTabScreenProps<MainTabParamsList, "Home">,
+    NativeStackScreenProps<RootStackParamsList>
+>;
+
+const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
@@ -37,6 +46,10 @@ const HomeScreen: React.FC = () => {
 
   function previousPlant() {
     if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
+  }
+
+  function redirectToCreateLog(plantId: number) {
+    navigation.navigate("CreateLog", {plantId})
   }
 
   if (plants.length == 0 && !isFetching) return (
@@ -75,7 +88,7 @@ const HomeScreen: React.FC = () => {
           <View style={style.carrousel}>
             <Image source={plantImage} style={style.image} />
           </View>
-          <PlantInfo plant={plants[currentPlant]} />
+          <PlantInfo plant={plants[currentPlant]} redirectToCreateLog={redirectToCreateLog}/>
         </View>
       </SafeAreaView>
   )
