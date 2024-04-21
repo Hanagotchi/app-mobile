@@ -35,11 +35,13 @@ export class OpenWeatherApiImpl {
             return this.weatherCache.lastResponse;
         }
 
+
         const {data} = await  this.axiosInstance.get("/data/2.5/weather", {params: {
             lat,
             lon,
             appId: this.appId
         }});
+        
         const weatherData = GetCurrentWeatherResponseSchema.parse(data);
         this.weatherCache = {
             lastResponse: weatherData,

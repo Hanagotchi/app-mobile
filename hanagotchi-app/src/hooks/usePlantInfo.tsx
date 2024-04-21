@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Deviation } from "../models/Measurement";
 import { Plant } from "../models/Plant";
 import useMyUser from "./useMyUser";
@@ -7,7 +7,7 @@ import { useHanagotchiApi } from "./useHanagotchiApi";
 import { useOpenWeatherApi } from "./useOpenWeatherApi";
 import { DevicePlant } from "../models/DevicePlant";
 
-interface InfoToShow {
+type InfoToShow = {
     origin: "Hanagotchi" | "OpenWeather",
     info: {
         temperature?: number;
@@ -21,64 +21,57 @@ interface InfoToShow {
 
 export const usePlantInfo = (plant: Plant) => {
     const [plantInfo, setPlantInfo] = useState<InfoToShow | null>(null);
-    const [isFetchingInfo, setIsFetchingInfo] = useState<boolean>(false);
-    const [fetchingInfoError, setFetchingInfoError] = useState<Error | null>(null);
+    const [error, setError] = useState<Error | null>(null);
+    const [isFetching, setIsFetching] = useState<boolean>(false);
     const {myUser} = useMyUser();
     const hanagotchiApi = useHanagotchiApi();
     const openWeatherApi = useOpenWeatherApi();
-    const devicePlant = useApiFetch<DevicePlant[] | null>(() => hanagotchiApi.getDevicePlants({id_plant: plant.id}), null, [plant]);
-
-    const fetchFromHanagotchi = useCallback(async () => {
-        const measurement = await hanagotchiApi.getLastMeasurement(plant.id);
-        if (!measurement) {
-            setPlantInfo(null);
-        } else {
-            setPlantInfo({
-                origin: "Hanagotchi",
-                info: measurement!,
-            });
-        }
-    }, [plant, setPlantInfo])
-
-    const fetchFromOpenWeather = useCallback(async () => {
-        if (myUser?.location) {
-            const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
-            const timestamp = new Date(0);
-            timestamp.setUTCSeconds(weatherData.dt);
-            setPlantInfo({
-                origin: "OpenWeather",
-                info: {
-                    temperature: Math.round(weatherData.main.temp - 273.15),
-                    humidity: weatherData.main.humidity,
-                    time_stamp: timestamp,
-                }
-            })
-        } else {
-            setPlantInfo(null);
-        }
-    }, [plant, myUser, setPlantInfo])
 
     useEffect(() => {
-        const maybeFetchWeather = async () => {
-            if (!devicePlant.fetchedData) return;
+        const fetchInfo = async () => {
+            setIsFetching(true);
 
             try {
-                setIsFetchingInfo(true);
-                devicePlant.fetchedData.length === 0 ? fetchFromHanagotchi() : fetchFromOpenWeather();
+                const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
+                console.log(devicePlant);
+                const measurement = await hanagotchiApi.getLastMeasurement(plant.id);
+                if (!measurement) {
+                    setPlantInfo(null)
+                } else {
+                    setPlantInfo({
+                        origin: "Hanagotchi",
+                        info: measurement,
+                    });
+                }
             } catch (e) {
-                setFetchingInfoError(e as Error);
-                setPlantInfo(null);
+                try {
+                    if (myUser?.location) {
+                        const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
+                        const timestamp = new Date(0);
+                        timestamp.setUTCSeconds(weatherData.dt);
+                        setPlantInfo({
+                            origin: "OpenWeather",
+                            info: {
+                                temperature: Math.round(weatherData.main.temp - 273.15),
+                                humidity: weatherData.main.humidity,
+                                time_stamp: timestamp,
+                            }
+                        });
+                    }
+                } catch (e) {
+                    setError(e as Error);
+                } 
             } finally {
-                setIsFetchingInfo(false);
+                setIsFetching(false);
             }
-        }
 
-        maybeFetchWeather();
-    }, [devicePlant]);
+        }
+        fetchInfo();
+    }, [plant]);
 
     return {
         plantInfo,
-        isFetching: isFetchingInfo || devicePlant.isFetching,
-        error: devicePlant.error ?? fetchingInfoError,
+        error,
+        isFetching,
     }
 }

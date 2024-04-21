@@ -14,6 +14,7 @@ import { BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../the
 import { useOpenWeatherApi } from "../../hooks/useOpenWeatherApi";
 import useMyUser from "../../hooks/useMyUser";
 import { useToggle } from "../../hooks/useToggle";
+import { usePlantInfo } from "../../hooks/usePlantInfo";
 
 type PlantInfoProps = {
     plant: Plant;
@@ -32,53 +33,23 @@ interface InfoToShow {
 
 const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const [isFetchingWeatherApi, setFetchingWeatherApi] = useState(false);
-    const hanagotchiApi = useHanagotchiApi()
-    const openWeatherApi = useOpenWeatherApi()
-    const {myUser} = useMyUser();
-    const [plantInfo, setPlantInfo] = useState<InfoToShow | null>(null);
+    const hanagotchiApi = useHanagotchiApi();
     const {
         isFetching: isFetchingPlantType,
         fetchedData: plantType,
         error: plantTypeError,
     } = useApiFetch<PlantType | null>(() => hanagotchiApi.getPlantType(plant.scientific_name), null, [plant]);
-    const {
-        isFetching: isFetchingMeasurement,
-        fetchedData: measurement,
-        error: measurementError,
-    } = useApiFetch<Measurement | null>(() => hanagotchiApi.getLastMeasurement(plant.id), null, [plant]);
 
-    useEffect(() => {
-        const maybeFetchWeather = async () => {
-            if (measurement) {
-                setPlantInfo(measurement);    
-            } else {
-                try {
-                    setFetchingWeatherApi(true);
-                    if (myUser?.location) {
-                        const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
-                        const timestamp = new Date(0);
-                        timestamp.setUTCSeconds(weatherData.dt);
-                        setPlantInfo({
-                            temperature: Math.round(weatherData.main.temp - 273.15),
-                            humidity: weatherData.main.humidity,
-                            time_stamp: timestamp,
-                        })
-                    }
-                } catch (e) {
-                    setPlantInfo(null)
-                } finally {
-                    setFetchingWeatherApi(false);
-                }
-            }
-        }
-        maybeFetchWeather();
-    }, [measurement]);
+    const {
+      isFetching: isFetchingPlantInfo,
+      plantInfo,
+      error: plantInfoError,
+    } = usePlantInfo(plant);
 
     if (plantTypeError) throw plantTypeError;
-    if (measurementError) throw measurementError;
+    if (plantInfoError) throw plantInfoError;
 
-    if (isFetchingMeasurement || isFetchingPlantType || isFetchingWeatherApi) {
+    if (isFetchingPlantType || isFetchingPlantInfo) {
         return (<View style={style.box}>
                     <ActivityIndicator
                         animating={true}
@@ -101,17 +72,17 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
             <View style={style.boxElements}>
             {plantInfo ?
                 <View style={style.measurements}>
-                    {plantInfo.humidity && 
-                        parseParameter(`Humedad: ${plantInfo.humidity}%`, plantInfo.deviations?.humidity)
+                    {plantInfo.info.humidity && 
+                        parseParameter(`Humedad: ${plantInfo.info.humidity}%`, plantInfo.info.deviations?.humidity)
                     }
-                    {plantInfo.temperature && 
-                        parseParameter(`Temperatura: ${plantInfo.temperature}°C`, plantInfo.deviations?.temperature)
+                    {plantInfo.info.temperature && 
+                        parseParameter(`Temperatura: ${plantInfo.info.temperature}°C`, plantInfo.info.deviations?.temperature)
                     }
-                    {plantInfo.light && 
-                        parseParameter(`Luz: ${plantInfo.light} ftc.`, plantInfo.deviations?.light)
+                    {plantInfo.info.light && 
+                        parseParameter(`Luz: ${plantInfo.info.light} ftc.`, plantInfo.info.deviations?.light)
                     }
-                    {plantInfo.watering && 
-                        parseParameter(`Riego: ${plantInfo.watering}%`, plantInfo.deviations?.watering)
+                    {plantInfo.info.watering && 
+                        parseParameter(`Riego: ${plantInfo.info.watering}%`, plantInfo.info.deviations?.watering)
                     }
                 </View> :
                 <View style={style.noMeasurements}>
@@ -130,10 +101,10 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
             {plantInfo &&
                 <View>
                     <Text style={style.time}>Última actualización:</Text>
-                    <Text style={style.time}>{plantInfo.time_stamp?.toLocaleString()}</Text>
+                    <Text style={style.time}>{plantInfo.info.time_stamp?.toLocaleString()}</Text>
                 </View>
             }
-            {!measurement && <Image source={openWeatherLogo} style={{
+            {plantInfo?.origin === "OpenWeather" && <Image source={openWeatherLogo} style={{
                 position: "absolute",
                 top: 10,
                 right: 10,
