@@ -21,7 +21,6 @@ const handleError = (error: Error, stackTrace: string) => {
 }
 
 export default function App() {
-
   useSession((state) => state.loadFromSecureStore)();
 
   return (

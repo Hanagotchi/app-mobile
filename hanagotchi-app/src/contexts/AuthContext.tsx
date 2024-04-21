@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
         /* Get if user is logged in */
         const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
-
+        
         validateSignIn();
     }, [])
 

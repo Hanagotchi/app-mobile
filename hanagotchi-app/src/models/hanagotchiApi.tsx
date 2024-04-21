@@ -20,7 +20,6 @@ export const GetUserSchema = z.object({
     status: z.number(),
     message: UserSchema,
 });
-
 export type GetUserResponse = z.infer<typeof GetUserSchema>;
 
 export const GetDevicePlantsResponseSchema = z.array(DevicePlantSchema);
@@ -42,6 +41,7 @@ export type GetPlantTypeResponse = z.infer<typeof GetPlantTypeResponseSchema>;
 
 export const GetPlantTypesResponseSchema = z.array(PlantTypeSchema);
 export type GetPlantTypesResponse = z.infer<typeof GetPlantTypesResponseSchema>;
+
 export const GetPlantsResponseSchema = z.array(PlantSchema);
 export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
 

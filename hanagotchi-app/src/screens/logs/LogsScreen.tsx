@@ -1,11 +1,12 @@
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet, View} from "react-native"
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainTabParamsList, RootStackParamsList} from "../../navigation/Navigator";
-import type {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {type CompositeScreenProps} from '@react-navigation/native';
-import {useRef, useState} from "react";
-import {BACKGROUND_COLOR, BROWN_DARK, GREEN} from "../../themes/globalThemes";
-import {ActivityIndicator, Divider, FAB, Text} from 'react-native-paper';
+
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native"
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { type CompositeScreenProps } from '@react-navigation/native';
+import { useRef, useState } from "react";
+import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
+import { ActivityIndicator, Divider, FAB, Text } from 'react-native-paper';
 import SelectBox from "../../components/SelectBox";
 import LogPreview from "../../components/logs/LogPreview";
 import {useHanagotchiApi} from "../../hooks/useHanagotchiApi";

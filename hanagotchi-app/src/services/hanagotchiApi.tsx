@@ -16,17 +16,15 @@ import {
     LoginResponse,
     LoginResponseSchema,
     GetUsersProfileResponseSchema,
-    GetUsersProfileResponse,
 } from "../models/hanagotchiApi";
-
-
-import {Measurement, MeasurementSchema} from "../models/Measurement";
-import {AxiosInstance} from "axios";
 
 import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
+import {Measurement, MeasurementSchema} from "../models/Measurement";
+import {AxiosInstance} from "axios";
+
 
 
 const generateDummyData = () => {

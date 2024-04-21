@@ -4,9 +4,8 @@ import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import plantImage from "../assets/plant.png";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
-import {ActivityIndicator, Icon, IconButton} from "react-native-paper";
+import {ActivityIndicator, IconButton} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import {useApiFetch} from "../hooks/useApiFetch";
 import { useState} from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
@@ -15,6 +14,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { MainTabParamsList, RootStackParamsList } from '../navigation/Navigator';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 
 type HomeScreenProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "Home">,
@@ -26,7 +26,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
 
-  const {isFetching, fetchedData: plants, error} = useApiFetch(
+  const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
       [{
         id: 0,
