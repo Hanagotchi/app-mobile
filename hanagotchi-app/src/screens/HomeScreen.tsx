@@ -13,6 +13,7 @@ import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
 import NoContent from "../components/NoContent";
 import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
+import { useSession } from '../hooks/useSession';
 
 interface Measurement {
   id: number;
@@ -35,7 +36,7 @@ const HomeScreen: React.FC = () => {
     photo_link: '',
   });
   const [measurement, setMeasurement] = useState<Measurement | null>(null);
-  const userId = Number(SecureStore.getItem("userId"))
+  const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
@@ -72,6 +73,7 @@ const HomeScreen: React.FC = () => {
   };
 
   useEffect(() => {
+    if (plants.length == 0) return;
     fetchPlantType();
     fetchMeasurement();
   }, [currentPlant, plants]);

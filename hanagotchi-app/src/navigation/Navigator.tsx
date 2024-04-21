@@ -22,6 +22,12 @@ import SocialDrawer from "./social/SocialDrawer";
 import DeletePlantScreen from "../screens/DeletePlantScreen";
 import DeleteSensorScreen from "../screens/DeleteSensorScreen";
 import HomeScreen from "../screens/HomeScreen";
+import { LogBox } from 'react-native';
+
+// TODO: pa la demo che, arreglar este warning
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
