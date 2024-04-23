@@ -49,9 +49,10 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
         setPosts((posts) => posts.filter(p => p.id !== postId));
     }
 
-    if (!error && posts.length === 0) {
+    if (!error && isFetching) {
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
     }
+
 
     return (
             <FlatList 
@@ -70,6 +71,7 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
                 windowSize={5}
                 ItemSeparatorComponent={() => <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />}
                 showsVerticalScrollIndicator={false}
+                ListEmptyComponent={<Text>No hay publicaciones en este momento</Text>}
             />
     );
 }

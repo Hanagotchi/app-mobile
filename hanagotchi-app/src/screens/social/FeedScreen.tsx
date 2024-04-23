@@ -34,7 +34,7 @@ const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
     return (
         <SafeAreaView style={style.container}>
             <PostList
-                updatePosts={(pageNum: number) => api.dummyGetPosts(pageNum, 10)}
+                updatePosts={(pageNum: number) => api.getMyFeed(pageNum, 10)}
                 myId={userId}
                 onRedirectToProfile={handleRedirectToProfile}
             />
