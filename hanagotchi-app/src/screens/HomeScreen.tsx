@@ -15,6 +15,10 @@ import { MainTabParamsList, RootStackParamsList } from '../navigation/Navigator'
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
+import Hanagotchi from '../components/home/Hanagotchi';
+import { Emotion } from '../models/Hanagotchi';
+import { Deviation } from '../models/Measurement';
+import { InfoToShow } from '../models/InfoToShow';
 
 type HomeScreenProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "Home">,
@@ -25,6 +29,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
+  const [emotion, setEmotion] = useState<Emotion>("relaxed");
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
@@ -50,6 +55,38 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
 
   function redirectToCreateLog(plantId: number) {
     navigation.navigate("CreateLog", {plantId})
+  }
+
+  function calculateEmotionBasedOnDeviation({info: {deviations}}: InfoToShow) {
+    console.log(deviations);
+
+    if (!deviations) {
+      setEmotion("relaxed");
+      return;
+    }
+
+    const {
+      temperature,
+      light,
+      watering
+    } = deviations!;
+
+    if (watering === "lower") {
+      setEmotion("depressed")
+      return;
+    }
+
+    if (light === "higher" && temperature === "higher") {
+      setEmotion("overwhelmed");
+      return;
+    }
+
+    if (light === "lower" && temperature === "lower") {
+      setEmotion("uncomfortable");
+      return;
+    }
+
+    setEmotion("relaxed");
   }
 
   if (plants.length == 0 && !isFetching) return (
@@ -86,9 +123,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           }} />
           <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
-            <Image source={plantImage} style={style.image} />
+            <Hanagotchi emotion={emotion} />
           </View>
-          <PlantInfo plant={plants[currentPlant]} redirectToCreateLog={redirectToCreateLog}/>
+          <PlantInfo
+            plant={plants[currentPlant]}
+            redirectToCreateLog={redirectToCreateLog}
+            onChange={calculateEmotionBasedOnDeviation}
+          />
         </View>
       </SafeAreaView>
   )
@@ -102,9 +143,10 @@ const style = StyleSheet.create({
     backgroundColor: BACKGROUND_COLOR
   },
   carrousel: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
+    alignItems: "center",
+    height: 300,
+    width: 300,
   },
   title: {
     fontSize: 45,

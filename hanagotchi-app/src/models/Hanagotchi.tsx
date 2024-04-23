@@ -1,0 +1,1 @@
+export type Emotion = "depressed" | "happy" | "overwhelmed" | "relaxed" | "sad" | "uncomfortable";

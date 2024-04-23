@@ -1,23 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Deviation } from "../models/Measurement";
+import { useEffect, useState } from "react";
 import { Plant } from "../models/Plant";
 import useMyUser from "./useMyUser";
-import { useApiFetch } from "./useApiFetch";
 import { useHanagotchiApi } from "./useHanagotchiApi";
 import { useOpenWeatherApi } from "./useOpenWeatherApi";
-import { DevicePlant } from "../models/DevicePlant";
-
-type InfoToShow = {
-    origin: "Hanagotchi" | "OpenWeather",
-    info: {
-        temperature?: number;
-        humidity?: number;
-        light?: number;
-        watering?: number;
-        deviations?: Deviation;
-        time_stamp?: Date;
-    }
-}
+import { InfoToShow } from "../models/InfoToShow";
 
 export const usePlantInfo = (plant: Plant) => {
     const [plantInfo, setPlantInfo] = useState<InfoToShow | null>(null);

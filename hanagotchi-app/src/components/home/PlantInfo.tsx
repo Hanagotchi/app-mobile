@@ -2,7 +2,7 @@ import { Plant } from "../../models/Plant"
 import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
-import { Deviation, DeviationEnum, Measurement } from "../../models/Measurement";
+import { DeviationEnum } from "../../models/Measurement";
 import {ActivityIndicator, FAB, Icon, Text} from "react-native-paper";
 import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
@@ -10,28 +10,17 @@ import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
-import { BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
-import { useOpenWeatherApi } from "../../hooks/useOpenWeatherApi";
-import useMyUser from "../../hooks/useMyUser";
-import { useToggle } from "../../hooks/useToggle";
+import { BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
 import { usePlantInfo } from "../../hooks/usePlantInfo";
+import { InfoToShow } from "../../models/InfoToShow";
 
 type PlantInfoProps = {
     plant: Plant;
     redirectToCreateLog: (plantId: number) => void;
+    onChange?: (infoToShow: InfoToShow) => void;
 }
 
-interface InfoToShow {
-    temperature?: number;
-    humidity?: number;
-    light?: number;
-    watering?: number;
-    deviations?: Deviation;
-    time_stamp?: Date;
-}
-
-
-const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
+const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChange}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const hanagotchiApi = useHanagotchiApi();
     const {
@@ -48,6 +37,11 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
 
     if (plantTypeError) throw plantTypeError;
     if (plantInfoError) throw plantInfoError;
+
+    useEffect(() => {
+      if (!plantInfo || !onChange) return;
+      onChange?.(plantInfo);
+    }, [plantInfo]);
 
     if (isFetchingPlantType || isFetchingPlantInfo) {
         return (<View style={style.box}>
