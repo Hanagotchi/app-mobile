@@ -32,9 +32,13 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             webClientId: env.googleWebClientId,
             offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
         });
+
         /* Retrieve last session from Secure Store */
         const lastSession = loadFromSecureStore();
+
+        /* Get if user is logged in */
         const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
+        
         validateSignIn();
     }, [])
 

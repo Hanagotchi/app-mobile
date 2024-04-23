@@ -8,9 +8,9 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import PostList from "../../components/social/posts/PostList";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
 import { useSession } from "../../hooks/useSession";
 import { PostAuthor } from "../../models/Post";
+import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
 
 type FeedScreenProps = CompositeScreenProps<
         DrawerScreenProps<SocialDrawerList, "Feed">,
