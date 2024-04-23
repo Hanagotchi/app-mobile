@@ -104,7 +104,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async getDevicePlants(params?: {id_plant?: number, limit?: number}): Promise<GetDevicePlantsResponse> {
-        console.log("id_plant", params?.id_plant)
         const { data } = await this.axiosInstance.get(`/measurements/device-plant`, {params});
         return GetDevicePlantsResponseSchema.parse(data);
     }

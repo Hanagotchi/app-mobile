@@ -104,13 +104,15 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
                     <Text style={style.time}>{plantInfo.info.time_stamp?.toLocaleString()}</Text>
                 </View>
             }
-            {plantInfo?.origin === "OpenWeather" && <Image source={openWeatherLogo} style={{
-                position: "absolute",
-                top: 10,
-                right: 10,
-                height: 22,
-                width: 51,
-            }}/>}
+            {plantInfo?.origin === "OpenWeather" && 
+              <Image source={openWeatherLogo} style={{
+                  position: "absolute",
+                  bottom: "40%",
+                  left: "48%",
+                  height: 22,
+                  width: 51,
+              }}/>
+            }
         </View>
         <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
             <View style={style.centeredView}>
