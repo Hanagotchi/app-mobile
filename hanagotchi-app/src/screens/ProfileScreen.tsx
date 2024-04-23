@@ -23,7 +23,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     const { uploadImage } = useFirebase();
     const [user, setUser] = useState<User>();
     const { isFetching, fetchedData, error } = useApiFetch(() => api.getUser(userId), user);
-
+    console.log(fetchedData)
     useEffect(() => {
         const fetchData = async () => { setUser(fetchedData) }
         fetchData();
@@ -42,10 +42,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         if (!user) {
             return;
         }
+        console.log(user);
         try {
             const filepath = profilePictureUrl(user.email, 'avatar');
             const userUpdated: User = {
                 ...user,
+                birthdate: new Date(user!.birthdate!.toISOString().split('T')[0]),
                 photo: user?.photo?.startsWith('file://') ? await uploadImage(user.photo ?? DEFAULT_PHOTO, filepath) : user.photo
             } as User;
             await api.patchUser(userUpdated);

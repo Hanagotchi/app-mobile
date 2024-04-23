@@ -103,10 +103,10 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, onRedire
                     onRedirectToProfile={onRedirectToProfile}
                 />
                 <Text style={style.content}>{post.content}</Text>
-                {post.main_photo &&(
+                {post.main_photo_link &&(
                     <Image 
                         style={style.image}
-                        source={{uri: post.main_photo}} 
+                        source={{uri: post.main_photo_link}} 
                     />
                 )}
                 <PostFooter likeCount={post.likes_count} createdAt={post.created_at}/>
