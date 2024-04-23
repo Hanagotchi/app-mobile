@@ -4,6 +4,7 @@ import { LogSchema } from "./Log";
 import {DevicePlantSchema} from "./DevicePlant";
 import {PlantSchema} from "./Plant";
 import {PlantTypeSchema} from "./PlantType";
+import { ReducedPost, ReducedPostSchema } from "./Post";
 
 export const LoginResponseSchema = z.object({
     data: z.object({
@@ -51,3 +52,5 @@ export const GetUsersProfileResponseSchema = z.object({
 });
 export type GetUsersProfileResponse = z.infer<typeof GetUsersProfileResponseSchema>;
 
+export const GetMyFeedResponseSchema = z.array(ReducedPostSchema);
+export type GetMyFeedResponse = z.infer<typeof GetMyFeedResponseSchema>;

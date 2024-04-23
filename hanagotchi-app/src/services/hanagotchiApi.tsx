@@ -16,6 +16,7 @@ import {
     LoginResponse,
     LoginResponseSchema,
     GetUsersProfileResponseSchema,
+    GetMyFeedResponseSchema,
 } from "../models/hanagotchiApi";
 
 import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
@@ -164,7 +165,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async getMyFeed(page: number, size: number) {
         const { data } = await this.axiosInstance.get(`/social/users/me/feed?page=${page}&per_page=${size}`);
         console.log("getMYFEED", data);
-        const result = data.map((post: any) => ReducedPostSchema.parse(post));
+        const result = GetMyFeedResponseSchema.parse(data);
         console.log("getMYFEED MAMPPED", result);
         return result;
     }
