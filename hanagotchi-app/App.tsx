@@ -10,6 +10,8 @@ import MyErrorBoundary from "./src/common/MyErrorBoundaries";
 import { ToastAndroid } from "react-native";
 import { LocationProvider } from "./src/contexts/LocationContext";
 import { FirebaseProvider } from "./src/contexts/FirebaseContext";
+import { useSession } from "./src/hooks/useSession";
+import { OpenWeatherApiProvider } from "./src/contexts/OpenWeatherServiceContext";
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 4000);
@@ -19,20 +21,23 @@ const handleError = (error: Error, stackTrace: string) => {
 }
 
 export default function App() {
+  useSession((state) => state.loadFromSecureStore)();
 
   return (
   <PaperProvider>
       <ThemeProvider theme={theme}>
         <MyErrorBoundary onError={handleError}>
-          <HanagotchiApiProvider>
-            <AuthProvider>
-              <FirebaseProvider>
-                <LocationProvider>
-                  <Navigator />
-                </LocationProvider>
-              </FirebaseProvider>
-            </AuthProvider>
-          </HanagotchiApiProvider>
+          <OpenWeatherApiProvider>
+            <HanagotchiApiProvider>
+              <AuthProvider>
+                <FirebaseProvider>
+                  <LocationProvider>
+                    <Navigator />
+                  </LocationProvider>
+                </FirebaseProvider>
+              </AuthProvider>
+            </HanagotchiApiProvider>            
+          </OpenWeatherApiProvider>
         </MyErrorBoundary>
       </ThemeProvider>
     </PaperProvider>

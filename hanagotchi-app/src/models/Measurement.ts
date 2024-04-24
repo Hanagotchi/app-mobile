@@ -1,11 +1,16 @@
 import {z} from "zod";
 
+export const DeviationEnumSchema = z.union([z.literal("lower"), z.literal("higher")]).nullable();
+export type DeviationEnum = z.infer<typeof DeviationEnumSchema>
+
 export const DeviationSchema = z.object({
-    temperature: z.string().nullable(),
-    humidity: z.string().nullable(),
-    light: z.string().nullable(),
-    watering: z.string().nullable(),
+    temperature: DeviationEnumSchema,
+    humidity: DeviationEnumSchema,
+    light: DeviationEnumSchema,
+    watering: DeviationEnumSchema,
 })
+
+export type Deviation = z.infer<typeof DeviationSchema>;
 
 export const MeasurementSchema = z.object({
     id: z.number(),

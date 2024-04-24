@@ -124,7 +124,7 @@ export type RootStackParamsList = {
     CompleteLogin: { userId: number };
     AddSensor: undefined;
     DeleteSensor: undefined;
-    CreateLog: undefined;
+    CreateLog: {plantId?: number};
     EditLog: {log: Log};
     CreatePost: undefined;
     AddPlant: undefined;
