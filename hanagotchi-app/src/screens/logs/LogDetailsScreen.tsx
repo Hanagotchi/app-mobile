@@ -9,19 +9,29 @@ import {GetLogByIdResponse} from "../../models/hanagotchiApi";
 import NoContent from "../../components/NoContent";
 import {handleError} from "../../common/errorHandling";
 import {useFocusApiFetch} from "../../hooks/useFocusApiFetch";
+import { useMyPlants } from "../../hooks/useMyPlants";
+import { useMemo } from "react";
+import { useApiFetch } from "../../hooks/useApiFetch";
+import { useSession } from "../../hooks/useSession";
 
 type LogDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "LogDetails">
 
 const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) => {
     const {log_id} = route.params;
+    const userId = useSession((state) => state.session?.userId);
     const api = useHanagotchiApi();
+
+    const {isFetching: isFetchingMyPlants, fetchedData: myPlants, error: plantsError} = useApiFetch(() => api.getPlants({id_user: userId}), []);
 
     const {
         isFetching,
         fetchedData: log,
-        error} = useFocusApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null, [log_id]);
+        error
+    } = useFocusApiFetch<GetLogByIdResponse | null>(() => api.getLogById(log_id), null, [log_id]);
 
-    if (isFetching) {
+    const thisPlant = useMemo(() => myPlants.find(p => p.id === log?.plant_id), [myPlants, log])
+
+    if (isFetching || isFetchingMyPlants) {
         return (
             <SafeAreaView style={style.container}>
                 <ActivityIndicator
@@ -38,6 +48,11 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) 
         handleError(error);
         return <NoContent />;
     }
+    
+    if (plantsError) {
+        handleError(plantsError);
+        return <NoContent />;
+    }
 
     if (!log) {
         return <NoContent />;
@@ -46,6 +61,7 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) 
     return (
         <SafeAreaView style={style.container}>
             <Text style={style.title}>{log.title}</Text>
+            <Text style={style.plant}>Sobre: {thisPlant?.name}</Text>
             {log.photos.length > 0 && (
                 <View style={{height: 240}}>
                     <FlatList
@@ -95,6 +111,13 @@ const style = StyleSheet.create({
         color: GREEN_DARK,
         fontStyle: "italic",
         paddingHorizontal: "10%",
+    },
+    plant: {
+        color: BROWN,
+        paddingHorizontal: "10%",
+        fontSize: 18,
+        fontWeight: "bold",
+        alignItems: "flex-start",
     },
     content: {
         color: BROWN,

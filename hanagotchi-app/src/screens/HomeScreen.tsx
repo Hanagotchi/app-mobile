@@ -9,11 +9,12 @@ import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
 import {ActivityIndicator, Icon} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import {useApiFetch} from "../hooks/useApiFetch";
 import * as SecureStore from "expo-secure-store";
 import {useEffect, useState} from "react";
 import NoContent from "../components/NoContent";
 import messaging from '@react-native-firebase/messaging';
+import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
+import { useSession } from '../hooks/useSession';
 
 interface Measurement {
   id: number;
@@ -36,10 +37,10 @@ const HomeScreen: React.FC = () => {
     photo_link: '',
   });
   const [measurement, setMeasurement] = useState<Measurement | null>(null);
-  const userId = Number(SecureStore.getItem("userId"))
+  const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
 
-  const {isFetching, fetchedData: plants, error} = useApiFetch(
+  const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
       [{
         id: 0,
@@ -50,7 +51,9 @@ const HomeScreen: React.FC = () => {
   );
 
   const fetchPlantType = async () => {
-    const fetchedPlantType = await api.getPlantType(plants[currentPlant].scientific_name);
+    const scientific_name = plants[currentPlant].scientific_name;
+    if (!scientific_name) return;
+    const fetchedPlantType = await api.getPlantType(scientific_name);
     setPlantType(fetchedPlantType);
   };
 
@@ -71,10 +74,11 @@ const HomeScreen: React.FC = () => {
   };
 
   useEffect(() => {
+    if (plants.length == 0) return;
     fetchPlantType();
     fetchMeasurement();
     requestUserPermission();
-  }, [currentPlant]);
+  }, [currentPlant, plants]);
 
   if (!isFetching && error) {
     throw error;

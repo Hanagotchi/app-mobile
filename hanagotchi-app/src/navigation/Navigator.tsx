@@ -3,12 +3,10 @@ import {NavigationContainer, NavigatorScreenParams} from "@react-navigation/nati
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from "../screens/LoginScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import {BottomTabNavigationOptions, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import CompleteLoginScreen from "../screens/CompleteLoginScreen";
 import LogsScreen from "../screens/logs/LogsScreen";
 import LogDetailsScreen from "../screens/logs/LogDetailsScreen";
 import { formatDate } from "../common/dateUtils";
-import FeedScreen from "../screens/social/FeedScreen";
 import CreatePostScreen from "../screens/social/CreatePostScreen";
 import AddPlantScreen from "../screens/AddPlantScreen";
 import AddSensorScreen from "../screens/AddSensorScreen";
@@ -19,9 +17,17 @@ import ProfileScreen from "../screens/ProfileScreen";
 import CreateLogScreen from "../screens/logs/CreateLogScreen";
 import {Log} from "../models/Log";
 import EditLogScreen from "../screens/logs/EditLogScreen";
+import { BottomTabNavigationOptions, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import SocialDrawer from "./social/SocialDrawer";
 import DeletePlantScreen from "../screens/DeletePlantScreen";
 import DeleteSensorScreen from "../screens/DeleteSensorScreen";
 import HomeScreen from "../screens/HomeScreen";
+import { LogBox } from 'react-native';
+
+// TODO: pa la demo che, arreglar este warning
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const EmptyScreen: React.FC = ({ route }) => {
     const { bgColor } = route.params;
@@ -82,7 +88,6 @@ export type MainTabParamsList = {
 
 const MainScreens: React.FC = () => {
     const Tab = createBottomTabNavigator<MainTabParamsList>();
-
     return (
         <Tab.Navigator screenOptions={screenOptions}>
             <Tab.Group>
@@ -94,10 +99,9 @@ const MainScreens: React.FC = () => {
                     tabBarLabel: "Bitácoras",
                     tabBarIcon: LogIcon,
                 }} />
-                <Tab.Screen name="SocialNetwork" component={FeedScreen} options={{
+                <Tab.Screen name="SocialNetwork" component={SocialDrawer} options={{
                     tabBarLabel: "Red social",
                     tabBarIcon: SocialIcon,
-                    headerShown: true,
                     headerStyle: styles.header,
                     headerTintColor: BLACK,
                     headerTitleAlign: "center",
