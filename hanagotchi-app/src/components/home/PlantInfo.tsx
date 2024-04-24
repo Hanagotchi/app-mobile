@@ -21,7 +21,8 @@ type PlantInfoProps = {
 }
 
 const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChange}) => {
-    const [modalOpen, setModalOpen] = useState(false);
+    const [plantTypeModalOpen, setPlantTypeModalOpen] = useState(false);
+    const [plantDescriptionModalOpen, setPlantDescriptionModalOpen] = useState(false);
     const hanagotchiApi = useHanagotchiApi();
     const {
         isFetching: isFetchingPlantType,
@@ -33,6 +34,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
       isFetching: isFetchingPlantInfo,
       plantInfo,
       error: plantInfoError,
+      device,
     } = usePlantInfo(plant);
 
     if (plantTypeError) throw plantTypeError;
@@ -87,7 +89,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                     <Pressable onPress={() => redirectToCreateLog(plant.id)}>
                         <Icon size={30} source={plus} />
                     </Pressable>
-                    <Pressable onPress={() => console.log("info")}>
+                    <Pressable onPress={() => setPlantDescriptionModalOpen(true)}>
                         <Icon size={30} source={info} />
                     </Pressable>
                     <FAB
@@ -96,7 +98,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                       color={BEIGE_LIGHT}
                       customSize={30}
                       mode="flat"
-                      onPress={() => setModalOpen(true)}
+                      onPress={() => setPlantTypeModalOpen(true)}
                     />
                 </View>
             </View>
@@ -117,8 +119,8 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
             }
         </View>
         <Portal>
-          <Dialog style={style.modalView} visible={modalOpen} onDismiss={() => setModalOpen(false)}>
-            <Pressable onPress={() => {setModalOpen(false)}} style={{
+          <Dialog style={style.modalView} visible={plantTypeModalOpen} onDismiss={() => setPlantTypeModalOpen(false)}>
+            <Pressable onPress={() => {setPlantTypeModalOpen(false)}} style={{
               flex: 3,
               position: "absolute",
               top: -3,
@@ -127,11 +129,32 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
               <Icon size={23} source={close} />
             </Pressable>
             <Dialog.Title style={{justifyContent: "space-between", flexDirection: "row", width: "50%"}}>
-              <Text style={style.modalTitle}>{plantType!.botanical_name}</Text>
+              <Text style={style.modalTitle}>{plantType?.botanical_name}</Text>
             </Dialog.Title>
             <Dialog.Content style={style.description}>
-              <Text style={style.modalText}>{plantType!.description}</Text>
+              <Text style={{...style.modalText, width: "53%",}}>{plantType!.description}</Text>
               <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+        <Portal>
+          <Dialog style={style.modalView} visible={plantDescriptionModalOpen} onDismiss={() => setPlantDescriptionModalOpen(false)}>
+            <Pressable onPress={() => {setPlantDescriptionModalOpen(false)}} style={{
+              flex: 3,
+              position: "absolute",
+              top: -3,
+              right: 20,
+            }}>
+              <Icon size={23} source={close} />
+            </Pressable>
+            <Dialog.Title style={{justifyContent: "space-between", flexDirection: "row", width: "50%"}}>
+              <Text style={style.modalTitle}>{plant.name}</Text>
+            </Dialog.Title>
+            <Dialog.Content style={style.description}>
+              <View>
+                <Text style={style.modalText}>Nombre científico: {plant.scientific_name}</Text>
+                {device && <Text style={style.modalText}>ID del sensor: {device.id_device}</Text>}
+              </View>
             </Dialog.Content>
           </Dialog>
         </Portal>
@@ -198,12 +221,6 @@ const style = StyleSheet.create({
       width: 130,
       height: 130,
     },
-    centeredView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 20,
-    },
     modalView: {
       margin: 20,
       backgroundColor: "#E8DECF",
@@ -228,7 +245,6 @@ const style = StyleSheet.create({
       color: '#4F4C4F',
       fontFamily: "Roboto",
       paddingRight: 10,
-      width: "53%",
     },
     modalTitle: {
       textAlign: "left",
