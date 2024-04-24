@@ -14,12 +14,13 @@ export const usePlantInfo = (plant: Plant) => {
     const {myUser} = useMyUser();
     const hanagotchiApi = useHanagotchiApi();
     const openWeatherApi = useOpenWeatherApi();
-
+    
     useEffect(() => {
         const fetchInfo = async () => {
             setIsFetching(true);
 
             try {
+                setDevice(undefined);
                 const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
                 setDevice(devicePlant.length > 0 ? devicePlant[0] : undefined)
                 const measurement = await hanagotchiApi.getLastMeasurement(plant.id);
