@@ -10,7 +10,7 @@ import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
-import { BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
+import { BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
 import { usePlantInfo } from "../../hooks/usePlantInfo";
 import { InfoToShow } from "../../models/InfoToShow";
 
@@ -83,13 +83,21 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                     <Text style={{...style.measurement, color: BROWN}}> No se registran {'\n'} mediciones</Text>
                 </View>
                 }
-                <View style={{ gap: 20, justifyContent: "center" }}>
+                <View style={{ gap: 10, justifyContent: "center" }}>
                     <Pressable onPress={() => redirectToCreateLog(plant.id)}>
                         <Icon size={30} source={plus} />
                     </Pressable>
-                    <Pressable onPress={() => setModalOpen(true)}>
+                    <Pressable onPress={() => console.log("info")}>
                         <Icon size={30} source={info} />
                     </Pressable>
+                    <FAB
+                      icon="leaf"
+                      style={style.fab}
+                      color={BEIGE_LIGHT}
+                      customSize={30}
+                      mode="flat"
+                      onPress={() => setModalOpen(true)}
+                    />
                 </View>
             </View>
             {plantInfo &&
@@ -229,8 +237,10 @@ const style = StyleSheet.create({
       fontFamily: "Roboto"
     },
     fab: {
-        borderRadius: 30,
-        backgroundColor: BROWN_LIGHT,
+      backgroundColor: BROWN_LIGHT,
+      borderRadius: 30,
+      height: 30,
+      width: 30,
     }
   })
 
