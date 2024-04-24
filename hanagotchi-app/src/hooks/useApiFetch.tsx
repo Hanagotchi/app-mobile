@@ -15,8 +15,10 @@ export function useApiFetch<ResponseDataType>(
       try {
         const data = await apiCall();
         setFetchedData(data);
+        setError(null);
       } catch (e) {
         setError(e as Error);
+        setFetchedData(initialValue);
       } finally {
         setFetching(false);
       }

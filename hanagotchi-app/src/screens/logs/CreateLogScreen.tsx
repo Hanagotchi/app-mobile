@@ -13,8 +13,8 @@ import { useState } from "react";
 
 type CreateLogScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateLog">
 
-const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
-
+const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation, route}) => {
+    const plantId = route.params.plantId;
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
     const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
@@ -38,7 +38,12 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation}) => {
 
     return <SafeAreaView style={style.container}>
         {!hasSubmitted && <ConfirmBackpressDialog />}
-        <EditLog onSubmit={submit} buttonLabel="Crear"/>
+        <EditLog initValues={{
+                title: "",
+                content: "",
+                plant_id: plantId ?? 0,
+                photos: [],
+        }} onSubmit={submit} buttonLabel="Crear"/>
     </SafeAreaView>
 };
 

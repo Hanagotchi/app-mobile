@@ -14,7 +14,7 @@ export type SocialDrawerList = {
     SocialProfile: { profileId: number, headerTitle: string },
 }
 
-type SocialDrawerProps = CompositeScreenProps<
+export type SocialDrawerProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
     NativeStackScreenProps<RootStackParamsList>
 >;

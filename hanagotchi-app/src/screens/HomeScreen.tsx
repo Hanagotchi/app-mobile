@@ -1,41 +1,28 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, SafeAreaView, Image, Pressable, Modal} from 'react-native'
-import {BROWN_DARK, theme} from "../themes/globalThemes";
+import {View, Text, StyleSheet, SafeAreaView, Image} from 'react-native'
+import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import plantImage from "../assets/plant.png";
-import plus from "../assets/plusicon.png";
-import info from "../assets/infoicon.png";
-import close from "../assets/closeicon.png";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
-import {ActivityIndicator, Icon} from "react-native-paper";
+import {ActivityIndicator, IconButton} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import * as SecureStore from "expo-secure-store";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import NoContent from "../components/NoContent";
-import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 import { useSession } from '../hooks/useSession';
+import PlantInfo from '../components/home/PlantInfo';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { MainTabParamsList, RootStackParamsList } from '../navigation/Navigator';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 
-interface Measurement {
-  id: number;
-  id_plant: number;
-  temperature: number;
-  humidity: number;
-  light: number;
-  watering: number;
-  time_stamp: string;
-}
+type HomeScreenProps = CompositeScreenProps<
+    BottomTabScreenProps<MainTabParamsList, "Home">,
+    NativeStackScreenProps<RootStackParamsList>
+>;
 
-const HomeScreen: React.FC = () => {
+const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const api = useHanagotchiApi();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [plantType, setPlantType] = useState({
-    id: 0,
-    botanical_name: '',
-    common_name: '',
-    description: '',
-    photo_link: '',
-  });
-  const [measurement, setMeasurement] = useState<Measurement | null>(null);
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
 
@@ -49,43 +36,9 @@ const HomeScreen: React.FC = () => {
       }]
   );
 
-  const fetchPlantType = async () => {
-    const scientific_name = plants[currentPlant].scientific_name;
-    if (!scientific_name) return;
-    const fetchedPlantType = await api.getPlantType(scientific_name);
-    setPlantType(fetchedPlantType);
-  };
-
-  const fetchMeasurement = async () => {
-    setMeasurement(null)
-    const fetched = await api.getLastMeasurement(plants[currentPlant].id);
-    if (fetched) {
-      setMeasurement({
-        id: fetched.id,
-        id_plant: fetched.id_plant,
-        time_stamp: fetched.time_stamp.toTimeString(),
-        humidity: fetched.humidity,
-        temperature: fetched.temperature,
-        light: fetched.light,
-        watering: fetched.watering
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (plants.length == 0) return;
-    fetchPlantType();
-    fetchMeasurement();
-  }, [currentPlant, plants]);
-
-
   if (!isFetching && error) {
     throw error;
   }
-
-  const navigate = async () => {
-    console.log("navigate to create log");
-  };
 
   function nextPlant() {
     if (currentPlant < plants.length - 1) setCurrentPlant(currentPlant + 1);
@@ -95,6 +48,10 @@ const HomeScreen: React.FC = () => {
     if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
   }
 
+  function redirectToCreateLog(plantId: number) {
+    navigation.navigate("CreateLog", {plantId})
+  }
+
   if (plants.length == 0 && !isFetching) return (
       <View style={{margin: 100}}>
         <NoContent/>
@@ -102,68 +59,37 @@ const HomeScreen: React.FC = () => {
   )
 
   if (isFetching) {
-    return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>;
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+        <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+      </SafeAreaView>
+
+    )
   }
 
   return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <View style={style.container}>
+          <IconButton icon={left} disabled={currentPlant == 0} onPress={previousPlant} style={{
+            ...style.arrow, 
+            display: currentPlant > 0 ? "flex" : "none",
+            position: 'absolute',
+            left: "3%",
+            top: "20%",
+          }} />
+          <IconButton icon={right} disabled={currentPlant == plants.length-1} onPress={nextPlant} style={{
+              ...style.arrow, 
+              display: currentPlant < plants.length-1 ? "flex" : "none",
+              position: 'absolute',
+              right: "3%",
+              top: "20%",
+          }} />
           <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
-            {plants.length > 1 &&
-                <Pressable onPress={previousPlant}>
-                  <Image source={left} style={style.arrow}/>
-                </Pressable>
-            }
             <Image source={plantImage} style={style.image} />
-            {plants.length > 1 &&
-              <Pressable onPress={nextPlant}>
-                <Image source={right} style={style.arrow} />
-              </Pressable>
-            }
           </View>
-
-          <View style={style.box}>
-            <View style={style.boxElements}>
-              {measurement ?
-              <View style={style.measurements}>
-                <Text style={style.measurement}>Humedad: {measurement.humidity}%</Text>
-                <Text style={style.measurement}>Temperatura: {measurement.temperature}°C</Text>
-                <Text style={style.measurement}>Luz: {measurement.light}ftc</Text>
-                <Text style={style.measurement}>Riego: {measurement.watering}</Text>
-              </View> :
-              <View style={style.noMeasurements}>
-                <Text style={style.measurement}> No se registran {'\n'} mediciones</Text>
-              </View>
-              }
-              <View style={{ justifyContent: "space-evenly" }}>
-                <Pressable onPress={navigate}>
-                  <Icon size={30} source={plus} />
-                </Pressable>
-                <Pressable onPress={() => setModalOpen(true)}>
-                  <Icon size={30} source={info} />
-                </Pressable>
-              </View>
-            </View>
-            {measurement && <Text style={style.time}>Última actualización {measurement.time_stamp}</Text>}
-          </View>
+          <PlantInfo plant={plants[currentPlant]} redirectToCreateLog={redirectToCreateLog}/>
         </View>
-        <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
-          <View style={style.centeredView}>
-            <View style={style.modalView}>
-              <View style={style.modalHeader}>
-                <Text style={style.modalTitle}>{plantType.botanical_name}</Text>
-                <Pressable onPress={() => setModalOpen(false)}>
-                  <Icon size={23} source={close} />
-                </Pressable>
-              </View>
-              <View style={style.description}>
-                <Text style={style.modalText}>{plantType.description}</Text>
-                <Image source={{ uri: plantType.photo_link }} style={style.imageDescription} />
-              </View>
-            </View>
-          </View>
-        </Modal>
       </SafeAreaView>
   )
 }
@@ -173,7 +99,7 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: "center",
-    backgroundColor: "#F7EAC8"
+    backgroundColor: BACKGROUND_COLOR
   },
   carrousel: {
     display: "flex",
@@ -247,40 +173,6 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22
-  },
-  modalView: {
-    margin: 20,
-    width: "80%",
-    backgroundColor: "#E8DECF",
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.35,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  modalHeader: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingBottom: 5
-  },
-  modalText: {
-    textAlign: "justify",
-    color: '#4F4C4F',
-    fontFamily: "Roboto",
-    width: "60%",
-    paddingRight: 10
-  },
-  modalTitle: {
-    textAlign: "left",
-    color: '#4F4C4F',
-    fontSize: 22,
-    fontFamily: "Roboto"
   }
 })
 

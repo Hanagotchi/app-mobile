@@ -3,17 +3,11 @@ import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import { Text } from "react-native-paper";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { SocialDrawerList, SocialDrawerProps } from "../../navigation/social/SocialDrawer";
 
 type SocialProfileScreenProps = CompositeScreenProps<
         DrawerScreenProps<SocialDrawerList, "SocialProfile">,
-        CompositeScreenProps<
-            BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
-            NativeStackScreenProps<RootStackParamsList>
-        >
+        SocialDrawerProps
     >;
 
 const SocialProfileScreen: React.FC<SocialProfileScreenProps> = ({route}) => {
