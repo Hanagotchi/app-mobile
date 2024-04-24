@@ -114,7 +114,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                   bottom: "40%",
                   left: "48%",
                   height: 22,
-                  width: 51,
+                  width: 52,
               }}/>
             }
         </View>
