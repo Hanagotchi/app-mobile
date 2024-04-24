@@ -3,7 +3,7 @@ import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
 import { DeviationEnum } from "../../models/Measurement";
-import {ActivityIndicator, FAB, Icon, Text} from "react-native-paper";
+import {ActivityIndicator, Dialog, FAB, Icon, Portal, Text} from "react-native-paper";
 import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
 import info from "../../assets/infoicon.png";
@@ -108,23 +108,26 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
               }}/>
             }
         </View>
-        <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
-            <View style={style.centeredView}>
-                <View style={style.modalView}>
-                    <View style={style.modalHeader}>
-                        <Text style={style.modalTitle}>{plantType!.botanical_name}</Text>
-                        <Pressable onPress={() => setModalOpen(false)}>
-                            <Icon size={23} source={close} />
-                        </Pressable>
-                    </View>
-                    <View style={style.description}>
-                        <Text style={style.modalText}>{plantType!.description}</Text>
-                        <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
-                    </View>
-                </View>
-            </View>
-        </Modal>
-    </>
+        <Portal>
+          <Dialog style={style.modalView} visible={modalOpen} onDismiss={() => setModalOpen(false)}>
+            <Pressable onPress={() => {setModalOpen(false)}} style={{
+              flex: 3,
+              position: "absolute",
+              top: -3,
+              right: 20,
+            }}>
+              <Icon size={23} source={close} />
+            </Pressable>
+            <Dialog.Title style={{justifyContent: "space-between", flexDirection: "row", width: "50%"}}>
+              <Text style={style.modalTitle}>{plantType!.botanical_name}</Text>
+            </Dialog.Title>
+            <Dialog.Content style={style.description}>
+              <Text style={style.modalText}>{plantType!.description}</Text>
+              <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+      </>
 
     )
 }
@@ -171,6 +174,7 @@ const style = StyleSheet.create({
     description: {
       display: "flex",
       flexDirection: "row",
+      gap: 10,
     },
     image: {
       width: 300,
@@ -182,7 +186,6 @@ const style = StyleSheet.create({
       height: 25
     },
     imageDescription: {
-      alignSelf: "auto",
       borderRadius: 10,
       width: 130,
       height: 130,
@@ -191,14 +194,12 @@ const style = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      marginTop: 22
+      padding: 20,
     },
     modalView: {
       margin: 20,
-      width: "80%",
       backgroundColor: "#E8DECF",
       borderRadius: 20,
-      padding: 20,
       shadowColor: "#000",
       shadowOffset: {
         width: 0,
@@ -218,8 +219,8 @@ const style = StyleSheet.create({
       textAlign: "justify",
       color: '#4F4C4F',
       fontFamily: "Roboto",
-      width: "60%",
-      paddingRight: 10
+      paddingRight: 10,
+      width: "53%",
     },
     modalTitle: {
       textAlign: "left",
