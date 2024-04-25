@@ -151,9 +151,14 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
               <Text style={style.modalTitle}>{plant.name}</Text>
             </Dialog.Title>
             <Dialog.Content style={style.description}>
-              <View>
-                <Text style={style.modalText}>Nombre científico: {plant.scientific_name}</Text>
-                {device && <Text style={style.modalText}>ID del sensor: {device.id_device}</Text>}
+              <View style={{gap: 10}}>
+                <Text style={style.modalText}>Nombre científico: {plant.scientific_name}.</Text>
+                {device ? (
+                  <Text style={style.modalText}>ID del sensor: {device.id_device}</Text>
+                ) : (
+                  <Text style={{...style.modalText, textAlign: "left"}}>Actualmente no existe ningun sensor asociado a {plant.name}. Los datos climaticos presentados son generales para su zona.</Text>
+                )}
+
               </View>
             </Dialog.Content>
           </Dialog>

@@ -50,9 +50,11 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         try {
             // Check if your device supports Google Play
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+            console.log("ansdkjasndjksankdj")
 
             // Get the users ID token
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
+            
             
             const { 
                 data: {
@@ -77,6 +79,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             if (await GoogleSignin.isSignedIn()) {
                 await GoogleSignin.signOut();
             }
+            console.log(err)
             throw err;
         }
     };
