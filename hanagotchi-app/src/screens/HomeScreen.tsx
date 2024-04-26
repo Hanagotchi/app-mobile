@@ -6,7 +6,7 @@ import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
 import PlantInfo from '../components/home/PlantInfo';
@@ -36,6 +36,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       scientific_name: '',
     }]
   );
+
+  useEffect(() => {
+    requestUserPermission();
+  }, [currentPlant]);
 
   if (!isFetching && error) {
     throw error;
