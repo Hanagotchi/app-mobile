@@ -1,4 +1,5 @@
 import "expo-dev-client";
+import 'react-native-gesture-handler';
 import { theme } from './src/themes/globalThemes';
 import { PaperProvider, ThemeProvider } from 'react-native-paper';
 import { AuthProvider } from "./src/contexts/AuthContext";
@@ -9,7 +10,8 @@ import MyErrorBoundary from "./src/common/MyErrorBoundaries";
 import { ToastAndroid } from "react-native";
 import { LocationProvider } from "./src/contexts/LocationContext";
 import { FirebaseProvider } from "./src/contexts/FirebaseContext";
-import { LocalStorageProvider } from "./src/contexts/LocalStorageContext";
+import { useSession } from "./src/hooks/useSession";
+import { OpenWeatherApiProvider } from "./src/contexts/OpenWeatherServiceContext";
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 4000);
@@ -19,13 +21,14 @@ const handleError = (error: Error, stackTrace: string) => {
 }
 
 export default function App() {
-  return (
+  useSession((state) => state.loadFromSecureStore)();
 
+  return (
   <PaperProvider>
       <ThemeProvider theme={theme}>
         <MyErrorBoundary onError={handleError}>
-          <HanagotchiApiProvider>
-            <LocalStorageProvider>
+          <OpenWeatherApiProvider>
+            <HanagotchiApiProvider>
               <AuthProvider>
                 <FirebaseProvider>
                   <LocationProvider>
@@ -33,8 +36,8 @@ export default function App() {
                   </LocationProvider>
                 </FirebaseProvider>
               </AuthProvider>
-            </LocalStorageProvider>
-          </HanagotchiApiProvider>
+            </HanagotchiApiProvider>            
+          </OpenWeatherApiProvider>
         </MyErrorBoundary>
       </ThemeProvider>
     </PaperProvider>

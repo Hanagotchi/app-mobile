@@ -2,7 +2,7 @@ import { FlatList } from "react-native"
 import ReducedPost from "./Post";
 import { ActivityIndicator, Divider, Text } from "react-native-paper";
 import { BEIGE_DARK, BROWN_DARK } from "../../../themes/globalThemes";
-import { ReducedPost as ReducedPostType } from "../../../models/Post";
+import { PostAuthor, ReducedPost as ReducedPostType } from "../../../models/Post";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
 import { useCallback } from "react";
@@ -26,16 +26,17 @@ const ListFooter: React.FC<ListFooterProps> = ({isFetching, noMorePosts}) => {
 
 type PostListProps = {
     updatePosts: (page: number) => Promise<ReducedPostType[]>;
-    myId: number
+    myId: number;
+    onRedirectToProfile: (author: PostAuthor) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({updatePosts, myId}) => {
+const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfile}) => {
 
     const api = useHanagotchiApi();
     const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts(updatePosts);
    
     const renderItem = useCallback(({item}) => (
-        <ReducedPost post={item} myId={myId} onDelete={handleDelete}/>
+        <ReducedPost post={item} myId={myId} onDelete={handleDelete} onRedirectToProfile={onRedirectToProfile}/>
       ), []);
 
     if (error) throw error;
@@ -48,9 +49,10 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId}) => {
         setPosts((posts) => posts.filter(p => p.id !== postId));
     }
 
-    if (!error && posts.length === 0) {
+    if (!error && isFetching) {
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
     }
+
 
     return (
             <FlatList 
@@ -69,6 +71,7 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId}) => {
                 windowSize={5}
                 ItemSeparatorComponent={() => <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />}
                 showsVerticalScrollIndicator={false}
+                ListEmptyComponent={<Text>No hay publicaciones en este momento</Text>}
             />
     );
 }

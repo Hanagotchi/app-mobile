@@ -42,7 +42,7 @@ const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate }) => 
     };
 
     const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date);
+        return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
     };
 
     return (
