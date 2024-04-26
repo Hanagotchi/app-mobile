@@ -112,7 +112,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async patchUser(user: User): Promise<void> {
         const updateUser = UpdateUserSchema.parse(user);
-        await this.axiosInstance.patch(`/users/${user.id}`, updateUser);
+        await this.axiosInstance.patch(`/users/me`, updateUser);
     }
 
     async addSensor(deviceId: string, plantId: number): Promise<void> {
