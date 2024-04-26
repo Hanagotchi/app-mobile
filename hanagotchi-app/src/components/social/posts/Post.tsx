@@ -10,10 +10,11 @@ type PostHeaderProps = {
     myId: number;
     postId: string;
     author: PostAuthor;
+    onRedirectToProfile: (author: PostAuthor) => void;
     onDelete: (postId: string) => void;
 }
 
-const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete}) => {
+const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, onRedirectToProfile}) => {
     const [menuOpen, toggleMenu] = useToggle(false);
     const iAmTheAuthor = author.id === myId;
 
@@ -24,7 +25,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete})
 
     return (
         <View style={style.header}>
-            <AuthorDetails author={author} />
+            <AuthorDetails onTouch={onRedirectToProfile} author={author} />
             <Menu
                 visible={menuOpen}
                 onDismiss={toggleMenu}
@@ -86,10 +87,11 @@ const PostFooter: React.FC<PostFooterProps> = ({likeCount, createdAt}) => {
 type ReducedPostProps = {
     post: ReducedPostType;
     myId: number;
+    onRedirectToProfile: (author: PostAuthor) => void;
     onDelete: (postId: string) => void;
 }
 
-const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
+const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, onRedirectToProfile}) => {
     return (
         <TouchableOpacity>
             <View style={style.container}>
@@ -98,12 +100,13 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete}) => {
                     postId={post.id}
                     author={post.author}
                     onDelete={onDelete}
+                    onRedirectToProfile={onRedirectToProfile}
                 />
                 <Text style={style.content}>{post.content}</Text>
-                {post.main_photo &&(
+                {post.main_photo_link &&(
                     <Image 
                         style={style.image}
-                        source={{uri: post.main_photo}} 
+                        source={{uri: post.main_photo_link}} 
                     />
                 )}
                 <PostFooter likeCount={post.likes_count} createdAt={post.created_at}/>

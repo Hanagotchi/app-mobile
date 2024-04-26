@@ -7,7 +7,7 @@ import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
-import * as SecureStore from "expo-secure-store";
+import { useSession } from "../hooks/useSession";
 
 interface SelectOption {
     key: number;
@@ -18,7 +18,7 @@ type DeleteSensorProps = NativeStackScreenProps<RootStackParamsList, "DeleteSens
 
 const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     const api = useHanagotchiApi();
-    const userId = Number(SecureStore.getItem("userId"))
+    const userId = useSession((state) => state.session?.userId)!;
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const[option, setOption] = useState(0);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false)

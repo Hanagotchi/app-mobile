@@ -15,45 +15,16 @@ import {
     GetPlantTypesResponseSchema,
     LoginResponse,
     LoginResponseSchema,
+    GetUsersProfileResponseSchema,
+    GetMyFeedResponseSchema,
 } from "../models/hanagotchiApi";
 
-import {Measurement, MeasurementSchema} from "../models/Measurement";
-import {AxiosInstance} from "axios";
-import {UpdateUser, UpdateUserSchema, User, UserSchema} from "../models/User";
-
-import {CreateLog, Log, LogSchema, PartialUpdateLog} from "../models/Log";
-import {Post, PostData, PostSchema, ReducedPost, ReducedPostSchema} from "../models/Post";
-import {Plant, PlantSchema} from "../models/Plant";
-
-
-const generateDummyData = () => {
-    const dummyData: ReducedPost[] = [];
-
-    for (let i = 0; i < 50; i++) {
-      const postData: ReducedPost = {
-        id: String(i),
-        author: {
-            id: i,
-            name: `Author ${i}`,
-            nickname: `nickName${i}`,
-            photo: null
-        },
-        content: `Post content ${i}`,
-        likes_count: Math.floor(Math.random() * 100),
-        created_at: new Date(),
-        updated_at: new Date(),
-        main_photo: Math.random() < 0.5 ?
-          "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/plants%2F5%2F1712438363124?alt=media&token=9cdd20c2-43f0-4327-9eb9-8135e6b5a306"
-         : undefined,
-      };
-      dummyData.push(ReducedPostSchema.parse(postData));
-    }
-
-    return dummyData;
-};
-
-let dummyPosts: ReducedPost[] = generateDummyData();
-
+import { UpdateUser, UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
+import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
+import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
+import { Plant, PlantSchema } from "../models/Plant";
+import { Measurement, MeasurementSchema } from "../models/Measurement";
+import { AxiosInstance } from "axios";
 
 export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
@@ -65,19 +36,20 @@ export interface HanagotchiApi {
     getPlantTypes: () => Promise<GetPlantTypesResponse>;
     createPlant: (id_user: number, name: string, scientific_name: string) => Promise<Plant>;
     deletePlant: (plantId: number) => Promise<void>;
-    getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>;
+    getLogsByUser: (userId: number, params: { year: number, month?: number }) => Promise<GetLogsByUserResponse>;
     getLogById: (logId: number) => Promise<GetLogByIdResponse>;
-    getPlants: (params: {id_user?: number, limit?: number}) => Promise<GetPlantsResponse>;
+    getPlants: (params: { id_user?: number, limit?: number }) => Promise<GetPlantsResponse>;
     createLog: (log: CreateLog) => Promise<Log>;
     editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
-    addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
+    addPhotoToLog: (logId: number, body: { photo_link: string }) => Promise<Log>;
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     createPost: (post: PostData) => Promise<Post>;
     deletePost: (postId: string) => Promise<void>;
-    dummyGetPosts: (page: number, size: number) => Promise<ReducedPost[]>;
-    getDevicePlants: () => Promise<GetDevicePlantsResponse>
+    getDevicePlants: (params?: { id_plant?: number, limit?: number }) => Promise<GetDevicePlantsResponse>
+    getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
+    getUsersProfiles: (params: { follower?: number, q?: string }) => Promise<UserProfile[]>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -88,22 +60,21 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async logIn(authCode: string): Promise<LoginResponse> {
-        const { data } = await this.axiosInstance.post("/login", {auth_code: authCode});
-        data.message.birthdate = new Date(data.message.birthdate);
-        return LoginResponseSchema.parse(data);
+        const { data, headers } = await this.axiosInstance.post("/login", { auth_code: authCode });
+        return LoginResponseSchema.parse({ data, headers });
     }
 
     async deletePlant(plantId: number): Promise<void> {
         await this.axiosInstance.delete(`/plants/${plantId}`)
     }
 
-    async getPlants(params: {id_user?: number, limit?: number}): Promise<GetPlantsResponse> {
-        const { data } = await this.axiosInstance.get(`/plants`, {params});
+    async getPlants(params: { id_user?: number, limit?: number }): Promise<GetPlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/plants`, { params });
         return GetPlantsResponseSchema.parse(data)
     }
 
-    async getDevicePlants(): Promise<GetDevicePlantsResponse> {
-        const { data } = await this.axiosInstance.get(`/measurements/device-plant`);
+    async getDevicePlants(params?: { id_plant?: number, limit?: number }): Promise<GetDevicePlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/measurements/device-plant`, { params });
         return GetDevicePlantsResponseSchema.parse(data);
     }
 
@@ -118,7 +89,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getPlantType(name: string): Promise<GetPlantTypeResponse> {
         const encodedName = encodeURIComponent(name);
-        const { data } = await this.axiosInstance.get(`/plant-type/${encodedName}`);
+        const { data, status } = await this.axiosInstance.get(`/plant-type/${encodedName}`);
 
         return GetPlantTypeResponseSchema.parse(data);
     }
@@ -141,16 +112,15 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async patchUser(user: UpdateUser): Promise<void> {
         const updateUser = UpdateUserSchema.parse(user);
-        // TODO: CHANGE URL TO /ME
-        await this.axiosInstance.patch(`/users/11`, updateUser);
+        await this.axiosInstance.patch(`/users/me`, updateUser);
     }
 
     async addSensor(deviceId: string, plantId: number): Promise<void> {
-        await this.axiosInstance.post(`/measurements/device-plant`, {id_device: deviceId, id_plant: plantId});
+        await this.axiosInstance.post(`/measurements/device-plant`, { id_device: deviceId, id_plant: plantId });
     }
 
-    async getLogsByUser(userId: number, params: {year: number, month?: number} ): Promise<GetLogsByUserResponse> {
-        const { data } = await this.axiosInstance.get(`/logs/user/${userId}`, {params});
+    async getLogsByUser(userId: number, params: { year: number, month?: number }): Promise<GetLogsByUserResponse> {
+        const { data } = await this.axiosInstance.get(`/logs/user/${userId}`, { params });
         return GetLogsByUserResponseSchema.parse(data);
     }
 
@@ -169,7 +139,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return LogSchema.parse(data);
     }
 
-    async addPhotoToLog(logId: number, body: {photo_link: string}): Promise<Log> {
+    async addPhotoToLog(logId: number, body: { photo_link: string }): Promise<Log> {
         const { data } = await this.axiosInstance.post(`/logs/${logId}/photos`, body);
         return LogSchema.parse(data);
     }
@@ -178,31 +148,35 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         await this.axiosInstance.delete(`/logs/${logId}/photos/${photoId}`);
     }
 
-
     async createPost(body: PostData) {
         const { data } = await this.axiosInstance.post(`/social/posts`, body);
         const parsedData = PostSchema.parse(data);
-
-        // ELIMINAR CUANDO SE IMPLEMENTE UN FETCHEO DE PUBLICACIONES
-        dummyPosts.unshift(ReducedPostSchema.passthrough().parse({
-            ...parsedData,
-            main_photo: parsedData.photo_links.length > 0 ? parsedData.photo_links[0] : undefined,
-        }));
 
         return parsedData;
     }
 
     async deletePost(postId: string) {
         await this.axiosInstance.delete(`/social/posts/${postId}`);
-        dummyPosts = dummyPosts.filter(p => p.id !== postId);
+        // dummyPosts = dummyPosts.filter(p => p.id !== postId);
     }
 
-    async dummyGetPosts(page: number, size: number) {
-        return dummyPosts.slice(size*(page-1), size*page)
+    async getMyFeed(page: number, size: number) {
+        const { data } = await this.axiosInstance.get(`/social/users/me/feed?page=${page}&per_page=${size}`);
+        console.log("getMYFEED", data);
+        const result = GetMyFeedResponseSchema.parse(data);
+        console.log("getMYFEED MAMPPED", result);
+        return result;
     }
 
-    async getPlantTypes(): Promise<GetPlantTypesResponse>{
+    async getPlantTypes(): Promise<GetPlantTypesResponse> {
         const { data } = await this.axiosInstance.get(`/plant-type`);
         return GetPlantTypesResponseSchema.parse(data);
+    }
+
+    async getUsersProfiles(params: { follower?: number, q?: string }): Promise<UserProfile[]> {
+        // TODO: Use this endpoint when it is created
+        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
+        const { data } = await this.axiosInstance.get(`/users`);
+        return GetUsersProfileResponseSchema.parse(data).message;
     }
 }

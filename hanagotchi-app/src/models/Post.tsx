@@ -37,7 +37,7 @@ export const ReducedPostSchema = z.object({
     likes_count: z.number(),
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),
-    main_photo: z.string().url().optional(),
+    main_photo_link: z.string().url().nullable(),
 })
 
 export type ReducedPost = z.infer<typeof ReducedPostSchema>;

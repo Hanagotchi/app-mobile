@@ -4,6 +4,8 @@ const env = {
     hanagotchiUserServiceURL: "",
     hanagotchiGatewayUrl: "",
     googleWebClientId: "",
+    openWeatherApiUrl: "",
+    openWeatherAppId: "",
     revGeoCodeApId: "",
     revGeoCodeApiKey: "",
     firebaseConfig: {
