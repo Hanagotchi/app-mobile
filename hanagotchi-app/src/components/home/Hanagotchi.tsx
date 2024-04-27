@@ -7,7 +7,6 @@ import { relaxed } from "../../assets/hanagotchis/relaxed.png";
 import { sad } from "../../assets/hanagotchis/sad.png";
 import { uncomfortable } from "../../assets/hanagotchis/uncomfortable.png"; */
 
-
 const sources = {
     depressed: "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/private%2Fhanagotchis%2Fdepressed.png?alt=media&token=dd7d6025-8699-40d9-84f7-f1cb190589a5",
     happy: "https://firebasestorage.googleapis.com/v0/b/hanagotchi.appspot.com/o/private%2Fhanagotchis%2Fhappy.png?alt=media&token=d17131fe-02fd-440f-a1aa-695cc07830c2",
@@ -18,13 +17,10 @@ const sources = {
 }
 
 type HanagotchiProps = {
-    emotion: Emotion
+    emotion: Emotion,
 }
 
 const Hanagotchi: React.FC<HanagotchiProps> = ({emotion}) => {
-    console.log(emotion)
-
-
     return (
         <Image 
             source={{
