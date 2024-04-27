@@ -29,11 +29,6 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
-const EmptyScreen: React.FC = ({ route }) => {
-    const { bgColor } = route.params;
-    return <View style={{ flex: 1, backgroundColor: bgColor }} />
-}
-
 const HomeIcon = (props: {
     focused: boolean;
     color: string;

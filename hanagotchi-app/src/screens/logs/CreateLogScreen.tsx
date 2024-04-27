@@ -14,7 +14,8 @@ import { useState } from "react";
 type CreateLogScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateLog">
 
 const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation, route}) => {
-    const plantId = route.params.plantId;
+    const plantId = route.params?.plantId;
+    console.log(plantId)
     const api = useHanagotchiApi();
     const {uploadImage} = useFirebase();
     const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
