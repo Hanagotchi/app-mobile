@@ -1,7 +1,6 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, SafeAreaView, Image} from 'react-native'
-import {BACKGROUND_COLOR, BEIGE_LIGHT, BROWN_DARK, BROWN_LIGHT} from "../themes/globalThemes";
-import plantImage from "../assets/plant.png";
+import {View, Text, StyleSheet, SafeAreaView} from 'react-native'
+import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
 import {ActivityIndicator, IconButton, FAB} from "react-native-paper";
@@ -18,6 +17,7 @@ import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 import Hanagotchi from '../components/home/Hanagotchi';
 import { Emotion } from '../models/Hanagotchi';
 import { InfoToShow } from '../models/InfoToShow';
+
 
 type HomeScreenProps = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamsList, "Home">,
