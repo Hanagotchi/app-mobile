@@ -2,15 +2,18 @@ import { Plant } from "../../models/Plant"
 import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
+
 import { DeviationEnum } from "../../models/Measurement";
 import {ActivityIndicator, Dialog, FAB, Icon, Portal, Text} from "react-native-paper";
-import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
+
+import { Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
 import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
 import { BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
+
 import { usePlantInfo } from "../../hooks/usePlantInfo";
 import { InfoToShow } from "../../models/InfoToShow";
 
@@ -164,7 +167,6 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
           </Dialog>
         </Portal>
       </>
-
     )
 }
 

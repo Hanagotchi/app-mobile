@@ -14,7 +14,7 @@ export const usePlantInfo = (plant: Plant) => {
     const {myUser} = useMyUser();
     const hanagotchiApi = useHanagotchiApi();
     const openWeatherApi = useOpenWeatherApi();
-    
+
     useEffect(() => {
         const fetchInfo = async () => {
             setIsFetching(true);
