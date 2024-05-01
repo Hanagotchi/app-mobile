@@ -20,7 +20,7 @@ import { InfoToShow } from "../../models/InfoToShow";
 type PlantInfoProps = {
     plant: Plant;
     redirectToCreateLog: (plantId: number) => void;
-    onChange?: (infoToShow: InfoToShow) => void;
+    onChange?: (infoToShow: InfoToShow | null) => void;
 }
 
 const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChange}) => {
@@ -44,7 +44,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
     if (plantInfoError) throw plantInfoError;
 
     useEffect(() => {
-      if (!plantInfo || !onChange) return;
+      if (!onChange) return;
       onChange?.(plantInfo);
     }, [plantInfo]);
 

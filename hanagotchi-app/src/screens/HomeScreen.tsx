@@ -59,10 +59,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     navigation.navigate("CreateLog", {plantId})
   }
 
-  function calculateEmotionBasedOnDeviation({info: {deviations}}: InfoToShow) {
-    const {emotion, recomendation} = getEmotionAndRecomendationFromDeviation(deviations);
-    setEmotion(emotion);
-    setRecomendation(recomendation);
+  function calculateEmotionBasedOnDeviation(infoToShow: InfoToShow | null) {
+    if (infoToShow) {
+      const {emotion, recomendation} = getEmotionAndRecomendationFromDeviation(infoToShow?.info.deviations);
+      setEmotion(emotion);
+      setRecomendation(recomendation);
+    } else {
+      setEmotion("relaxed");
+      setRecomendation(undefined);
+    }
   }
 
   if (plants.length == 0 && !isFetching) return (

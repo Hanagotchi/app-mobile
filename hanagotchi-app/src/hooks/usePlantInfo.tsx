@@ -10,7 +10,7 @@ export const usePlantInfo = (plant: Plant) => {
     const [plantInfo, setPlantInfo] = useState<InfoToShow | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [isFetching, setIsFetching] = useState<boolean>(false);
-    const [device, setDevice] = useState<DevicePlant | undefined>(undefined);
+    const [device, setDevice] = useState<DevicePlant>();
     const {myUser} = useMyUser();
     const hanagotchiApi = useHanagotchiApi();
     const openWeatherApi = useOpenWeatherApi();
@@ -19,10 +19,45 @@ export const usePlantInfo = (plant: Plant) => {
         const fetchInfo = async () => {
             setIsFetching(true);
 
-            try {
+            setDevice(undefined);
+            const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
+            if (devicePlant) {
+                setDevice(devicePlant as DevicePlant)
+                const measurement = await hanagotchiApi.getLastMeasurement(plant.id);
+                if (!measurement) {
+                    setPlantInfo(null)
+                } else {
+                    setPlantInfo({
+                        origin: "Hanagotchi",
+                        info: measurement,
+                    });
+                }
+            } else {
+                try {
+                    if (myUser?.location) {
+                        const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
+                        const timestamp = new Date(0);
+                        timestamp.setUTCSeconds(weatherData.dt);
+                        setPlantInfo({
+                            origin: "OpenWeather",
+                            info: {
+                                temperature: Math.round(weatherData.main.temp - 273.15),
+                                humidity: weatherData.main.humidity,
+                                time_stamp: timestamp,
+                            }
+                        });
+                    }
+                } catch (e) {
+                    setError(e as Error);
+                } 
+            }
+
+            setIsFetching(false);
+/*             try {
                 setDevice(undefined);
                 const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
-                setDevice(devicePlant.length > 0 ? devicePlant[0] : undefined)
+                if (!devicePlant) throw Error("")
+                setDevice(devicePlant as DevicePlant)
                 const measurement = await hanagotchiApi.getLastMeasurement(plant.id);
                 if (!measurement) {
                     setPlantInfo(null)
@@ -52,7 +87,7 @@ export const usePlantInfo = (plant: Plant) => {
                 } 
             } finally {
                 setIsFetching(false);
-            }
+            } */
 
         }
         fetchInfo();

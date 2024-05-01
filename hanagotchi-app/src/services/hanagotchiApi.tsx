@@ -45,7 +45,7 @@ export interface HanagotchiApi {
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     createPost: (post: PostData) => Promise<Post>;
     deletePost: (postId: string) => Promise<void>;
-    getDevicePlants: (params?: {id_plant?: number, limit?: number}) => Promise<GetDevicePlantsResponse>
+    getDevicePlants: (params?: {id_plant?: number, limit?: number}) => Promise<GetDevicePlantsResponse | null>
     getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
@@ -73,8 +73,9 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetPlantsResponseSchema.parse(data)
     }
 
-    async getDevicePlants(params?: {id_plant?: number, limit?: number}): Promise<GetDevicePlantsResponse> {
-        const { data } = await this.axiosInstance.get(`/measurements/device-plant`, {params});
+    async getDevicePlants(params?: {id_plant?: number, limit?: number}): Promise<GetDevicePlantsResponse | null> {
+        const { data, status } = await this.axiosInstance.get(`/measurements/device-plant`, {params});
+        if (status == 204) return null
         return GetDevicePlantsResponseSchema.parse(data);
     }
 
