@@ -10,6 +10,7 @@ import { GetPlantsResponse } from "../../models/hanagotchiApi";
 import { BROWN_DARK } from "../../themes/globalThemes";
 import SelectBox, { SelectOption } from "../SelectBox";
 import { useSession } from "../../hooks/useSession";
+import AffectiveSlider from "../AffectiveSlider";
 
 type EditLogProps = {
     initValues?: LogData;
@@ -72,6 +73,9 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
                     onChangeText={onChangeContent}
                     numberOfLines={4}
                     maxLenght={CONTENT_MAX_LENGTH}
+                />
+                <AffectiveSlider 
+                    question={`¿Qué tan bien se encuentra tu planta?`.toUpperCase()}
                 />
                 <PhotoUploader 
                     maxAmount={4} 

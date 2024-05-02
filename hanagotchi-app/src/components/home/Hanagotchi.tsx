@@ -1,4 +1,4 @@
-import { Image } from "react-native"
+import { Image, ImageBackground } from "react-native"
 import { Emotion } from "../../models/Hanagotchi"
 import depressed from "../../assets/hanagotchis/depressed.png";
 import happy from "../../assets/hanagotchis/happy.png";
@@ -6,6 +6,7 @@ import overwhelmed from "../../assets/hanagotchis/overwhelmed.png";
 import relaxed from "../../assets/hanagotchis/relaxed.png";
 import sad from "../../assets/hanagotchis/sad.png";
 import uncomfortable from "../../assets/hanagotchis/uncomfortable.png";
+import backgroundBlob from "../../assets/hanagotchis/background_1.png";
 
 const sources = {
     depressed: depressed, 
@@ -41,7 +42,6 @@ const Hanagotchi: React.FC<HanagotchiProps> = ({emotion}) => {
                 marginRight: 60,
                 zIndex: -1
             }} 
-
         />
     )
 }

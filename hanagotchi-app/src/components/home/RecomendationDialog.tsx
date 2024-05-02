@@ -19,6 +19,10 @@ const RecomendationDialog: React.FC<RecomendationDialogProps> = ({plant, recomen
             title={`¡${plant.name} no se siente muy bien!`}
             content={recomendation}
             onDismiss={() => ref.current?.hideDialog()}
+            primaryButtonLabel="Ok"
+            primaryButtonProps={{
+                onPress: () => ref.current?.hideDialog()
+            }}
         />
         <FAB 
             icon="exclamation-thick"
