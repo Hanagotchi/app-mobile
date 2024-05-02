@@ -104,13 +104,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
             <Hanagotchi emotion={emotion} />
-<<<<<<< HEAD
             {recomendation && <RecomendationDialog 
               plant={plants[currentPlant]}
               recomendation={recomendation}
             />}
-=======
->>>>>>> main
           </View>
           <PlantInfo
             plant={plants[currentPlant]}
