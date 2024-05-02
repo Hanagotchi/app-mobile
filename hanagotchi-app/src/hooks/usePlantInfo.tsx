@@ -18,7 +18,6 @@ export const usePlantInfo = (plant: Plant) => {
     useEffect(() => {
         const fetchInfo = async () => {
             setIsFetching(true);
-
             setDevice(undefined);
             const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
             if (devicePlant) {
@@ -53,42 +52,6 @@ export const usePlantInfo = (plant: Plant) => {
             }
 
             setIsFetching(false);
-/*             try {
-                setDevice(undefined);
-                const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
-                if (!devicePlant) throw Error("")
-                setDevice(devicePlant as DevicePlant)
-                const measurement = await hanagotchiApi.getLastMeasurement(plant.id);
-                if (!measurement) {
-                    setPlantInfo(null)
-                } else {
-                    setPlantInfo({
-                        origin: "Hanagotchi",
-                        info: measurement,
-                    });
-                }
-            } catch (e) {
-                try {
-                    if (myUser?.location) {
-                        const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
-                        const timestamp = new Date(0);
-                        timestamp.setUTCSeconds(weatherData.dt);
-                        setPlantInfo({
-                            origin: "OpenWeather",
-                            info: {
-                                temperature: Math.round(weatherData.main.temp - 273.15),
-                                humidity: weatherData.main.humidity,
-                                time_stamp: timestamp,
-                            }
-                        });
-                    }
-                } catch (e) {
-                    setError(e as Error);
-                } 
-            } finally {
-                setIsFetching(false);
-            } */
-
         }
         fetchInfo();
     }, [plant]);
