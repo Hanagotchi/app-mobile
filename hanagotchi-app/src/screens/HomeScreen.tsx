@@ -17,6 +17,8 @@ import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 import Hanagotchi from '../components/home/Hanagotchi';
 import { Emotion } from '../models/Hanagotchi';
 import { InfoToShow } from '../models/InfoToShow';
+import { getEmotionAndRecomendationFromDeviation } from '../common/getEmotionAndRecomendationFromProcess';
+import RecomendationDialog from '../components/home/RecomendationDialog';
 
 
 type HomeScreenProps = CompositeScreenProps<
@@ -29,6 +31,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
   const [emotion, setEmotion] = useState<Emotion>("relaxed");
+  const [recomendation, setRecomendation] = useState<string | undefined>();
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
@@ -56,36 +59,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     navigation.navigate("CreateLog", {plantId})
   }
 
-  function calculateEmotionBasedOnDeviation({info: {deviations}}: InfoToShow) {
-    console.log(deviations);
-
-    if (!deviations) {
+  function calculateEmotionBasedOnDeviation(infoToShow: InfoToShow | null) {
+    if (infoToShow) {
+      const {emotion, recomendation} = getEmotionAndRecomendationFromDeviation(infoToShow?.info.deviations);
+      setEmotion(emotion);
+      setRecomendation(recomendation);
+    } else {
       setEmotion("relaxed");
-      return;
+      setRecomendation(undefined);
     }
-
-    const {
-      temperature,
-      light,
-      watering
-    } = deviations!;
-
-    if (watering === "lower") {
-      setEmotion("depressed")
-      return;
-    }
-
-    if (light === "higher" && temperature === "higher") {
-      setEmotion("overwhelmed");
-      return;
-    }
-
-    if (light === "lower" && temperature === "lower") {
-      setEmotion("uncomfortable");
-      return;
-    }
-
-    setEmotion("relaxed");
   }
 
   if (plants.length == 0 && !isFetching) return (
@@ -99,7 +81,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
       </SafeAreaView>
-
     )
   }
 
@@ -123,6 +104,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           <Text style={style.title}>{plants[currentPlant].name}</Text>
           <View style={style.carrousel}>
             <Hanagotchi emotion={emotion} />
+            {recomendation && <RecomendationDialog 
+              plant={plants[currentPlant]}
+              recomendation={recomendation}
+            />}
           </View>
           <PlantInfo
             plant={plants[currentPlant]}

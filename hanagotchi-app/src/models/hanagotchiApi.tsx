@@ -23,7 +23,7 @@ export const GetUserSchema = z.object({
 });
 export type GetUserResponse = z.infer<typeof GetUserSchema>;
 
-export const GetDevicePlantsResponseSchema = z.array(DevicePlantSchema);
+export const GetDevicePlantsResponseSchema = z.array(DevicePlantSchema).or(DevicePlantSchema);
 export type GetDevicePlantsResponse = z.infer<typeof GetDevicePlantsResponseSchema>;
 
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;

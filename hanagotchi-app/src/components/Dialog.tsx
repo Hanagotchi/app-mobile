@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Portal, Dialog as NativeDialog, DialogProps as NativeDialogProps, Text, Divider, Button, ButtonProps} from "react-native-paper";
+import { Portal, Dialog as NativeDialog, DialogProps as NativeDialogProps, Text, Divider, Button, ButtonProps, IconButton} from "react-native-paper";
 import { BACKGROUND_COLOR, BEIGE_DARK, BLACK, BROWN, BROWN_DARK, BROWN_LIGHT } from "../themes/globalThemes";
 import { forwardRef, useImperativeHandle, useState } from "react";
 
@@ -48,6 +48,12 @@ const Dialog = forwardRef<DialogRef, DialogProps>((props, ref) => {
 
     return <Portal>
         <NativeDialog visible={open} {...props} style={style.dialog}>
+            <IconButton 
+                icon="close-thick"
+                onPress={() => setOpen(false)}
+                size={20}
+                style={style.closeButton}
+            />
             <NativeDialog.Title style={style.dialogTitle}>
                 <Text style={style.title}>{props.title}</Text>
             </NativeDialog.Title>
@@ -55,30 +61,34 @@ const Dialog = forwardRef<DialogRef, DialogProps>((props, ref) => {
             <NativeDialog.Content style={style.dialogContent}>
                 <Text style={style.content}>{props.content}</Text>
             </NativeDialog.Content>
-            <NativeDialog.Actions style={style.dialogActions}>
-                {props.secondaryButtonProps && (
-                    <Button 
-                        mode="contained" 
-                        buttonColor={BEIGE_DARK}
-                        textColor={BROWN_DARK}
+            {((props.primaryButtonProps || props.secondaryButtonLabel) &&
+                <NativeDialog.Actions style={style.dialogActions}>
+                    {props.secondaryButtonProps && (
+                        <Button 
+                            mode="contained" 
+                            buttonColor={BEIGE_DARK}
+                            textColor={BROWN_DARK}
+                            style={style.button} 
+                            labelStyle={style.buttonText}
+                            {...props.secondaryButtonProps}
+                        >
+                            {props.secondaryButtonLabel ?? "CANCELAR"}
+                        </Button>
+                    )}
+                    {props.primaryButtonProps && (
+                        <Button 
+                        mode="contained"
+                        buttonColor={BROWN_LIGHT}
                         style={style.button} 
                         labelStyle={style.buttonText}
-                        {...props.secondaryButtonProps}
+                        {...props.primaryButtonProps}
                     >
-                        {props.secondaryButtonLabel ?? "CANCELAR"}
+                        {props.primaryButtonLabel ?? "CONFIRMAR"}
                     </Button>
-                )}
-                <Button 
-                    mode="contained"
-                    buttonColor={BROWN_LIGHT}
-                    style={style.button} 
-                    labelStyle={style.buttonText}
-                    {...props.primaryButtonProps}
-                >
-                    {props.primaryButtonLabel ?? "CONFIRMAR"}
-                </Button>
-                
-            </NativeDialog.Actions>
+                    )}
+                    
+                </NativeDialog.Actions>
+            )}
         </NativeDialog>
     </Portal>
 });
@@ -119,6 +129,11 @@ const style = StyleSheet.create({
     },
     buttonText: {
         fontSize: 15,
+    },
+    closeButton: {
+        position: "absolute",
+        top: -9,
+        right: 0,
     }
 });
 

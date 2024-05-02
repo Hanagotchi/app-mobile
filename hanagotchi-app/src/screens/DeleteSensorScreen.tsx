@@ -33,7 +33,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     );
 
     const {isFetching: isFetchingDevices, fetchedData: devicePlants} = useApiFetch(
-        () => api.getDevicePlants(),
+        () => api.getDevicePlants({limit: 50}),
         [{
             id_user: 0,
             id_device: "",
@@ -58,6 +58,8 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
 
     useEffect(() => {
         if (plants && plants.length > 0) {
+            console.log(plants);
+            console.log(devicePlants)
             const filteredPlants = plants.filter((plant) => devicePlants.some((it) => it.id_plant === plant.id));
             const updatedPlants = filteredPlants.map(plant => ({
                 key: plant.id,
