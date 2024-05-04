@@ -5,35 +5,46 @@ import { IconButton, Text } from "react-native-paper";
 import { ARG_TIMEZONE_OFFSET } from "../DatePicker";
 import deleteReminder from "../../assets/delete.png";
 import edit from "../../assets/edit.png";
+import { useState } from "react";
+import ConfirmDeleteDialog from "../ConfirmDeleteDialog";
 
 
 type EditProfilePictureProps = {
+    id: number,
     datetime: string;
     content: string;
+    redirectToEditReminder: (reminderId: number) => void;
+    openDialog: () => void;
 }
-const ReminderBox: React.FC<EditProfilePictureProps> = ({ datetime, content }) => {
+const ReminderBox: React.FC<EditProfilePictureProps> = ({ id, datetime, content, redirectToEditReminder, openDialog }) => {
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
     };
     const formatHour = (date: Date) => {
         return new Intl.DateTimeFormat('es-AR', { hour: '2-digit', minute: '2-digit' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
     }
-    return (
-        <BackgroundCard style_content={styles.content_card}>
-            <View style={styles.icons}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={styles.datetime}>{formatHour(new Date(datetime))}</Text>
-                        <Text style={styles.datetime}> - </Text>
-                        <Text style={styles.datetime}>{formatDate(new Date(datetime))}</Text>
-                </View>
-                <IconButton icon={edit} style={styles.icon}></IconButton>
-                <IconButton icon={deleteReminder} style={styles.icon}></IconButton>
-            </View>
 
-            <View style={styles.content}>
-                <Text>{content}</Text>
-            </View>
-        </BackgroundCard>
+    const handleDeleteReminder = () => {
+        console.log('delete reminder with id: ', id);
+    }
+
+    return (
+            <BackgroundCard style_content={styles.content_card}>
+                <View style={styles.icons}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={styles.datetime}>{formatHour(new Date(datetime))}</Text>
+                            <Text style={styles.datetime}> - </Text>
+                            <Text style={styles.datetime}>{formatDate(new Date(datetime))}</Text>
+                    </View>
+                    <IconButton icon={edit} style={styles.icon} onPress={() => redirectToEditReminder(id)}></IconButton>
+                    <IconButton icon={deleteReminder} style={styles.icon} onPress={() => openDialog()}></IconButton>
+
+                </View>
+
+                <View style={styles.content}>
+                    <Text>{content}</Text>
+                </View>
+            </BackgroundCard>
     )
 };
 

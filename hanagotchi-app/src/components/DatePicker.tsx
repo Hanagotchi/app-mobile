@@ -12,6 +12,7 @@ type DateButtonProps = {
     title: string;
     userDate: Date | null;
     setDate: (date: Date) => void;
+    mode?: 'date' | 'time' | 'datetime';
 };
 
 const CalendarIcon = (props: { color: string; size: number }) => (
@@ -22,7 +23,7 @@ const ArrowIcon = (props: { color: string; size: number }) => (
     <Entypo name="chevron-small-down" size={props.size} color={props.color} />
 );
 
-const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate }) => {
+const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate, mode = 'date' }) => {
     const [open, setOpen] = useState(false);
     const [selectedDate, setselectedDate] = useState<Date>(userDate || new Date());
 
@@ -42,7 +43,12 @@ const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate }) => 
     };
 
     const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
+        // return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
+        if (mode === 'date') {
+            return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+        }else{
+            return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
+        }
     };
 
     return (
@@ -58,13 +64,13 @@ const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate }) => 
                 <ArrowIcon color={BROWN_DARK} size={25} />
             </TouchableOpacity>
             <DatePickerNative.default
-                title="Selecciona tu fecha de nacimiento"
+                title="Selecciona la fecha"
                 modal
                 open={open}
                 date={selectedDate}
                 onConfirm={handleDateConfirm}
                 onCancel={handleDateCancel}
-                mode="date"
+                mode={mode}
             />
         </BackgroundCard>
     );
