@@ -1,1 +1,13 @@
-export type Emotion = "depressed" | "happy" | "overwhelmed" | "relaxed" | "sad" | "uncomfortable";
+export type Emotion = 
+    "depressed" | // 😔
+    "drowned" | // 🤿
+    "displeased" | // 😣
+    "overwhelmed" | // 😤
+    "annoyed" | // 🙄
+    "relaxed" | // 😌
+    "happy" | // 😁
+    "sad" | // 🥺
+    "laughing" | // 😂
+    "uncomfortable" | // 😣
+    "sleepy"; // 😴
+    

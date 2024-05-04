@@ -5,7 +5,7 @@ import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
 import {ActivityIndicator, IconButton, FAB} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import { useState} from "react";
+import { useMemo, useRef, useState} from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
 import PlantInfo from '../components/home/PlantInfo';
@@ -19,6 +19,7 @@ import { Emotion } from '../models/Hanagotchi';
 import { InfoToShow } from '../models/InfoToShow';
 import { getEmotionAndRecomendationFromDeviation } from '../common/getEmotionAndRecomendationFromProcess';
 import RecomendationDialog from '../components/home/RecomendationDialog';
+import HomeContent from '../components/home/HomeContent';
 
 
 type HomeScreenProps = CompositeScreenProps<
@@ -43,6 +44,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       }]
   );
 
+  function redirectToCreateLog(plantId: number) {
+    navigation.navigate("CreateLog", {plantId})
+  }
+
+  const hanagotchis = useMemo(() => {
+    return plants.map((plant) => {
+      return <HomeContent plant={plant} redirectToCreateLog={redirectToCreateLog}/>
+    })
+  }, [plants])
+
   if (!isFetching && error) {
     throw error;
   }
@@ -53,10 +64,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
 
   function previousPlant() {
     if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
-  }
-
-  function redirectToCreateLog(plantId: number) {
-    navigation.navigate("CreateLog", {plantId})
   }
 
   function calculateEmotionBasedOnDeviation(infoToShow: InfoToShow | null) {
@@ -101,19 +108,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               right: "3%",
               top: "20%",
           }} />
-          <Text style={style.title}>{plants[currentPlant].name}</Text>
-          <View style={style.carrousel}>
-            <Hanagotchi emotion={emotion} />
-            {recomendation && <RecomendationDialog 
-              plant={plants[currentPlant]}
-              recomendation={recomendation}
-            />}
-          </View>
-          <PlantInfo
-            plant={plants[currentPlant]}
-            redirectToCreateLog={redirectToCreateLog}
-            onChange={calculateEmotionBasedOnDeviation}
-          />
+          {hanagotchis[currentPlant]}
         </View>
       </SafeAreaView>
   )
