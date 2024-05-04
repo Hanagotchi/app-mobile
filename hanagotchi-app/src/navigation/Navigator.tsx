@@ -23,6 +23,7 @@ import DeletePlantScreen from "../screens/DeletePlantScreen";
 import DeleteSensorScreen from "../screens/DeleteSensorScreen";
 import HomeScreen from "../screens/HomeScreen";
 import { LogBox } from 'react-native';
+import RemindersScreen from "../screens/reminders/RemindersScreen";
 
 // TODO: pa la demo che, arreglar este warning
 LogBox.ignoreLogs([
@@ -124,6 +125,7 @@ export type RootStackParamsList = {
     CreatePost: undefined;
     AddPlant: undefined;
     DeletePlant: undefined;
+    Reminders: undefined;
 }
 
 const Navigator: React.FC = () => {
@@ -161,6 +163,9 @@ const Navigator: React.FC = () => {
                         })}/>
                         <RootStack.Screen name="CreatePost" component={CreatePostScreen} options={({navigation}) => ({
                             title: "Nueva publicación",
+                        })}/>
+                        <RootStack.Screen name="Reminders" component={RemindersScreen} options={({navigation}) => ({
+                            title: "Mis recordatorios",
                         })}/>
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
                         <RootStack.Screen name="DeletePlant" component={DeletePlantScreen} options={{ headerShown: true, title: "Eliminar una planta"}} />

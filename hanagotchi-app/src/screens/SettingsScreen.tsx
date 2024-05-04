@@ -29,6 +29,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 <Text style={style.text}>Editar perfil</Text>
                 <Icon source={chevronRight} size={23}/>
             </Pressable>
+            <Pressable style={style.item} onPress={() => navigation.navigate("Reminders")}>
+                <Text style={style.text}>Mis recordatorios</Text>
+                <Icon source={chevronRight} size={23}/>
+            </Pressable>
             <Pressable style={style.item} onPress={() => navigation.navigate("AddPlant")}>
                 <Text style={style.text}>Agregar planta</Text>
                 <Icon source={chevronRight} size={23}/>

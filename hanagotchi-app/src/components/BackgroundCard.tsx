@@ -4,7 +4,7 @@ import { DimensionValue, StyleProp, StyleSheet, TextStyle, ViewStyle } from "rea
 import { BEIGE, BROWN_LIGHT } from "../themes/globalThemes";
 
 type BackgroundCardProps = PropsWithChildren & {
-    title: string;
+    title?: string | undefined;
     width?: DimensionValue;
     style_content?: StyleProp<ViewStyle>;
     style_title?: StyleProp<TextStyle>;
@@ -35,7 +35,7 @@ const BackgroundCard: React.FC<BackgroundCardProps> = ({ title, width = "80%", s
     return (
 
         <Card mode="contained" style={card}>
-            <Card.Title title={title} titleStyle={cardTitle} />
+            {title && <Card.Title title={title} titleStyle={cardTitle} />}
             <Card.Content style={cardContent}>
                 {children}
             </Card.Content>
