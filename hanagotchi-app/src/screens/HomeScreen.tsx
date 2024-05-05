@@ -66,17 +66,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
   }
 
-  function calculateEmotionBasedOnDeviation(infoToShow: InfoToShow | null) {
-    if (infoToShow) {
-      const {emotion, recomendation} = getEmotionAndRecomendationFromDeviation(infoToShow?.info.deviations);
-      setEmotion(emotion);
-      setRecomendation(recomendation);
-    } else {
-      setEmotion("relaxed");
-      setRecomendation(undefined);
-    }
-  }
-
   if (plants.length == 0 && !isFetching) return (
       <View style={{margin: 100}}>
         <NoContent/>

@@ -21,10 +21,11 @@ const useHanagotchi = (initialEmotion: Emotion) => {
 
     const [prevEmotion, setPrevEmotion] = useState<Emotion>(initialEmotion);
     const [emotion, setEmotion] = useState<Emotion>(initialEmotion);
-    const {start: startTimeout, cancel: cancelTimeout} = useTimeout();
+    const {start: startFeedbackEmotion, cancel: cancelFeedbackEmotion} = useTimeout();
+    const {start: startTickleTimeout} = useTimeout();
 
     const updateEmotion = (newEmotion: Emotion) => {
-        if (isDeviationEmotion(newEmotion)) cancelTimeout()
+        if (isDeviationEmotion(newEmotion)) cancelFeedbackEmotion()
         setPrevEmotion(emotion);
         setEmotion(newEmotion);
     }
@@ -72,19 +73,20 @@ const useHanagotchi = (initialEmotion: Emotion) => {
     }
 
     const stopTickling = () => {
-        if (isTicklingEmotion(emotion)) {
-            if (prevEmotion === "sleepy") {
-                updateEmotion("relaxed")
-            } else {
-                updateEmotion(prevEmotion)
+        startTickleTimeout(() => {
+            if (isTicklingEmotion(emotion)) {
+                if (prevEmotion === "sleepy") {
+                    updateEmotion("relaxed")
+                } else {
+                    updateEmotion(prevEmotion)
+                }
             }
-        }
-        
+        }, 500);
     }
 
     const handleUserFeedback = (feedback: number) => {
         feedback >= 5 ? updateEmotion("happy") : updateEmotion("sad");
-        startTimeout(() => updateEmotion("relaxed"), FEEDBACK_EMOTION_DURATION);
+        startFeedbackEmotion(() => updateEmotion("relaxed"), FEEDBACK_EMOTION_DURATION);
     }
 
     return {
