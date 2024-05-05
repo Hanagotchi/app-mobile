@@ -8,15 +8,16 @@ import RecomendationDialog from "./RecomendationDialog";
 import { useRef, useState } from "react";
 import { InfoToShow } from "../../models/InfoToShow";
 import { getEmotionAndRecomendationFromDeviation } from "../../common/getEmotionAndRecomendationFromProcess";
+import UserFeedbackDialog from "./UserFeedbackDialog";
 
 type HomeContentProps = {
     plant: Plant,
     redirectToCreateLog: (plantId: number) => void;
 }
 
-const HomeContent: React.FC<HomeContentProps> = (props, ref) => {
+const HomeContent: React.FC<HomeContentProps> = ({plant, redirectToCreateLog}) => {
     const [recomendation, setRecomendation] = useState<string | undefined>();
-    const hanagotchiRef = useRef<HanagotchiRef>(null)
+    const hanagotchiRef = useRef<HanagotchiRef>(null);
 
     const calculateEmotionBasedOnDeviation = (infoToShow: InfoToShow | null) => {
         if (infoToShow) {
@@ -29,21 +30,21 @@ const HomeContent: React.FC<HomeContentProps> = (props, ref) => {
         }
     }
 
-    return <>
-        <Text style={style.title}>{props.plant.name}</Text>
+    return <View style={{alignItems: "center"}}>
+        <Text style={style.title}>{plant.name}</Text>
         <View style={style.carrousel}>
-            <Hanagotchi initialEmotion={"relaxed"} ref={hanagotchiRef}/>
+            <Hanagotchi plant={plant} initialEmotion={"relaxed"} ref={hanagotchiRef}/>
             {recomendation && <RecomendationDialog 
-                plant={props.plant}
+                plant={plant}
                 recomendation={recomendation}
             />}
         </View>
         <PlantInfo
-            plant={props.plant}
-            redirectToCreateLog={props.redirectToCreateLog}
+            plant={plant}
+            redirectToCreateLog={redirectToCreateLog}
             onChange={calculateEmotionBasedOnDeviation}
         />
-    </>
+    </View>
 }
 
 const style = StyleSheet.create({

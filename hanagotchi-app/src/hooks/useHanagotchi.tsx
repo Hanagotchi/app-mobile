@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Emotion } from "../models/Hanagotchi";
 import useTimeout from "./useTimeout";
 import { Deviation } from "../models/Measurement";
+import { Plant } from "../models/Plant";
 
 const FEEDBACK_EMOTION_DURATION = 1000 * 5;
 
@@ -17,12 +18,18 @@ function isTicklingEmotion(emotion: Emotion): boolean {
     return ["laughing", "uncomfortable"].includes(emotion)
 }
 
-const useHanagotchi = (initialEmotion: Emotion) => {
+const useHanagotchi = (plant: Plant, initialEmotion: Emotion) => {
 
     const [prevEmotion, setPrevEmotion] = useState<Emotion>(initialEmotion);
     const [emotion, setEmotion] = useState<Emotion>(initialEmotion);
     const {start: startFeedbackEmotion, cancel: cancelFeedbackEmotion} = useTimeout();
     const {start: startTickleTimeout} = useTimeout();
+    const [feedbackDialogEnabled, setFeedbackDialogEnabled] = useState<boolean>(false);
+
+/*     const shouldAskForFeedback = useMemo(() => {
+        const randomValue = Math.floor((Math.random() * 20) + 1);
+        
+    }, []) */
 
     const updateEmotion = (newEmotion: Emotion) => {
         if (isDeviationEmotion(newEmotion)) cancelFeedbackEmotion()
@@ -31,6 +38,8 @@ const useHanagotchi = (initialEmotion: Emotion) => {
     }
 
     const handleMeasurement = (deviations?: Deviation) => {
+        console.log(deviations);
+
         if (!deviations) {
             if (!isDeviationEmotion(emotion)) return;
             updateEmotion("relaxed");
@@ -87,14 +96,26 @@ const useHanagotchi = (initialEmotion: Emotion) => {
     const handleUserFeedback = (feedback: number) => {
         feedback >= 5 ? updateEmotion("happy") : updateEmotion("sad");
         startFeedbackEmotion(() => updateEmotion("relaxed"), FEEDBACK_EMOTION_DURATION);
+        setFeedbackDialogEnabled(false);
+    }
+
+    useEffect(() => {
+        setFeedbackDialogEnabled((prev) => prev && (emotion === "relaxed" || emotion === "laughing"))
+    }, [emotion])
+
+    // Won't ask for feedback if it is not relaxed
+    const askUserForFeedback = () => {
+        setFeedbackDialogEnabled(emotion === "relaxed" || emotion === "laughing");
     }
 
     return {
         emotion,
+        feedbackDialogEnabled,
         handleMeasurement,
         handleUserFeedback,
         startTickling,
-        stopTickling
+        stopTickling,
+        askUserForFeedback,
     }
 
 }

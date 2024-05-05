@@ -110,7 +110,6 @@ const style = StyleSheet.create({
     dialogContent: {
         paddingTop: 16,
         paddingBottom: 18,
-        paddingHorizontal: 50,
     },
     dialogActions: {
         gap: 5,

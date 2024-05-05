@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, SafeAreaView} from 'react-native'
+import {View, Text, StyleSheet, SafeAreaView, FlatList} from 'react-native'
 import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
 import {ActivityIndicator, IconButton, FAB} from "react-native-paper";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import { useMemo, useRef, useState} from "react";
+import { useEffect, useMemo, useRef, useState} from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
 import PlantInfo from '../components/home/PlantInfo';
@@ -33,6 +33,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   let [currentPlant, setCurrentPlant] = useState(0);
   const [emotion, setEmotion] = useState<Emotion>("relaxed");
   const [recomendation, setRecomendation] = useState<string | undefined>();
+  const flatListRef = useRef(null);
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
@@ -44,13 +45,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       }]
   );
 
+  useEffect(() => {
+    flatListRef.current?.scrollToIndex({index: currentPlant});
+  }, [currentPlant])
+
   function redirectToCreateLog(plantId: number) {
     navigation.navigate("CreateLog", {plantId})
   }
 
   const hanagotchis = useMemo(() => {
     return plants.map((plant) => {
-      return <HomeContent plant={plant} redirectToCreateLog={redirectToCreateLog}/>
+      return <HomeContent key={plant.id} plant={plant} redirectToCreateLog={redirectToCreateLog}/>
     })
   }, [plants])
 
@@ -89,6 +94,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
             position: 'absolute',
             left: "3%",
             top: "20%",
+            zIndex: 3,
           }} />
           <IconButton icon={right} disabled={currentPlant == plants.length-1} onPress={nextPlant} style={{
               ...style.arrow, 
@@ -96,8 +102,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               position: 'absolute',
               right: "3%",
               top: "20%",
+              zIndex: 3,
           }} />
-          {hanagotchis[currentPlant]}
+          <FlatList
+            ref={flatListRef}
+            data={plants}
+            renderItem={({item}) => <HomeContent key={item.id} plant={item} redirectToCreateLog={redirectToCreateLog}/>}
+            horizontal
+            contentContainerStyle={{
+              justifyContent: "center",
+              alignContent: "center",
+              paddingVertical: 50,
+              paddingHorizontal: "12%",
+              gap: 50,
+            }}
+          />
+          {/* {hanagotchis[currentPlant]} */}
         </View>
       </SafeAreaView>
   )
@@ -108,6 +128,7 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: "center",
+    alignContent: "center",
     backgroundColor: BACKGROUND_COLOR
   },
   carrousel: {

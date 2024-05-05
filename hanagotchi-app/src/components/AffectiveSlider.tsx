@@ -18,25 +18,24 @@ type AffectiveSliderProps = {
     setValue: (newValue: number) => void;
 }
 
-const AffectiveSlider: React.FC<AffectiveSliderProps> = ({question}) => {
+const AffectiveSlider: React.FC<AffectiveSliderProps> = ({question, value, setValue}) => {
     return (
-        <BackgroundCard title={question}>
             <View style={{
                 flexDirection: "row",
                 justifyContent: "space-between", 
             }}>
                 <Image source={{uri: emotions.sad}} style={{width: 30, height: 30}}/>
                 <Slider 
+                    value={value}
                     style={{width: 200, height: 40}}
                     minimumTrackTintColor={BROWN_LIGHT}
                     thumbTintColor={BROWN_LIGHT}
                     minimumValue={1}
                     maximumValue={10}
-                    onSlidingComplete={(value) => console.log(value)}
+                    onSlidingComplete={(value) => setValue(value)}
                 />
                 <Image source={{uri: emotions.happy}} style={{width: 30, height: 30}}/>
             </View>
-        </BackgroundCard>
     )
 }
 

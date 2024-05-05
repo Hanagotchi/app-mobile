@@ -7,11 +7,13 @@ import relaxed from "../../assets/hanagotchis/relaxed.png";
 import sad from "../../assets/hanagotchis/sad.png";
 import uncomfortable from "../../assets/hanagotchis/uncomfortable.png";
 import backgroundBlob from "../../assets/hanagotchis/background_1.png";
-import { useImperativeHandle, useState, forwardRef } from "react";
+import { useImperativeHandle, useState, forwardRef, useEffect } from "react";
 import { Deviation } from "../../models/Measurement";
 import useTimeout from "../../hooks/useTimeout";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import useHanagotchi from "../../hooks/useHanagotchi";
+import UserFeedbackDialog from "./UserFeedbackDialog";
+import { Plant } from "../../models/Plant";
 
 const sources = {
     depressed: depressed, 
@@ -29,24 +31,34 @@ export type HanagotchiRef = {
 };
 
 type HanagotchiProps = {
+    plant: Plant,
     initialEmotion: Emotion,
 }
 
 const Hanagotchi = forwardRef<HanagotchiRef, HanagotchiProps>((props, ref) => {
     const {
-        emotion, 
+        emotion,
+        feedbackDialogEnabled,
         startTickling, 
         stopTickling,
         handleMeasurement,
+        askUserForFeedback,
         handleUserFeedback,
-    } = useHanagotchi(props.initialEmotion);
+
+    } = useHanagotchi(props.plant, props.initialEmotion);
+
+    useEffect(() => {
+        console.log(props.plant.id);
+        askUserForFeedback();
+    }, [])
 
     useImperativeHandle(ref, () => ({
         handleMeasurement,
         handleUserFeedback,
     }))
 
-    return (
+    return (<>
+        {feedbackDialogEnabled && <UserFeedbackDialog plant={props.plant} onConfirm={handleUserFeedback}/>}
         <TouchableWithoutFeedback onPressIn={startTickling} onPressOut={stopTickling}>
             <Image 
                 source={
@@ -60,6 +72,7 @@ const Hanagotchi = forwardRef<HanagotchiRef, HanagotchiProps>((props, ref) => {
                 }}
             />
         </TouchableWithoutFeedback>
+        </>
     )
 });
 
