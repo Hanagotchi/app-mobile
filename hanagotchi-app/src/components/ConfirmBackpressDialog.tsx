@@ -19,21 +19,22 @@ const ConfirmBackpressDialog: React.FC = () => {
 
       return (
         <Dialog
-            ref={dialogRef}
-            title="¿Desea descartar los cambios?"
-            content="Se perderán los cambios que no hayan sido confirmados"
-            primaryButtonProps={{
-                onPress: () => {
-                    if (beforeRemoveEvent) {
-                        navigation.dispatch(beforeRemoveEvent.data.action)
-                    }
-                },
-            }}
-            secondaryButtonProps={{
-                onPress: () => {
-                    dialogRef.current?.hideDialog()
-                },
-            }}
+              ref={dialogRef}
+              title="¿Desea descartar los cambios?"
+              content="Se perderán los cambios que no hayan sido confirmados"
+              primaryButtonProps={{
+                  onPress: () => {
+                      if (beforeRemoveEvent) {
+                          navigation.dispatch(beforeRemoveEvent.data.action);
+                      }
+                  },
+              }}
+              secondaryButtonProps={{
+                  onPress: () => {
+                      dialogRef.current?.hideDialog();
+                  },
+              }} 
+            children={undefined}
         />
       )
 }

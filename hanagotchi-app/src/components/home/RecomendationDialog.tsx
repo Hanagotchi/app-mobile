@@ -22,7 +22,8 @@ const RecomendationDialog: React.FC<RecomendationDialogProps> = ({plant, recomen
             primaryButtonLabel="Ok"
             primaryButtonProps={{
                 onPress: () => ref.current?.hideDialog()
-            }}
+            }} 
+            children={undefined}        
         />
         <FAB 
             icon="exclamation-thick"

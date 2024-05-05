@@ -8,9 +8,9 @@ export type DialogRef = {
     hideDialog: () => void;
 }
 
-type DialogProps = Omit<NativeDialogProps, "children" | "style" | "visible"> & {
+type DialogProps = Omit<NativeDialogProps, "style" | "visible"> & {
     title: string;
-    content: string;
+    content?: string;
     primaryButtonLabel?: string;
     secondaryButtonLabel?: string;
     primaryButtonProps?:  Omit<ButtonProps, "children">;
@@ -59,7 +59,11 @@ const Dialog = forwardRef<DialogRef, DialogProps>((props, ref) => {
             </NativeDialog.Title>
             <Divider bold/>
             <NativeDialog.Content style={style.dialogContent}>
-                <Text style={style.content}>{props.content}</Text>
+                {props.content ? (
+                    <Text style={style.content}>{props.content}</Text>
+                ) : (
+                    props.children
+                )}
             </NativeDialog.Content>
             {((props.primaryButtonProps || props.secondaryButtonLabel) &&
                 <NativeDialog.Actions style={style.dialogActions}>
