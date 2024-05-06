@@ -4,7 +4,7 @@ import useTimeout from "./useTimeout";
 import { Deviation } from "../models/Measurement";
 import { Plant } from "../models/Plant";
 
-const FEEDBACK_EMOTION_DURATION = 1000 * 5;
+const FEEDBACK_EMOTION_DURATION = 1000 * 60;
 
 function isDeviationEmotion(emotion: Emotion): boolean {
     return ["depressed", "drowned", "displeased", "overwhelmed", "annoyed"].includes(emotion)
@@ -20,16 +20,11 @@ function isTicklingEmotion(emotion: Emotion): boolean {
 
 const useHanagotchi = (plant: Plant, initialEmotion: Emotion) => {
 
-    const [prevEmotion, setPrevEmotion] = useState<Emotion>(initialEmotion);
-    const [emotion, setEmotion] = useState<Emotion>(initialEmotion);
+    const [prevEmotion, setPrevEmotion] = useState<Emotion>("relaxed");
+    const [emotion, setEmotion] = useState<Emotion>("relaxed");
     const {start: startFeedbackEmotion, cancel: cancelFeedbackEmotion} = useTimeout();
     const {start: startTickleTimeout} = useTimeout();
     const [feedbackDialogEnabled, setFeedbackDialogEnabled] = useState<boolean>(false);
-
-/*     const shouldAskForFeedback = useMemo(() => {
-        const randomValue = Math.floor((Math.random() * 20) + 1);
-        
-    }, []) */
 
     const updateEmotion = (newEmotion: Emotion) => {
         if (isDeviationEmotion(newEmotion)) cancelFeedbackEmotion()
@@ -38,8 +33,6 @@ const useHanagotchi = (plant: Plant, initialEmotion: Emotion) => {
     }
 
     const handleMeasurement = (deviations?: Deviation) => {
-        console.log(deviations);
-
         if (!deviations) {
             if (!isDeviationEmotion(emotion)) return;
             updateEmotion("relaxed");

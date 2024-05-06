@@ -31,8 +31,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
-  const [emotion, setEmotion] = useState<Emotion>("relaxed");
-  const [recomendation, setRecomendation] = useState<string | undefined>();
   const flatListRef = useRef(null);
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(

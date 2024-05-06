@@ -35,11 +35,9 @@ export const usePlantInfo = (plant: Plant) => {
                     });
                 }
             } else {
-                console.log("my user", myUser?.location);
                 try {
                     if (myUser?.location) {
                         const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
-                        console.log(weatherData)
                         const timestamp = new Date(0);
                         timestamp.setUTCSeconds(weatherData.dt);
                         setPlantInfo({

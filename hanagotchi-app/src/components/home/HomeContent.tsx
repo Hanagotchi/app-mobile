@@ -3,12 +3,12 @@ import { Plant } from "../../models/Plant"
 import Hanagotchi, { HanagotchiRef } from "./Hanagotchi";
 import PlantInfo from "./PlantInfo";
 import {Text} from "react-native-paper";
-import { BACKGROUND_COLOR } from "../../themes/globalThemes";
 import RecomendationDialog from "./RecomendationDialog";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InfoToShow } from "../../models/InfoToShow";
 import { getEmotionAndRecomendationFromDeviation } from "../../common/getEmotionAndRecomendationFromProcess";
-import UserFeedbackDialog from "./UserFeedbackDialog";
+
+const ASK_FOR_FEEDBACK_PROBABILITY = 0.05;
 
 type HomeContentProps = {
     plant: Plant,
@@ -29,6 +29,15 @@ const HomeContent: React.FC<HomeContentProps> = ({plant, redirectToCreateLog}) =
             hanagotchiRef.current?.handleMeasurement(undefined);
         }
     }
+
+    useEffect(() => {
+        const randomValue = Math.floor((Math.random() * (1 / ASK_FOR_FEEDBACK_PROBABILITY)));
+        console.log("r", randomValue)
+        console.log("p", plant.id % (1 / ASK_FOR_FEEDBACK_PROBABILITY ))
+        if (randomValue === plant.id % (1 / ASK_FOR_FEEDBACK_PROBABILITY)) {
+            hanagotchiRef.current?.askUserForFeedback();
+        }
+    }, [])
 
     return <View style={{alignItems: "center"}}>
         <Text style={style.title}>{plant.name}</Text>
