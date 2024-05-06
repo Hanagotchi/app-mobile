@@ -16,16 +16,16 @@ type HomeContentProps = {
 }
 
 const HomeContent: React.FC<HomeContentProps> = ({plant, redirectToCreateLog}) => {
-    const [recomendation, setRecomendation] = useState<string | undefined>();
+    const [recomendations, setRecomendations] = useState<string[] | undefined>();
     const hanagotchiRef = useRef<HanagotchiRef>(null);
 
     const calculateEmotionBasedOnDeviation = (infoToShow: InfoToShow | null) => {
         if (infoToShow) {
-            const {recomendation} = getEmotionAndRecomendationFromDeviation(infoToShow.info.deviations);
-            setRecomendation(recomendation);
+            const recomendationList = getEmotionAndRecomendationFromDeviation(infoToShow.info.deviations);
+            setRecomendations(recomendationList);
             hanagotchiRef.current?.handleMeasurement(infoToShow.info.deviations)
           } else {
-            setRecomendation(undefined);
+            setRecomendations(undefined);
             hanagotchiRef.current?.handleMeasurement(undefined);
         }
     }
@@ -41,9 +41,9 @@ const HomeContent: React.FC<HomeContentProps> = ({plant, redirectToCreateLog}) =
         <Text style={style.title}>{plant.name}</Text>
         <View style={style.carrousel}>
             <Hanagotchi plant={plant} initialEmotion={"relaxed"} ref={hanagotchiRef}/>
-            {recomendation && <RecomendationDialog 
+            {recomendations && recomendations.length > 0 && <RecomendationDialog 
                 plant={plant}
-                recomendation={recomendation}
+                recomendations={recomendations}
             />}
         </View>
         <PlantInfo

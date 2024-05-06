@@ -106,6 +106,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
             ref={flatListRef}
             data={plants}
             renderItem={({item}) => <HomeContent key={item.id} plant={item} redirectToCreateLog={redirectToCreateLog}/>}
+            keyExtractor={(item) => item.id.toString()}
             horizontal
             contentContainerStyle={{
               justifyContent: "center",
