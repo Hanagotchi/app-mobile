@@ -113,77 +113,10 @@ const style = StyleSheet.create({
     alignContent: "center",
     backgroundColor: BACKGROUND_COLOR
   },
-  carrousel: {
-    justifyContent: "center",
-    alignContent: "center",
-  },
-  title: {
-    fontSize: 45,
-    fontFamily: "IBMPlexMono_Italic",
-    textAlign: 'center',
-    color: '#4F4C4F',
-    padding: 20
-  },
-  measurement: {
-    fontSize: 17,
-    fontFamily: "Roboto",
-    textAlign: 'center',
-    color: '#4F4C4F',
-    padding: 2
-  },
-  time: {
-    fontSize: 12,
-    fontFamily: "Roboto",
-    textAlign: 'center',
-    color: '#4F4C4F',
-    paddingTop: 10
-  },
-  measurements: {
-    flex: 0.96,
-    alignItems: "flex-start",
-    justifyContent: "flex-start"
-  },
-  noMeasurements: {
-    flex: 0.96,
-    height: 104,
-    paddingTop: 22
-  },
-  box: {
-    backgroundColor: '#E8DECF',
-    borderRadius: 8,
-    padding: 20,
-    marginTop: 50,
-    height: 190,
-    width: 240
-  },
-  boxElements: {
-    display: "flex",
-    flexDirection: "row",
-  },
-  description: {
-    display: "flex",
-    flexDirection: "row",
-  },
-  image: {
-    width: 300,
-    height: 300
-  },
   arrow: {
     marginTop: 200,
     width: 25,
     height: 25
-  },
-  imageDescription: {
-    alignSelf: "auto",
-    borderRadius: 10,
-    width: 130,
-    height: 130,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
   },
 })
 
