@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, SafeAreaView, FlatList} from 'react-native'
+import {View, StyleSheet, SafeAreaView, FlatList} from 'react-native'
 import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
@@ -8,18 +8,13 @@ import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import { useEffect, useMemo, useRef, useState} from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
-import PlantInfo from '../components/home/PlantInfo';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { MainTabParamsList, RootStackParamsList } from '../navigation/Navigator';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
-import Hanagotchi from '../components/home/Hanagotchi';
-import { Emotion } from '../models/Hanagotchi';
-import { InfoToShow } from '../models/InfoToShow';
-import { getEmotionAndRecomendationFromDeviation } from '../common/getEmotionAndRecomendationFromProcess';
-import RecomendationDialog from '../components/home/RecomendationDialog';
 import HomeContent from '../components/home/HomeContent';
+import Carousel from 'react-native-snap-carousel';
 
 
 type HomeScreenProps = CompositeScreenProps<
@@ -32,6 +27,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
   const flatListRef = useRef(null);
+  const carouselRef = useRef(null);
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
@@ -43,30 +39,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       }]
   );
 
-  useEffect(() => {
-    flatListRef.current?.scrollToIndex({index: currentPlant});
-  }, [currentPlant])
-
   function redirectToCreateLog(plantId: number) {
     navigation.navigate("CreateLog", {plantId})
   }
-
-  const hanagotchis = useMemo(() => {
-    return plants.map((plant) => {
-      return <HomeContent key={plant.id} plant={plant} redirectToCreateLog={redirectToCreateLog}/>
-    })
-  }, [plants])
 
   if (!isFetching && error) {
     throw error;
   }
 
   function nextPlant() {
-    if (currentPlant < plants.length - 1) setCurrentPlant(currentPlant + 1);
+    setCurrentPlant(i => i+1);
+    carouselRef.current?.snapToNext();
   }
 
   function previousPlant() {
-    if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
+    setCurrentPlant(i => i-1);
+    carouselRef.current?.snapToPrev();
   }
 
   if (plants.length == 0 && !isFetching) return (
@@ -102,21 +90,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               top: "20%",
               zIndex: 3,
           }} />
-          <FlatList
+{/*           <FlatList
             ref={flatListRef}
             data={plants}
             renderItem={({item}) => <HomeContent key={item.id} plant={item} redirectToCreateLog={redirectToCreateLog}/>}
             keyExtractor={(item) => item.id.toString()}
             horizontal
+            scrollEnabled={false}
             contentContainerStyle={{
               justifyContent: "center",
               alignContent: "center",
               paddingVertical: 50,
               paddingHorizontal: "12%",
-              gap: 50,
             }}
+          /> */}
+          <Carousel
+            scrollEnabled={false}
+            ref={carouselRef}
+            data={plants}
+            renderItem={({item}) => <View style={{marginTop: 50}}>
+              <HomeContent key={item.id} plant={item} redirectToCreateLog={redirectToCreateLog}/>
+            </View>}
+            sliderWidth={400}
+            itemWidth={400}
           />
-          {/* {hanagotchis[currentPlant]} */}
         </View>
       </SafeAreaView>
   )
@@ -132,9 +129,7 @@ const style = StyleSheet.create({
   },
   carrousel: {
     justifyContent: "center",
-    alignItems: "center",
-    height: 300,
-    width: 300,
+    alignContent: "center",
   },
   title: {
     fontSize: 45,
