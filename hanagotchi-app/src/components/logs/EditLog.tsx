@@ -74,9 +74,6 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
                     numberOfLines={4}
                     maxLenght={CONTENT_MAX_LENGTH}
                 />
-                <AffectiveSlider 
-                    question={`¿Qué tan bien se encuentra tu planta?`.toUpperCase()}
-                />
                 <PhotoUploader 
                     maxAmount={4} 
                     photosFilepathList={data.photos} 

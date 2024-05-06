@@ -32,8 +32,6 @@ const HomeContent: React.FC<HomeContentProps> = ({plant, redirectToCreateLog}) =
 
     useEffect(() => {
         const randomValue = Math.floor((Math.random() * (1 / ASK_FOR_FEEDBACK_PROBABILITY)));
-        console.log("r", randomValue)
-        console.log("p", plant.id % (1 / ASK_FOR_FEEDBACK_PROBABILITY ))
         if (randomValue === plant.id % (1 / ASK_FOR_FEEDBACK_PROBABILITY)) {
             hanagotchiRef.current?.askUserForFeedback();
         }
