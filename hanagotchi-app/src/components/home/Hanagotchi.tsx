@@ -6,6 +6,8 @@ import overwhelmed from "../../assets/hanagotchis/overwhelmed.png";
 import relaxed from "../../assets/hanagotchis/relaxed.png";
 import sad from "../../assets/hanagotchis/sad.png";
 import uncomfortable from "../../assets/hanagotchis/uncomfortable.png";
+import annoyed from "../../assets/hanagotchis/annoyed.png";
+import drowned from "../../assets/hanagotchis/drowned.png";
 import backgroundBlob from "../../assets/hanagotchis/background_1.png";
 import { useImperativeHandle, forwardRef } from "react";
 import { Deviation } from "../../models/Measurement";
@@ -15,6 +17,8 @@ import { Plant } from "../../models/Plant";
 
 const sources = {
     depressed: depressed, 
+    annoyed: annoyed,
+    drowned: drowned,
     happy: happy, 
     overwhelmed: overwhelmed, 
     relaxed: relaxed, 
