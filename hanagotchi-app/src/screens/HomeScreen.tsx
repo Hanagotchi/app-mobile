@@ -26,7 +26,7 @@ type HomeScreenProps = CompositeScreenProps<
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
-  let [currentPlant, setCurrentPlant] = useState(0);
+  let [currentPlant, setCurrentPlant] = useState(1);
   const carouselRef = useRef<Carousel<Plant>>(null);
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
@@ -48,12 +48,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   }
 
   function nextPlant() {
-    setCurrentPlant(i => i+1);
+    //setCurrentPlant(carouselRef.current?.currentIndex + 1);
     carouselRef.current?.snapToNext();
   }
 
   function previousPlant() {
-    setCurrentPlant(i => i-1);
+    //setCurrentPlant(carouselRef.current?.currentIndex - 1);
     carouselRef.current?.snapToPrev();
   }
 
@@ -91,6 +91,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               zIndex: 3,
           }} />
           <Carousel
+            loop
             scrollEnabled={false}
             ref={carouselRef}
             data={plants}
