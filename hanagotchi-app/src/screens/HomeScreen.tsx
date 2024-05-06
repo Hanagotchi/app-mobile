@@ -15,6 +15,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 import HomeContent from '../components/home/HomeContent';
 import Carousel from 'react-native-snap-carousel';
+import { Plant } from '../models/Plant';
 
 
 type HomeScreenProps = CompositeScreenProps<
@@ -26,8 +27,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
-  const flatListRef = useRef(null);
-  const carouselRef = useRef(null);
+  const carouselRef = useRef<Carousel<Plant>>(null);
 
   const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
       () => api.getPlants({id_user: userId}),
@@ -90,20 +90,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               top: "20%",
               zIndex: 3,
           }} />
-{/*           <FlatList
-            ref={flatListRef}
-            data={plants}
-            renderItem={({item}) => <HomeContent key={item.id} plant={item} redirectToCreateLog={redirectToCreateLog}/>}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal
-            scrollEnabled={false}
-            contentContainerStyle={{
-              justifyContent: "center",
-              alignContent: "center",
-              paddingVertical: 50,
-              paddingHorizontal: "12%",
-            }}
-          /> */}
           <Carousel
             scrollEnabled={false}
             ref={carouselRef}
