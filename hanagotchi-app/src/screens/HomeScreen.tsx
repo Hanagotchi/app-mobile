@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, SafeAreaView, Image} from 'react-native'
-import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
+import { View, Text, StyleSheet, SafeAreaView, Image } from 'react-native'
+import { BACKGROUND_COLOR, BROWN_DARK } from "../themes/globalThemes";
 import plantImage from "../assets/plant.png";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
-import {ActivityIndicator, IconButton} from "react-native-paper";
-import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import { useState} from "react";
+import { ActivityIndicator, IconButton } from "react-native-paper";
+import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
+import { useState, useEffect } from "react";
 import NoContent from "../components/NoContent";
 import { useSession } from '../hooks/useSession';
 import PlantInfo from '../components/home/PlantInfo';
@@ -15,26 +15,31 @@ import { MainTabParamsList, RootStackParamsList } from '../navigation/Navigator'
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
+import messaging from '@react-native-firebase/messaging';
 
 type HomeScreenProps = CompositeScreenProps<
-    BottomTabScreenProps<MainTabParamsList, "Home">,
-    NativeStackScreenProps<RootStackParamsList>
+  BottomTabScreenProps<MainTabParamsList, "Home">,
+  NativeStackScreenProps<RootStackParamsList>
 >;
 
-const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
 
-  const {isFetching, fetchedData: plants, error} = useFocusApiFetch(
-      () => api.getPlants({id_user: userId}),
-      [{
-        id: 0,
-        id_user: 0,
-        name: '',
-        scientific_name: '',
-      }]
+  const { isFetching, fetchedData: plants, error } = useFocusApiFetch(
+    () => api.getPlants({ id_user: userId }),
+    [{
+      id: 0,
+      id_user: 0,
+      name: '',
+      scientific_name: '',
+    }]
   );
+
+  useEffect(() => {
+    requestUserPermission();
+  }, [currentPlant]);
 
   if (!isFetching && error) {
     throw error;
@@ -52,45 +57,58 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     navigation.navigate("CreateLog", {plantId})
   }
 
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      messaging().getToken().then(async token => {
+        await api.patchUser({ device_token: token });
+      })
+    }
+    return enabled
+  }
+
+
   if (plants.length == 0 && !isFetching) return (
-      <View style={{margin: 100}}>
-        <NoContent/>
-      </View>
+    <View style={{ margin: 100 }}>
+      <NoContent />
+    </View>
   )
 
   if (isFetching) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
-        <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+        <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{ justifyContent: "center", flexGrow: 1 }} />
       </SafeAreaView>
 
     )
   }
 
   return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
-        <View style={style.container}>
-          <IconButton icon={left} disabled={currentPlant == 0} onPress={previousPlant} style={{
-            ...style.arrow, 
-            display: currentPlant > 0 ? "flex" : "none",
-            position: 'absolute',
-            left: "3%",
-            top: "20%",
-          }} />
-          <IconButton icon={right} disabled={currentPlant == plants.length-1} onPress={nextPlant} style={{
-              ...style.arrow, 
-              display: currentPlant < plants.length-1 ? "flex" : "none",
-              position: 'absolute',
-              right: "3%",
-              top: "20%",
-          }} />
-          <Text style={style.title}>{plants[currentPlant].name}</Text>
-          <View style={style.carrousel}>
-            <Image source={plantImage} style={style.image} />
-          </View>
-          <PlantInfo plant={plants[currentPlant]} redirectToCreateLog={redirectToCreateLog}/>
+    <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+      <View style={style.container}>
+        <IconButton icon={left} disabled={currentPlant == 0} onPress={previousPlant} style={{
+          ...style.arrow,
+          display: currentPlant > 0 ? "flex" : "none",
+          position: 'absolute',
+          left: "3%",
+          top: "20%",
+        }} />
+        <IconButton icon={right} disabled={currentPlant == plants.length - 1} onPress={nextPlant} style={{
+          ...style.arrow,
+          display: currentPlant < plants.length - 1 ? "flex" : "none",
+          position: 'absolute',
+          right: "3%",
+          top: "20%",
+        }} />
+        <Text style={style.title}>{plants[currentPlant].name}</Text>
+        <View style={style.carrousel}>
+          <Image source={plantImage} style={style.image} />
         </View>
-      </SafeAreaView>
+        <PlantInfo plant={plants[currentPlant]} redirectToCreateLog={redirectToCreateLog} />
+      </View>
+    </SafeAreaView>
   )
 }
 
