@@ -2,37 +2,30 @@ import { Plant } from "../../models/Plant"
 import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
-import { Deviation, DeviationEnum, Measurement } from "../../models/Measurement";
-import {ActivityIndicator, FAB, Icon, Text} from "react-native-paper";
-import { Modal, Pressable, Image, StyleSheet, View } from "react-native";
+
+import { DeviationEnum } from "../../models/Measurement";
+import {ActivityIndicator, Dialog, FAB, Icon, Portal, Text} from "react-native-paper";
+
+import { Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
 import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
 import { BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
-import { useOpenWeatherApi } from "../../hooks/useOpenWeatherApi";
-import useMyUser from "../../hooks/useMyUser";
-import { useToggle } from "../../hooks/useToggle";
+
 import { usePlantInfo } from "../../hooks/usePlantInfo";
+import { InfoToShow } from "../../models/InfoToShow";
 
 type PlantInfoProps = {
     plant: Plant;
     redirectToCreateLog: (plantId: number) => void;
+    onChange?: (infoToShow: InfoToShow | null) => void;
 }
 
-interface InfoToShow {
-    temperature?: number;
-    humidity?: number;
-    light?: number;
-    watering?: number;
-    deviations?: Deviation;
-    time_stamp?: Date;
-}
-
-
-const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
-    const [modalOpen, setModalOpen] = useState(false);
+const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChange}) => {
+    const [plantTypeModalOpen, setPlantTypeModalOpen] = useState(false);
+    const [plantDescriptionModalOpen, setPlantDescriptionModalOpen] = useState(false);
     const hanagotchiApi = useHanagotchiApi();
     const {
         isFetching: isFetchingPlantType,
@@ -44,10 +37,16 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
       isFetching: isFetchingPlantInfo,
       plantInfo,
       error: plantInfoError,
+      device,
     } = usePlantInfo(plant);
 
     if (plantTypeError) throw plantTypeError;
     if (plantInfoError) throw plantInfoError;
+
+    useEffect(() => {
+      if (!onChange) return;
+      onChange?.(plantInfo);
+    }, [plantInfo]);
 
     if (isFetchingPlantType || isFetchingPlantInfo) {
         return (<View style={style.box}>
@@ -89,13 +88,21 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
                     <Text style={{...style.measurement, color: BROWN}}> No se registran {'\n'} mediciones</Text>
                 </View>
                 }
-                <View style={{ gap: 20, justifyContent: "center" }}>
+                <View style={{ gap: 10, justifyContent: "center" }}>
                     <Pressable onPress={() => redirectToCreateLog(plant.id)}>
                         <Icon size={30} source={plus} />
                     </Pressable>
-                    <Pressable onPress={() => setModalOpen(true)}>
+                    <Pressable onPress={() => setPlantDescriptionModalOpen(true)}>
                         <Icon size={30} source={info} />
                     </Pressable>
+                    <FAB
+                      icon="leaf"
+                      style={style.fab}
+                      color={BEIGE_LIGHT}
+                      customSize={30}
+                      mode="flat"
+                      onPress={() => setPlantTypeModalOpen(true)}
+                    />
                 </View>
             </View>
             {plantInfo &&
@@ -110,28 +117,56 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog}) => {
                   bottom: "40%",
                   left: "48%",
                   height: 22,
-                  width: 51,
+                  width: 52,
               }}/>
             }
         </View>
-        <Modal animationType="slide" transparent={true} visible={modalOpen} onRequestClose={() => { setModalOpen(!modalOpen) }}>
-            <View style={style.centeredView}>
-                <View style={style.modalView}>
-                    <View style={style.modalHeader}>
-                        <Text style={style.modalTitle}>{plantType!.botanical_name}</Text>
-                        <Pressable onPress={() => setModalOpen(false)}>
-                            <Icon size={23} source={close} />
-                        </Pressable>
-                    </View>
-                    <View style={style.description}>
-                        <Text style={style.modalText}>{plantType!.description}</Text>
-                        <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
-                    </View>
-                </View>
-            </View>
-        </Modal>
-    </>
+        <Portal>
+          <Dialog style={style.modalView} visible={plantTypeModalOpen} onDismiss={() => setPlantTypeModalOpen(false)}>
+            <Pressable onPress={() => {setPlantTypeModalOpen(false)}} style={{
+              flex: 3,
+              position: "absolute",
+              top: -3,
+              right: 20,
+            }}>
+              <Icon size={23} source={close} />
+            </Pressable>
+            <Dialog.Title style={{justifyContent: "space-between", flexDirection: "row", width: "50%"}}>
+              <Text style={style.modalTitle}>{plantType?.botanical_name}</Text>
+            </Dialog.Title>
+            <Dialog.Content style={style.description}>
+              <Text style={{...style.modalText, width: "53%",}}>{plantType!.description}</Text>
+              <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+        <Portal>
+          <Dialog style={style.modalView} visible={plantDescriptionModalOpen} onDismiss={() => setPlantDescriptionModalOpen(false)}>
+            <Pressable onPress={() => {setPlantDescriptionModalOpen(false)}} style={{
+              flex: 3,
+              position: "absolute",
+              top: -3,
+              right: 20,
+            }}>
+              <Icon size={23} source={close} />
+            </Pressable>
+            <Dialog.Title style={{justifyContent: "space-between", flexDirection: "row", width: "50%"}}>
+              <Text style={style.modalTitle}>{plant.name}</Text>
+            </Dialog.Title>
+            <Dialog.Content style={style.description}>
+              <View style={{gap: 10}}>
+                <Text style={style.modalText}>Nombre científico: {plant.scientific_name}.</Text>
+                {device ? (
+                  <Text style={style.modalText}>ID del sensor: {device.id_device}</Text>
+                ) : (
+                  <Text style={{...style.modalText, textAlign: "left"}}>Actualmente no existe ningun sensor asociado a {plant.name}. Los datos climaticos presentados son generales para su zona.</Text>
+                )}
 
+              </View>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+      </>
     )
 }
 
@@ -177,6 +212,7 @@ const style = StyleSheet.create({
     description: {
       display: "flex",
       flexDirection: "row",
+      gap: 10,
     },
     image: {
       width: 300,
@@ -188,23 +224,14 @@ const style = StyleSheet.create({
       height: 25
     },
     imageDescription: {
-      alignSelf: "auto",
       borderRadius: 10,
       width: 130,
       height: 130,
     },
-    centeredView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22
-    },
     modalView: {
       margin: 20,
-      width: "80%",
       backgroundColor: "#E8DECF",
       borderRadius: 20,
-      padding: 20,
       shadowColor: "#000",
       shadowOffset: {
         width: 0,
@@ -224,8 +251,7 @@ const style = StyleSheet.create({
       textAlign: "justify",
       color: '#4F4C4F',
       fontFamily: "Roboto",
-      width: "60%",
-      paddingRight: 10
+      paddingRight: 10,
     },
     modalTitle: {
       textAlign: "left",
@@ -234,8 +260,10 @@ const style = StyleSheet.create({
       fontFamily: "Roboto"
     },
     fab: {
-        borderRadius: 30,
-        backgroundColor: BROWN_LIGHT,
+      backgroundColor: BROWN_LIGHT,
+      borderRadius: 30,
+      height: 30,
+      width: 30,
     }
   })
 

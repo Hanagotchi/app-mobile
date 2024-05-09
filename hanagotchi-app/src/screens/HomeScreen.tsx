@@ -4,7 +4,7 @@ import { BACKGROUND_COLOR, BROWN_DARK } from "../themes/globalThemes";
 import plantImage from "../assets/plant.png";
 import left from "../assets/vector2.png";
 import right from "../assets/vector1.png";
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { ActivityIndicator, IconButton , FAB} from "react-native-paper";
 import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
 import { useState, useEffect } from "react";
 import NoContent from "../components/NoContent";
@@ -16,6 +16,12 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusApiFetch } from '../hooks/useFocusApiFetch';
 import messaging from '@react-native-firebase/messaging';
+import Hanagotchi from '../components/home/Hanagotchi';
+import { Emotion } from '../models/Hanagotchi';
+import { InfoToShow } from '../models/InfoToShow';
+import { getEmotionAndRecomendationFromDeviation } from '../common/getEmotionAndRecomendationFromProcess';
+import RecomendationDialog from '../components/home/RecomendationDialog';
+
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamsList, "Home">,
@@ -26,6 +32,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
   let [currentPlant, setCurrentPlant] = useState(0);
+  const [emotion, setEmotion] = useState<Emotion>("relaxed");
+  const [recomendation, setRecomendation] = useState<string | undefined>();
 
   const { isFetching, fetchedData: plants, error } = useFocusApiFetch(
     () => api.getPlants({ id_user: userId }),
@@ -70,6 +78,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }
 
 
+  function calculateEmotionBasedOnDeviation(infoToShow: InfoToShow | null) {
+    if (infoToShow) {
+      const {emotion, recomendation} = getEmotionAndRecomendationFromDeviation(infoToShow?.info.deviations);
+      setEmotion(emotion);
+      setRecomendation(recomendation);
+    } else {
+      setEmotion("relaxed");
+      setRecomendation(undefined);
+    }
+  }
+
   if (plants.length == 0 && !isFetching) return (
     <View style={{ margin: 100 }}>
       <NoContent />
@@ -81,34 +100,41 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{ justifyContent: "center", flexGrow: 1 }} />
       </SafeAreaView>
-
     )
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
-      <View style={style.container}>
-        <IconButton icon={left} disabled={currentPlant == 0} onPress={previousPlant} style={{
-          ...style.arrow,
-          display: currentPlant > 0 ? "flex" : "none",
-          position: 'absolute',
-          left: "3%",
-          top: "20%",
-        }} />
-        <IconButton icon={right} disabled={currentPlant == plants.length - 1} onPress={nextPlant} style={{
-          ...style.arrow,
-          display: currentPlant < plants.length - 1 ? "flex" : "none",
-          position: 'absolute',
-          right: "3%",
-          top: "20%",
-        }} />
-        <Text style={style.title}>{plants[currentPlant].name}</Text>
-        <View style={style.carrousel}>
-          <Image source={plantImage} style={style.image} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+        <View style={style.container}>
+          <IconButton icon={left} disabled={currentPlant == 0} onPress={previousPlant} style={{
+            ...style.arrow, 
+            display: currentPlant > 0 ? "flex" : "none",
+            position: 'absolute',
+            left: "3%",
+            top: "20%",
+          }} />
+          <IconButton icon={right} disabled={currentPlant == plants.length-1} onPress={nextPlant} style={{
+              ...style.arrow, 
+              display: currentPlant < plants.length-1 ? "flex" : "none",
+              position: 'absolute',
+              right: "3%",
+              top: "20%",
+          }} />
+          <Text style={style.title}>{plants[currentPlant].name}</Text>
+          <View style={style.carrousel}>
+            <Hanagotchi emotion={emotion} />
+            {recomendation && <RecomendationDialog 
+              plant={plants[currentPlant]}
+              recomendation={recomendation}
+            />}
+          </View>
+          <PlantInfo
+            plant={plants[currentPlant]}
+            redirectToCreateLog={redirectToCreateLog}
+            onChange={calculateEmotionBasedOnDeviation}
+          />
         </View>
-        <PlantInfo plant={plants[currentPlant]} redirectToCreateLog={redirectToCreateLog} />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
   )
 }
 
@@ -120,9 +146,10 @@ const style = StyleSheet.create({
     backgroundColor: BACKGROUND_COLOR
   },
   carrousel: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
+    alignItems: "center",
+    height: 300,
+    width: 300,
   },
   title: {
     fontSize: 45,
@@ -191,7 +218,7 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22
-  }
+  },
 })
 
 export default HomeScreen
