@@ -27,19 +27,21 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [createSession, deleteSession, loadFromSecureStore] = useSession((state) => [state.createSession, state.deleteSession, state.loadFromSecureStore])
 
     useEffect(() => {
-        /* Configure GoogleSignIn with webClientId */
-        GoogleSignin.configure({
-            webClientId: env.googleWebClientId,
-            offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
-        });
+        const load = async () => {
+            /* Configure GoogleSignIn with webClientId */
+            GoogleSignin.configure({
+                webClientId: env.googleWebClientId,
+                offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
+            });
+            /* Retrieve last session from Secure Store */
+            const lastSession = await loadFromSecureStore();
 
-        /* Retrieve last session from Secure Store */
-        const lastSession = loadFromSecureStore();
+            /* Get if user is logged in */
+            const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
+            validateSignIn();
+        };
 
-        /* Get if user is logged in */
-        const validateSignIn = async () => setLoggedIn(await GoogleSignin.isSignedIn() && lastSession !== null);
-        
-        validateSignIn();
+        load()
     }, [])
 
     const completeSignIn = async () => {
