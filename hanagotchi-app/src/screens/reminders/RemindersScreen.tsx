@@ -1,35 +1,23 @@
-import { SafeAreaView, StyleSheet, View, Text, Pressable, ScrollView } from "react-native"
-import useAuth from "../../hooks/useAuth";
+import { SafeAreaView, StyleSheet, View, ScrollView } from "react-native"
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import type { CompositeScreenProps } from '@react-navigation/native';
-import LoaderButton from "../../components/LoaderButton";
-import { FAB, Icon } from 'react-native-paper';
+import { RootStackParamsList } from "../../navigation/Navigator";
+import { FAB } from 'react-native-paper';
 import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import ReminderDetail from "../../components/reminders/Reminder";
-import ConfirmDeleteDialog from "../../components/ConfirmDeleteDialog";
-import { useEffect, useState } from "react";
+import { useState, useRef } from "react";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
-import { useApiFetch } from "../../hooks/useApiFetch";
 import { Reminder } from "../../models/Reminder";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
-
-import { DrawerDescriptorMap, DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
-import { DrawerNavigationState, ParamListBase } from '@react-navigation/native';
-import {ActivityIndicator, Drawer, List} from "react-native-paper";
-import useMyUser from '../../hooks/useMyUser';
-import AuthorDetails from '../../components/social/posts/AuthorDetails';
-import { useSession } from '../../hooks/useSession';
-import { UserProfile } from '../../models/User';
-import { PostAuthor } from '../../models/Post';
+import {ActivityIndicator} from "react-native-paper";
 import NoContent from "../../components/NoContent";
 import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
+import Dialog, { DialogRef } from "../../components/Dialog";
 type RemindersScreenProps = NativeStackScreenProps<RootStackParamsList, "Reminders">;
 
 const RemindersScreen: React.FC<RemindersScreenProps> = ({ navigation }) => {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const api = useHanagotchiApi();
+    const ref = useRef<DialogRef>(null);
     const {
         isFetching: isFetchingMyReminders, 
         fetchedData: myReminders, 
@@ -53,13 +41,7 @@ const RemindersScreen: React.FC<RemindersScreenProps> = ({ navigation }) => {
         </View>
     )
 
-    function handleDeleteReminder(): void {
-        throw new Error("Function not implemented.");
-    }
-
     return <SafeAreaView style={style.container}>
-                     {isDialogOpen && <ConfirmDeleteDialog onPress={handleDeleteReminder}/>}
-
         <ScrollView style={style.form} contentContainerStyle={style.content}>
             {myReminders.map((reminder, index) => (
                 <View key={index} style={[style.reminderBox, index !== myReminders.length - 1 && style.boxMargin]}>
@@ -70,9 +52,9 @@ const RemindersScreen: React.FC<RemindersScreenProps> = ({ navigation }) => {
                         content={reminder.content}
                         redirectToEditReminder={() =>  navigation.navigate("EditReminder", {reminder: reminder})}
                         openDialog={() => {
-                            console.log('open dialog')
-                            setIsDialogOpen(true)
-                            console.log(isDialogOpen)
+
+                            
+                            ref.current?.showDialog();
                         }}
                     />
                 </View>
