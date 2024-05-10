@@ -17,6 +17,7 @@ import {
     LoginResponseSchema,
     GetUsersProfileResponseSchema,
     GetMyFeedResponseSchema,
+    GetReminders,
 } from "../models/hanagotchiApi";
 
 import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
@@ -25,6 +26,7 @@ import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../m
 import {Plant, PlantSchema } from "../models/Plant";
 import {Measurement, MeasurementSchema} from "../models/Measurement";
 import {AxiosInstance} from "axios";
+import { Reminder } from "../models/Reminder";
 
 export interface HanagotchiApi {
     logIn: (authCode: string) => Promise<LoginResponse>;
@@ -50,6 +52,10 @@ export interface HanagotchiApi {
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
     getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
+    createReminder: (date_time: Date, content: string) => Promise<void>;
+    getReminders: () => Promise<Reminder[]>;
+    deleteReminder: (reminderId: number) => Promise<void>;
+    editReminder: (reminderId: number, date_time: Date, content: string) => Promise<void>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -163,9 +169,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getMyFeed(page: number, size: number) {
         const { data } = await this.axiosInstance.get(`/social/users/me/feed?page=${page}&per_page=${size}`);
-        console.log("getMYFEED", data);
         const result = GetMyFeedResponseSchema.parse(data);
-        console.log("getMYFEED MAMPPED", result);
         return result;
     }
 
@@ -179,5 +183,22 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
         const { data } = await this.axiosInstance.get(`/users`);
         return GetUsersProfileResponseSchema.parse(data).message; 
+    }
+
+    async createReminder(date_time: Date, content: String): Promise<void> {
+        await this.axiosInstance.post(`/users/me/notification/`, {date_time, content});
+    }
+
+    async getReminders(): Promise<Reminder[]> {
+        const { data } = await this.axiosInstance.get(`/users/me/notifications`);
+        return GetReminders.parse(data).message;
+    }
+
+    async deleteReminder(reminderId: number): Promise<void> {
+        await this.axiosInstance.delete(`/users/me/notifications/${reminderId}`);
+    }
+    
+    async editReminder(reminderId: number, date_time: Date, content: string): Promise<void>{
+        await this.axiosInstance.patch(`/users/me/notifications/${reminderId}`, {date_time, content});
     }
 }

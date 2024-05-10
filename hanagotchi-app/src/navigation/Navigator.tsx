@@ -26,6 +26,7 @@ import { LogBox } from 'react-native';
 import RemindersScreen from "../screens/reminders/RemindersScreen";
 import EditReminderScreen from "../screens/reminders/EditReminderScreen";
 import CreateReminderScreen from "../screens/reminders/CreateReminderScreen";
+import { Reminder } from "../models/Reminder";
 
 // TODO: pa la demo che, arreglar este warning
 LogBox.ignoreLogs([
@@ -129,7 +130,7 @@ export type RootStackParamsList = {
     DeletePlant: undefined;
     Reminders: undefined;
     CreateReminder: undefined;
-    EditReminder: {reminderId: number};
+    EditReminder: {reminder: Reminder};
 }
 
 const Navigator: React.FC = () => {

@@ -12,18 +12,17 @@ type EditReminderProps = {
     content_received?: string;
     datetime_received?: Date,
     onPressCompleteEdit: ((() => void) & Function);
-    // setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+    setContent: ((content: string) => void) & Function;
+    setDateTime: ((date: Date) => void) & Function;
 }
 
-const EditReminder: React.FC<EditReminderProps> = ({ name_button, content_received, datetime_received, onPressCompleteEdit }) => {
+const EditReminder: React.FC<EditReminderProps> = ({ name_button, content_received, datetime_received, onPressCompleteEdit, setContent, setDateTime }) => {
     const [requeriedFieldMessage, setRequeriedFieldMessage] = React.useState<string | null>(null);
-    const [content, setText] = React.useState<string | undefined>(content_received);
-    const [datetime, setDatetime] = React.useState<Date | undefined>(datetime_received);
 
     const handleOnComplete = async () => {
-        if (!content) {
+        if (!content_received && content_received === '') {
             setRequeriedFieldMessage('El mensaje es requerido');
-        } else if (!content) {
+        } else if (!datetime_received) {
             setRequeriedFieldMessage('La fecha es requerida');
         }else {
             setRequeriedFieldMessage(null);
@@ -32,13 +31,13 @@ const EditReminder: React.FC<EditReminderProps> = ({ name_button, content_receiv
 
     }
     const handleBirthDay = async (date: Date) => {
-        setDatetime(new Date(date.toISOString().split('T')[0]));
+        setDateTime(new Date(date.toISOString().split('T')[0]));
     }
 
     return (
         <>
-            <TextInput label={`MENSAJE (*)`} value={content ?? ''} onChangeText={setText} />
-            <DateButton title="FECHA (*)" userDate={datetime ?? new Date()} setDate={handleBirthDay} mode='datetime' />
+            <TextInput label={`MENSAJE (*)`} value={content_received ?? ''} onChangeText={setContent} />
+            <DateButton title="FECHA (*)" userDate={datetime_received ?? new Date()} setDate={handleBirthDay} mode='datetime' />
             
             {requeriedFieldMessage ? <Text style={styles.requiredField}>{requeriedFieldMessage}</Text> : null}
 

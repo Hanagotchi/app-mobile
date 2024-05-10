@@ -4,12 +4,18 @@ import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import React, {useEffect, useState} from "react";
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import EditReminder from "../../components/reminders/EditReminder";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 type CreateReminderScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateReminder">
 
 const CreateReminderScreen: React.FC<CreateReminderScreenProps> = ({navigation}) => {
-    const handleComplete = () => {
-        console.log("Edit reminder completed");
-        navigation.navigate("Reminders");
+    
+    const api = useHanagotchiApi();
+    const[content, setContent] = useState("");
+    const[dateTime, setDateTime] = useState(new Date());
+
+    const handleComplete = async () => {
+        await api.createReminder(dateTime, content);
+        navigation.goBack();
     }
 
     return (
@@ -17,8 +23,10 @@ const CreateReminderScreen: React.FC<CreateReminderScreenProps> = ({navigation})
             <View style={style.editContainer}>
                 <EditReminder
                     name_button='COMPLETAR'
-                    content_received=""
-                    datetime_received={new Date()}
+                    content_received={content}
+                    datetime_received={dateTime}
+                    setContent={setContent}
+                    setDateTime={setDateTime}
                     onPressCompleteEdit={handleComplete}
                 />
             </View>

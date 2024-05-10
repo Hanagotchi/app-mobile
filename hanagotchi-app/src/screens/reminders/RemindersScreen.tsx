@@ -6,59 +6,52 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import LoaderButton from "../../components/LoaderButton";
 import { FAB, Icon } from 'react-native-paper';
-import { BACKGROUND_COLOR, GREEN } from "../../themes/globalThemes";
-import ReminderBox from "../../components/reminders/Reminder";
+import { BACKGROUND_COLOR, BROWN_DARK, GREEN } from "../../themes/globalThemes";
+import ReminderDetail from "../../components/reminders/Reminder";
 import ConfirmDeleteDialog from "../../components/ConfirmDeleteDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import { useApiFetch } from "../../hooks/useApiFetch";
+import { Reminder } from "../../models/Reminder";
+import { DrawerContentScrollView } from "@react-navigation/drawer";
 
-
+import { DrawerDescriptorMap, DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
+import { DrawerNavigationState, ParamListBase } from '@react-navigation/native';
+import {ActivityIndicator, Drawer, List} from "react-native-paper";
+import useMyUser from '../../hooks/useMyUser';
+import AuthorDetails from '../../components/social/posts/AuthorDetails';
+import { useSession } from '../../hooks/useSession';
+import { UserProfile } from '../../models/User';
+import { PostAuthor } from '../../models/Post';
+import NoContent from "../../components/NoContent";
+import { useFocusApiFetch } from "../../hooks/useFocusApiFetch";
 type RemindersScreenProps = NativeStackScreenProps<RootStackParamsList, "Reminders">;
 
 const RemindersScreen: React.FC<RemindersScreenProps> = ({ navigation }) => {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+    const api = useHanagotchiApi();
+    const {
+        isFetching: isFetchingMyReminders, 
+        fetchedData: myReminders, 
+        error
+    } = useFocusApiFetch<Reminder[]>(() => api.getReminders(), []);
 
-    // lista mockeada de recordatorios
-    const reminders = [
-        {
-            id: 1,
-            datetime: "2021-10-10T10:00:00",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        },
-        {
-            id: 2,
-            datetime: "2021-10-10T10:00:00",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        },
-        {
-            id: 3,
-            datetime: "2021-10-10T10:00:00",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        },
-        {
-            id: 4,
-            datetime: "2021-10-10T10:00:00",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        },
-        {
-            id: 5,
-            datetime: "2021-10-10T10:00:00",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        },
-        {
-            id: 6,
-            datetime: "2021-10-10T10:00:00",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        },
-        {
-            id: 7,
-            datetime: "2021-10-10T10:00:00",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        },
-    ]
 
-    function redirectToEditReminder(reminderId: number) {
-        navigation.navigate("EditReminder", {reminderId})
-      }
+    if (error) {
+        throw error
+    };
+
+    if (isFetchingMyReminders) {
+        return <DrawerContentScrollView>
+            <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
+        </DrawerContentScrollView>
+    }
+
+    if (!myReminders) return (
+        <View style={{margin: 100}}>
+          <NoContent/>
+        </View>
+    )
 
     function handleDeleteReminder(): void {
         throw new Error("Function not implemented.");
@@ -68,14 +61,14 @@ const RemindersScreen: React.FC<RemindersScreenProps> = ({ navigation }) => {
                      {isDialogOpen && <ConfirmDeleteDialog onPress={handleDeleteReminder}/>}
 
         <ScrollView style={style.form} contentContainerStyle={style.content}>
-            {reminders.map((reminder, index) => (
-                <View key={index} style={[style.reminderBox, index !== reminders.length - 1 && style.boxMargin]}>
+            {myReminders.map((reminder, index) => (
+                <View key={index} style={[style.reminderBox, index !== myReminders.length - 1 && style.boxMargin]}>
 
-                    <ReminderBox
+                    <ReminderDetail
                         id={reminder.id}
-                        datetime={reminder.datetime}
+                        date_time={reminder.date_time}
                         content={reminder.content}
-                        redirectToEditReminder={redirectToEditReminder}
+                        redirectToEditReminder={() =>  navigation.navigate("EditReminder", {reminder: reminder})}
                         openDialog={() => {
                             console.log('open dialog')
                             setIsDialogOpen(true)
