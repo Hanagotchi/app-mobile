@@ -54,15 +54,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     throw error;
   }
 
-  function nextPlant() {
-    //setCurrentPlant(carouselRef.current?.currentIndex + 1);
-    carouselRef.current?.snapToNext();
-  }
-
-  function previousPlant() {
-    //setCurrentPlant(carouselRef.current?.currentIndex - 1);
-    carouselRef.current?.snapToPrev();
-  }
+  const nextPlant = () => carouselRef.current?.snapToNext();
+  const previousPlant = () => carouselRef.current?.snapToPrev();
+  
 
 
   const requestUserPermission = async () => {
