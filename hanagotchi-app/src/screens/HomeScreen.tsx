@@ -53,21 +53,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     if (currentPlant > 0) setCurrentPlant(currentPlant - 1);
   }
 
+  function redirectToCreateLog(plantId: number) {
+    navigation.navigate("CreateLog", {plantId})
+  }
+  
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
     const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
     if (enabled) {
       messaging().getToken().then(async token => {
+        console.log(token);
         await api.patchUser({ device_token: token });
       })
     }
     return enabled
-  }
-
-  function redirectToCreateLog(plantId: number) {
-    navigation.navigate("CreateLog", { plantId })
-
   }
 
   if (plants.length == 0 && !isFetching) return (

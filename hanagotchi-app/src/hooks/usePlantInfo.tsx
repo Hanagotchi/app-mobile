@@ -30,7 +30,6 @@ export const usePlantInfo = (plant: Plant) => {
     useEffect(() => {
         const fetchInfo = async () => {
             setIsFetching(true);
-
             try {
                 const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
                 console.log(devicePlant);
