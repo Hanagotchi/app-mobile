@@ -10,7 +10,7 @@ type Session = {
     session: SessionData | null,
     createSession: (newUserId: number, newAccessToken: string) => Promise<void>;
     deleteSession: () => Promise<void>;
-    loadFromSecureStore: () => SessionData | null;
+    loadFromSecureStore: () => Promise<SessionData | null>;
 }
 
 export const useSession = create<Session>()((set) => ({
@@ -26,8 +26,8 @@ export const useSession = create<Session>()((set) => ({
         console.log("[DELETE_SESSION] ");
         set((_) => ({session: null}));
     },
-    loadFromSecureStore: () => {
-        const rawLastSession = SecureStore.getItem("session");
+    loadFromSecureStore: async () => {
+        const rawLastSession = await SecureStore.getItemAsync("session");
         const lastSession: SessionData | null = rawLastSession ? JSON.parse(rawLastSession) : null;
         console.log("[CHECKED_STORAGE] ", lastSession);
         set((_) => ({session: lastSession}));
