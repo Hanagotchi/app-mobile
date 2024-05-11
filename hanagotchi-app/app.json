@@ -37,7 +37,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo1.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -53,7 +53,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo1.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.fiuba.hanagotchiapp",
@@ -62,9 +62,9 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "config" : {
-       "googleMaps" : {
-          "apiKey" : "AIzaSyA414X9kRKkWWtoPnmTXhw2grv6nQbHmdo"
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyA414X9kRKkWWtoPnmTXhw2grv6nQbHmdo"
         }
       }
     },

@@ -8,6 +8,8 @@ import sad from "../../assets/hanagotchis/sad.png";
 import uncomfortable from "../../assets/hanagotchis/uncomfortable.png";
 import annoyed from "../../assets/hanagotchis/annoyed.png";
 import drowned from "../../assets/hanagotchis/drowned.png";
+import sleepy from "../../assets/hanagotchis/sleepy.png";
+import laughing from "../../assets/hanagotchis/laughing.png";
 import backgroundBlob from "../../assets/hanagotchis/background_1.png";
 import { useImperativeHandle, forwardRef } from "react";
 import { Deviation } from "../../models/Measurement";
@@ -24,7 +26,8 @@ const sources = {
     relaxed: relaxed, 
     sad: sad, 
     uncomfortable: uncomfortable,
-    laughing: happy,
+    laughing: laughing,
+    sleepy: sleepy,
 }
 
 export type HanagotchiRef = {

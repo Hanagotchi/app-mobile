@@ -56,8 +56,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const nextPlant = () => carouselRef.current?.snapToNext();
   const previousPlant = () => carouselRef.current?.snapToPrev();
-  
-
 
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
