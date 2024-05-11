@@ -28,7 +28,6 @@ type HomeScreenProps = CompositeScreenProps<
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const api = useHanagotchiApi();
   const userId = useSession((state) => state.session!.userId);
-  let [currentPlant, setCurrentPlant] = useState(1);
   const carouselRef = useRef<Carousel<Plant>>(null);
 
   const { isFetching, fetchedData: plants, error } = useFocusApiFetch(
@@ -48,7 +47,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     requestUserPermission();
-  }, [currentPlant]);
+  }, []);
 
 
   if (!isFetching && error) {
@@ -96,17 +95,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
       <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <View style={style.container}>
-          <IconButton icon={left} disabled={currentPlant == 0} onPress={previousPlant} style={{
-            ...style.arrow, 
-            display: currentPlant > 0 ? "flex" : "none",
+          <IconButton icon={left} onPress={previousPlant} style={{
+            ...style.arrow,
             position: 'absolute',
             left: "3%",
             top: "20%",
             zIndex: 3,
           }} />
-          <IconButton icon={right} disabled={currentPlant == plants.length-1} onPress={nextPlant} style={{
-              ...style.arrow, 
-              display: currentPlant < plants.length-1 ? "flex" : "none",
+          <IconButton icon={right} onPress={nextPlant} style={{
+              ...style.arrow,
               position: 'absolute',
               right: "3%",
               top: "20%",
