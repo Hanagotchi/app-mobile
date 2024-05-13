@@ -4,7 +4,7 @@ import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
 
 import { DeviationEnum } from "../../models/Measurement";
-import {ActivityIndicator, Dialog, FAB, Icon, Portal, Text} from "react-native-paper";
+import {ActivityIndicator, Dialog, FAB, Icon, IconButton, Portal, Text} from "react-native-paper";
 
 import { Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
@@ -12,7 +12,7 @@ import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
 import { useEffect, useState } from "react";
-import { BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
+import { BEIGE_DARK, BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
 
 import { usePlantInfo } from "../../hooks/usePlantInfo";
 import { InfoToShow } from "../../models/InfoToShow";
@@ -38,6 +38,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
       plantInfo,
       error: plantInfoError,
       device,
+      refresh
     } = usePlantInfo(plant);
 
     if (plantTypeError) throw plantTypeError;
@@ -120,6 +121,16 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                   width: 52,
               }}/>
             }
+            <IconButton 
+              icon={"restore"} 
+              iconColor={BROWN_LIGHT}
+              onPress={refresh}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+              }}
+            />
         </View>
         <Portal>
           <Dialog style={style.modalView} visible={plantTypeModalOpen} onDismiss={() => setPlantTypeModalOpen(false)}>

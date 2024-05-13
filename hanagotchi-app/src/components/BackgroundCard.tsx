@@ -4,7 +4,7 @@ import { DimensionValue, StyleProp, StyleSheet, TextStyle, ViewStyle } from "rea
 import { BEIGE, BROWN_LIGHT } from "../themes/globalThemes";
 
 type BackgroundCardProps = PropsWithChildren & {
-    title?: string | undefined;
+    title?: string;
     width?: DimensionValue;
     style_content?: StyleProp<ViewStyle>;
     style_title?: StyleProp<TextStyle>;

@@ -10,6 +10,7 @@ import { GetPlantsResponse } from "../../models/hanagotchiApi";
 import { BROWN_DARK } from "../../themes/globalThemes";
 import SelectBox, { SelectOption } from "../SelectBox";
 import { useSession } from "../../hooks/useSession";
+import AffectiveSlider from "../AffectiveSlider";
 
 type EditLogProps = {
     initValues?: LogData;
