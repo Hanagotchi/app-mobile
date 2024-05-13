@@ -13,6 +13,7 @@ import { FirebaseProvider } from "./src/contexts/FirebaseContext";
 import { useSession } from "./src/hooks/useSession";
 import { OpenWeatherApiProvider } from "./src/contexts/OpenWeatherServiceContext";
 import { useEffect } from "react";
+import "./src/ignoreWarnings"
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 4000);

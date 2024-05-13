@@ -14,6 +14,9 @@ export const usePlantInfo = (plant: Plant) => {
     const {myUser} = useMyUser();
     const hanagotchiApi = useHanagotchiApi();
     const openWeatherApi = useOpenWeatherApi();
+    
+    const [tick, setTick] = useState<boolean>(false);
+    const refresh = () => setTick(t => !t);
 
     useEffect(() => {
         const fetchInfo = async () => {
@@ -54,12 +57,13 @@ export const usePlantInfo = (plant: Plant) => {
             setIsFetching(false);
         }
         fetchInfo();
-    }, [plant]);
+    }, [plant, myUser, tick]);
 
     return {
         plantInfo,
         error,
         isFetching,
-        device
+        device,
+        refresh,
     }
 }

@@ -73,6 +73,7 @@ const LogsScreen: React.FC<LogsScreenProps> = ({navigation}) => {
                 onPress: dialogRef.current?.hideDialog
             }}
             onDismiss={dialogRef.current?.hideDialog}
+            children={undefined}
         />
         <Text style={style.title}>Mis Bitácoras</Text>
         <View style={style.filters}>
