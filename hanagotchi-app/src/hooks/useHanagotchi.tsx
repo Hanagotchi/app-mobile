@@ -60,6 +60,14 @@ const useHanagotchi = (plant: Plant, initialEmotion: Emotion) => {
             return;
         }
 
+        if (light === "higher" || temperature === "higher") {
+            updateEmotion("overwhelmed");
+            return;
+        } else if (light === "lower" || temperature === "lower") {
+            updateEmotion("displeased");
+            return;
+        }
+
         if (watering === "higher") {
             updateEmotion("drowned");
             return;
