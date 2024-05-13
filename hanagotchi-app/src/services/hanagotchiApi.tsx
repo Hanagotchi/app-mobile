@@ -20,7 +20,7 @@ import {
     GetReminders,
 } from "../models/hanagotchiApi";
 
-import { UpdateUserSchema, User, UserProfile, UserSchema } from "../models/User";
+import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
@@ -34,16 +34,16 @@ export interface HanagotchiApi {
     getPlantType: (name: string) => Promise<GetPlantTypeResponse>;
     getUser: (userId: number) => Promise<User>;
     getLastMeasurement: (plantId: number) => Promise<Measurement | null>;
-    patchUser: (user: User) => Promise<void>;
+    patchUser: (user: UpdateUser) => Promise<void>;
     getPlantTypes: () => Promise<GetPlantTypesResponse>;
     createPlant: (id_user: number, name: string, scientific_name: string) => Promise<Plant>;
     deletePlant: (plantId: number) => Promise<void>;
-    getLogsByUser: (userId: number, params: {year: number, month?: number}) => Promise<GetLogsByUserResponse>;
+    getLogsByUser: (userId: number, params: { year: number, month?: number }) => Promise<GetLogsByUserResponse>;
     getLogById: (logId: number) => Promise<GetLogByIdResponse>;
-    getPlants: (params: {id_user?: number, limit?: number}) => Promise<GetPlantsResponse>;
+    getPlants: (params: { id_user?: number, limit?: number }) => Promise<GetPlantsResponse>;
     createLog: (log: CreateLog) => Promise<Log>;
     editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
-    addPhotoToLog: (logId: number, body: {photo_link: string}) => Promise<Log>;
+    addPhotoToLog: (logId: number, body: { photo_link: string }) => Promise<Log>;
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
     createPost: (post: PostData) => Promise<Post>;
     deletePost: (postId: string) => Promise<void>;
@@ -67,15 +67,15 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async logIn(authCode: string): Promise<LoginResponse> {
         const { data, headers } = await this.axiosInstance.post("/login", { auth_code: authCode });
-        return LoginResponseSchema.parse({data, headers});
+        return LoginResponseSchema.parse({ data, headers });
     }
 
     async deletePlant(plantId: number): Promise<void> {
         await this.axiosInstance.delete(`/plants/${plantId}`)
     }
 
-    async getPlants(params: {id_user?: number, limit?: number}): Promise<GetPlantsResponse> {
-        const { data } = await this.axiosInstance.get(`/plants`, {params});
+    async getPlants(params: { id_user?: number, limit?: number }): Promise<GetPlantsResponse> {
+        const { data } = await this.axiosInstance.get(`/plants`, { params });
         return GetPlantsResponseSchema.parse(data)
     }
 
@@ -117,17 +117,17 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return PlantSchema.parse(data);
     }
 
-    async patchUser(user: User): Promise<void> {
+    async patchUser(user: UpdateUser): Promise<void> {
         const updateUser = UpdateUserSchema.parse(user);
         await this.axiosInstance.patch(`/users/me`, updateUser);
     }
 
     async addSensor(deviceId: string, plantId: number): Promise<void> {
-        await this.axiosInstance.post(`/measurements/device-plant`, {id_device: deviceId, id_plant: plantId});
+        await this.axiosInstance.post(`/measurements/device-plant`, { id_device: deviceId, id_plant: plantId });
     }
 
-    async getLogsByUser(userId: number, params: {year: number, month?: number} ): Promise<GetLogsByUserResponse> {
-        const { data } = await this.axiosInstance.get(`/logs/user/${userId}`, {params});
+    async getLogsByUser(userId: number, params: { year: number, month?: number }): Promise<GetLogsByUserResponse> {
+        const { data } = await this.axiosInstance.get(`/logs/user/${userId}`, { params });
         return GetLogsByUserResponseSchema.parse(data);
     }
 
@@ -146,7 +146,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return LogSchema.parse(data);
     }
 
-    async addPhotoToLog(logId: number, body: {photo_link: string}): Promise<Log> {
+    async addPhotoToLog(logId: number, body: { photo_link: string }): Promise<Log> {
         const { data } = await this.axiosInstance.post(`/logs/${logId}/photos`, body);
         return LogSchema.parse(data);
     }
@@ -173,16 +173,16 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return result;
     }
 
-    async getPlantTypes(): Promise<GetPlantTypesResponse>{
+    async getPlantTypes(): Promise<GetPlantTypesResponse> {
         const { data } = await this.axiosInstance.get(`/plant-type`);
         return GetPlantTypesResponseSchema.parse(data);
     }
 
-    async getUsersProfiles(params: {follower?: number, q?: string}): Promise<UserProfile[]> {
+    async getUsersProfiles(params: { follower?: number, q?: string }): Promise<UserProfile[]> {
         // TODO: Use this endpoint when it is created
         /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
         const { data } = await this.axiosInstance.get(`/users`);
-        return GetUsersProfileResponseSchema.parse(data).message; 
+        return GetUsersProfileResponseSchema.parse(data).message;
     }
 
     async createReminder(date_time: Date, content: String): Promise<void> {
