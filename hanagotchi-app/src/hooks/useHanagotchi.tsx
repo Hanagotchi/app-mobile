@@ -40,6 +40,7 @@ const useHanagotchi = (plant: Plant, initialEmotion: Emotion) => {
         }
       
         const {
+            humidity,
             temperature,
             light,
             watering
@@ -66,6 +67,10 @@ const useHanagotchi = (plant: Plant, initialEmotion: Emotion) => {
         } else if (light === "lower" || temperature === "lower") {
             updateEmotion("displeased");
             return;
+        }
+
+        if (humidity === "lower") {
+            updateEmotion("annoyed");
         }
 
         if (watering === "higher") {
