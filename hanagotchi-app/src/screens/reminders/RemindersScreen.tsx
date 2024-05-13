@@ -30,9 +30,11 @@ const RemindersScreen: React.FC<RemindersScreenProps> = ({ navigation }) => {
     };
 
     if (isFetchingMyReminders) {
-        return <DrawerContentScrollView>
-            <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{ justifyContent: "center", flexGrow: 1 }} />
-        </DrawerContentScrollView>
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+                <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{ justifyContent: "center", flexGrow: 1 }} />
+            </SafeAreaView>
+        )
     }
 
     if (!myReminders) return (
