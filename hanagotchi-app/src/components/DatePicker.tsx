@@ -7,12 +7,15 @@ import BackgroundCard from './BackgroundCard';
 import { Entypo } from '@expo/vector-icons';
 
 export const ARG_TIMEZONE_OFFSET = 60 * 1000;
+export const ARG_TIMEZONE_OFFSET_IN_MINUTES = -3 * 60;
 
 type DateButtonProps = {
     title: string;
     userDate: Date | null;
     setDate: (date: Date) => void;
     mode?: 'date' | 'time' | 'datetime';
+    minDate?: Date;
+    minuteInterval?: 1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30;
 };
 
 const CalendarIcon = (props: { color: string; size: number }) => (
@@ -23,16 +26,16 @@ const ArrowIcon = (props: { color: string; size: number }) => (
     <Entypo name="chevron-small-down" size={props.size} color={props.color} />
 );
 
-const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate, mode = 'date' }) => {
-    const [open, setOpen] = useState(false);
-    const [selectedDate, setselectedDate] = useState<Date>(userDate || new Date());
 
+const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate, mode = 'date', minDate = undefined, minuteInterval = undefined}) => {
+    const [open, setOpen] = useState(false);
+    const [selectedDate, setselectedDate] = useState<Date>(userDate ?? new Date());
+    
     const handlePress = () => {
         setOpen(true);
     };
 
     const handleDateConfirm = (newDate: Date) => {
-        newDate.setTime(newDate.getTime() + newDate.getTimezoneOffset() * ARG_TIMEZONE_OFFSET);
         setOpen(false);
         setDate(newDate);
         setselectedDate(newDate);
@@ -42,11 +45,12 @@ const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate, mode 
         setOpen(false);
     };
 
-    const formatDate = (date: Date) => {
-        // return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
+    const formatDate = (datetime: Date) => {
+        let date = new Date(datetime);
         if (mode === 'date') {
+            date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET);
             return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
-        }else{
+        } else {
             return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
         }
     };
@@ -64,13 +68,16 @@ const DateButton: React.FC<DateButtonProps> = ({ title, userDate, setDate, mode 
                 <ArrowIcon color={BROWN_DARK} size={25} />
             </TouchableOpacity>
             <DatePickerNative.default
-                title="Selecciona la fecha"
+                title="Selecciona una fecha"
                 modal
                 open={open}
                 date={selectedDate}
                 onConfirm={handleDateConfirm}
                 onCancel={handleDateCancel}
                 mode={mode}
+                minimumDate={minDate}
+                minuteInterval={minuteInterval}
+                timeZoneOffsetInMinutes={mode === 'date' ? 0 : ARG_TIMEZONE_OFFSET_IN_MINUTES}
             />
         </BackgroundCard>
     );

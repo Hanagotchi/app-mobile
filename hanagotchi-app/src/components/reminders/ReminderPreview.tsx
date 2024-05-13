@@ -8,68 +8,82 @@ import edit from "../../assets/edit.png";
 import { useRef, useState } from "react";
 import ConfirmDeleteDialog from "../ConfirmDeleteDialog";
 import { Reminder } from "../../models/Reminder";
-import Dialog, { DialogRef } from "../../components/Dialog";
+import Dialog, { DialogRef } from "../Dialog";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 
 
-type ReminderDetailsProps = {
+type ReminderPreviewProps = {
     id: number,
     date_time: Date;
     content: string;
     redirectToEditReminder: ((reminder: Reminder) => void) & Function;
-    openDialog: () => void;
+    refreshScreenAfterDelete: () => void;
 }
-const ReminderDetail: React.FC<ReminderDetailsProps> = ({ id, date_time, content, redirectToEditReminder, openDialog }) => {
+const ReminderPreview: React.FC<ReminderPreviewProps> = ({ id, date_time, content, redirectToEditReminder, refreshScreenAfterDelete }) => {
     const ref = useRef<DialogRef>(null);
 
     const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
+        return new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date);
     };
     const formatHour = (date: Date) => {
-        return new Intl.DateTimeFormat('es-AR', { hour: '2-digit', minute: '2-digit' }).format(date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET));
+        return new Intl.DateTimeFormat('es-AR', { hour: '2-digit', minute: '2-digit' }).format(date);
     }
 
-    const handleDeleteReminder = () => {
-        console.log('delete reminder with id: ', id);
-    }
+    const api = useHanagotchiApi();
 
+    const submitDelete = async (reminderId: number) => {
+        await api.deleteReminder(reminderId);
+        ref.current?.hideDialog();
+        refreshScreenAfterDelete();
+    }
     return (
         <>
             <Dialog
                 ref={ref}
-                title="¿Desea eliminar el recordatorio?"
+                title={"¿Desear eliminar el recordatorio?"}
                 content="Esta acción es irreversible"
                 primaryButtonProps={{
-                    onPress: (() => { console.log("Delete reminder with id: ", id) })
+                    onPress: (async () => {
+                        await submitDelete(id);
+                    })
                 }}
                 onDismiss={() => ref.current?.hideDialog()}
+                secondaryButtonProps={{
+                    onPress: () => {
+                        ref.current?.hideDialog()
+                    },
+                }}
             />
             <BackgroundCard style_content={styles.content_card}>
+
                 <View style={styles.icons}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={styles.datetime}>{formatHour(new Date(date_time))}</Text>
+                        <Text style={styles.datetime}>{formatHour(date_time)}</Text>
                         <Text style={styles.datetime}> - </Text>
-                        <Text style={styles.datetime}>{formatDate(new Date(date_time))}</Text>
+                        <Text style={styles.datetime}>{formatDate(date_time)}</Text>
                     </View>
                     <IconButton icon={edit} style={styles.icon} onPress={() => redirectToEditReminder({ id, date_time, content })}></IconButton>
-                    <IconButton icon={deleteReminder} style={styles.icon} onPress={() =>
-
-                        ref.current?.showDialog()}></IconButton>
+                    <IconButton icon={deleteReminder} style={styles.icon} onPress={() => {
+                        ref.current?.showDialog();
+                    }}></IconButton>
 
                 </View>
-
                 <View style={styles.content}>
                     <Text>{content}</Text>
                 </View>
             </BackgroundCard>
         </>
 
+
     )
 };
 
 const styles = StyleSheet.create({
     content_card: {
-        padding: 50,
+        padding: 15,
         minWidth: 300,
+        justifyContent: 'space-between',
+        maxWidth: 300,
     },
     content: {
         flexDirection: 'column',
@@ -80,11 +94,9 @@ const styles = StyleSheet.create({
         color: BROWN_LIGHT
     },
     icons: {
-        padding: 10,
         flexDirection: 'row',
-        position: 'absolute',
-        top: 5,
-        right: 5,
+        position: 'relative',
+        justifyContent: 'space-between',
 
     },
     icon: {
@@ -93,4 +105,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ReminderDetail;
+export default ReminderPreview;

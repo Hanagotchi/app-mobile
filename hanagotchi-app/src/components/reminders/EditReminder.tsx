@@ -2,53 +2,57 @@ import { StyleSheet } from 'react-native';
 import LoaderButton from "./../LoaderButton";
 import React from "react";
 import TextInput from "./../TextInput";
-import DateButton from "./../DatePicker";
-import { Region } from 'react-native-maps';
-import * as ImagePicker from 'expo-image-picker';
-import { Text } from 'react-native-paper';
+import DateButton, { ARG_TIMEZONE_OFFSET } from "./../DatePicker";
+import { ReminderData } from '../../models/Reminder';
 
 type EditReminderProps = {
-    name_button: string;
-    content_received?: string;
-    datetime_received?: Date,
-    onPressCompleteEdit: ((() => void) & Function);
-    setContent: ((content: string) => void) & Function;
-    setDateTime: ((date: Date) => void) & Function;
+    initValues?: ReminderData;
+    onSubmit: ((data: ReminderData) => void);
+    buttonLabel: string;
+
 }
 
-const EditReminder: React.FC<EditReminderProps> = ({ name_button, content_received, datetime_received, onPressCompleteEdit, setContent, setDateTime }) => {
-    const [requeriedFieldMessage, setRequeriedFieldMessage] = React.useState<string | null>(null);
-
-    const handleOnComplete = async () => {
-        if (!content_received && content_received === '') {
-            setRequeriedFieldMessage('El mensaje es requerido');
-        } else if (!datetime_received) {
-            setRequeriedFieldMessage('La fecha es requerida');
-        }else {
-            setRequeriedFieldMessage(null);
-            onPressCompleteEdit();
-        }
-
+const newDateMinuteMultipleOf5 = () => {
+    var now = new Date();
+  
+    var minutes = now.getMinutes();
+    var minutesToAdd = 5 - (minutes % 5);
+    
+    if (minutesToAdd === 5) {
+      minutesToAdd = 5;
     }
-    const handleBirthDay = async (date: Date) => {
-        setDateTime(new Date(date.toISOString().split('T')[0]));
-    }
+  
+    now.setMinutes(minutes + minutesToAdd);
+  
+    now.setSeconds(0);
+    now.setMilliseconds(0);
+    return now;
+};
+  
+  
+const getDefaultData = () => ({
+    content: "",
+    date_time: newDateMinuteMultipleOf5()
+});
+
+const EditReminder: React.FC<EditReminderProps> = ({initValues, onSubmit, buttonLabel}) => {
+    const [data, setData] = React.useState<ReminderData>(initValues ?? getDefaultData());
+
+    const onChangeContent = (content: string) => setData((oldValues) => ({...oldValues, content}));
+    const onChangeDateTime = (date_time: Date) => setData((oldValues) => ({...oldValues, date_time}))
 
     return (
         <>
-            <TextInput label={`MENSAJE (*)`} value={content_received ?? ''} onChangeText={setContent} />
-            <DateButton title="FECHA (*)" userDate={datetime_received ?? new Date()} setDate={handleBirthDay} mode='datetime' />
-            
-            {requeriedFieldMessage ? <Text style={styles.requiredField}>{requeriedFieldMessage}</Text> : null}
-
-
+            <TextInput label={`MENSAJE (*)`} value={data.content} onChangeText={onChangeContent} />
+            <DateButton title="FECHA (*)" userDate={data.date_time} setDate={onChangeDateTime} mode='datetime' minuteInterval={5} minDate={newDateMinuteMultipleOf5()} />
             <LoaderButton
                 mode="contained"
                 uppercase style={styles.button}
-                onPress={handleOnComplete}
                 labelStyle={{ fontSize: 17 }}
+                onPress={() => onSubmit(data)}
+                disabled={data.content.length === 0}
             >
-                {name_button}
+                {buttonLabel}
             </LoaderButton>
         </>
     )

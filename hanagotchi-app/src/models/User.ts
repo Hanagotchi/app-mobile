@@ -4,8 +4,8 @@ import { ARG_TIMEZONE_OFFSET } from "../components/DatePicker";
 
 const adjustBirthdateFormat = (value: string | Date) => {
     let date = new Date(value);
-    date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET);
-    return new Date(date.toJSON().split("T")[0]);
+    // date.setTime(date.getTime() + date.getTimezoneOffset() * ARG_TIMEZONE_OFFSET);
+    return date;
 };
 
 export const UpdateUserSchema = z.object({
@@ -26,7 +26,7 @@ export const UserSchema = z.object({
     name: z.string().nullable(),
     gender: z.string().nullable(),
     photo: z.string().nullable(),
-    birthdate: z.coerce.date().transform(adjustBirthdateFormat).nullable(),
+    birthdate: z.coerce.date().nullable(),
     location: LocationScheme.nullable(),
     nickname: z.string().nullable(),
     biography: z.string().nullable(),

@@ -1,20 +1,19 @@
-import {ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, View} from "react-native";
-import {BROWN_DARK, theme} from "../../themes/globalThemes";
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import React, {useEffect, useState} from "react";
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { BROWN_DARK, theme } from "../../themes/globalThemes";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useEffect, useState } from "react";
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import EditReminder from "../../components/reminders/EditReminder";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import { ReminderData } from "../../models/Reminder";
 type CreateReminderScreenProps = NativeStackScreenProps<RootStackParamsList, "CreateReminder">
 
-const CreateReminderScreen: React.FC<CreateReminderScreenProps> = ({navigation}) => {
-    
+const CreateReminderScreen: React.FC<CreateReminderScreenProps> = ({ navigation }) => {
     const api = useHanagotchiApi();
-    const[content, setContent] = useState("");
-    const[dateTime, setDateTime] = useState(new Date());
 
-    const handleComplete = async () => {
-        await api.createReminder(dateTime, content);
+    const submit = async (data: ReminderData) => {
+        console.log(data);
+        await api.createReminder(data.date_time, data.content);
         navigation.goBack();
     }
 
@@ -22,12 +21,8 @@ const CreateReminderScreen: React.FC<CreateReminderScreenProps> = ({navigation})
         <SafeAreaView style={style.safeArea}>
             <View style={style.editContainer}>
                 <EditReminder
-                    name_button='COMPLETAR'
-                    content_received={content}
-                    datetime_received={dateTime}
-                    setContent={setContent}
-                    setDateTime={setDateTime}
-                    onPressCompleteEdit={handleComplete}
+                    onSubmit={submit}
+                    buttonLabel="Crear"
                 />
             </View>
         </SafeAreaView>
@@ -69,11 +64,11 @@ const style = StyleSheet.create({
         gap: 10
     },
     title: {
-      fontSize: 25,
-      fontFamily: "IBMPlexMono_Italic",
-      textAlign: 'center',
-      fontWeight: "bold"
+        fontSize: 25,
+        fontFamily: "IBMPlexMono_Italic",
+        textAlign: 'center',
+        fontWeight: "bold"
     }
-  })
-  
+})
+
 export default CreateReminderScreen;

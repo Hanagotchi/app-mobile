@@ -5,7 +5,6 @@ import {DevicePlantSchema} from "./DevicePlant";
 import {PlantSchema} from "./Plant";
 import {PlantTypeSchema} from "./PlantType";
 import { ReducedPost, ReducedPostSchema } from "./Post";
-import Reminder from "../components/reminders/Reminder";
 import { ReminderSchema } from "./Reminder";
 
 export const LoginResponseSchema = z.object({

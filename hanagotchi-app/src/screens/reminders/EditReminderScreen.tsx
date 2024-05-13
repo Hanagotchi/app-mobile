@@ -1,23 +1,26 @@
-import {ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, View} from "react-native";
-import {BROWN_DARK, theme} from "../../themes/globalThemes";
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import React, {useEffect, useState} from "react";
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { BROWN_DARK, theme } from "../../themes/globalThemes";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useEffect, useState } from "react";
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import EditReminder from "../../components/reminders/EditReminder";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import { ReminderData } from "../../models/Reminder";
 
 
 type EditReminderScreenProps = NativeStackScreenProps<RootStackParamsList, "EditReminder">
 
-const EditReminderScreen: React.FC<EditReminderScreenProps> = ({navigation, route}) => {
+const EditReminderScreen: React.FC<EditReminderScreenProps> = ({ navigation, route }) => {
+    const api = useHanagotchiApi();
     const { reminder } = route.params;
 
-    const api = useHanagotchiApi();
-    const[content, setContent] = useState(reminder.content);
-    const[dateTime, setDateTime] = useState(reminder.date_time);
+    const initData: ReminderData = {
+        content: reminder.content,
+        date_time: reminder.date_time,
+    }
 
-    const handleComplete = async () => {
-        await api.editReminder(reminder.id, dateTime, content);
+    const submit = async (data: ReminderData) => {
+        await api.editReminder(reminder.id, data.date_time, data.content);
         navigation.goBack();
     }
 
@@ -25,12 +28,9 @@ const EditReminderScreen: React.FC<EditReminderScreenProps> = ({navigation, rout
         <SafeAreaView style={style.safeArea}>
             <View style={style.editContainer}>
                 <EditReminder
-                    name_button='GUARDAR'
-                    content_received={content}
-                    datetime_received={dateTime}
-                    onPressCompleteEdit={handleComplete}
-                    setContent={setContent}
-                    setDateTime={setDateTime}
+                    initValues={initData} 
+                    onSubmit={submit} 
+                    buttonLabel="Actualizar"
                 />
             </View>
         </SafeAreaView>
@@ -73,11 +73,11 @@ const style = StyleSheet.create({
         gap: 10
     },
     title: {
-      fontSize: 25,
-      fontFamily: "IBMPlexMono_Italic",
-      textAlign: 'center',
-      fontWeight: "bold"
+        fontSize: 25,
+        fontFamily: "IBMPlexMono_Italic",
+        textAlign: 'center',
+        fontWeight: "bold"
     }
-  })
-  
+})
+
 export default EditReminderScreen;
