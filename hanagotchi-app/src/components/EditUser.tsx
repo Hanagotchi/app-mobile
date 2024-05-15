@@ -30,7 +30,7 @@ const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteE
     ];
 
     const handleBirthDay = async (date: Date) => {
-        setUser({ ...user, birthdate: new Date(date.toISOString().split('T')[0]) } as User);
+        setUser({ ...user, birthdate: date } as User);
     }
     const handleName = (name: string) => {
         setUser({ ...user, name: name } as User);

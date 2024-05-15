@@ -5,6 +5,7 @@ import {DevicePlantSchema} from "./DevicePlant";
 import {PlantSchema} from "./Plant";
 import {PlantTypeSchema} from "./PlantType";
 import { ReducedPost, ReducedPostSchema } from "./Post";
+import { ReminderSchema } from "./Reminder";
 
 export const LoginResponseSchema = z.object({
     data: z.object({
@@ -50,6 +51,11 @@ export const GetUsersProfileResponseSchema = z.object({
     status: z.number(),
     message: z.array(UserProfileSchema),
 });
+export const GetReminders = z.object({
+    status: z.number(),
+    message: z.array(ReminderSchema),
+});
+
 export type GetUsersProfileResponse = z.infer<typeof GetUsersProfileResponseSchema>;
 
 export const GetMyFeedResponseSchema = z.array(ReducedPostSchema);

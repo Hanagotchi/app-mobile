@@ -35,7 +35,7 @@ const BackgroundCard: React.FC<BackgroundCardProps> = ({ title, width = "80%", s
     return (
 
         <Card mode="contained" style={card}>
-            <Card.Title title={title} titleStyle={cardTitle} />
+            {title && <Card.Title title={title} titleStyle={cardTitle} />}
             <Card.Content style={cardContent}>
                 {children}
             </Card.Content>

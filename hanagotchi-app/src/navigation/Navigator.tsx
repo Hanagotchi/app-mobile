@@ -23,6 +23,10 @@ import DeletePlantScreen from "../screens/DeletePlantScreen";
 import DeleteSensorScreen from "../screens/DeleteSensorScreen";
 import HomeScreen from "../screens/HomeScreen";
 import { LogBox } from 'react-native';
+import RemindersScreen from "../screens/reminders/RemindersScreen";
+import EditReminderScreen from "../screens/reminders/EditReminderScreen";
+import CreateReminderScreen from "../screens/reminders/CreateReminderScreen";
+import { Reminder } from "../models/Reminder";
 
 // TODO: pa la demo che, arreglar este warning
 LogBox.ignoreLogs([
@@ -124,6 +128,9 @@ export type RootStackParamsList = {
     CreatePost: undefined;
     AddPlant: undefined;
     DeletePlant: undefined;
+    Reminders: undefined;
+    CreateReminder: undefined;
+    EditReminder: {reminder: Reminder};
 }
 
 const Navigator: React.FC = () => {
@@ -162,6 +169,17 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="CreatePost" component={CreatePostScreen} options={({navigation}) => ({
                             title: "Nueva publicación",
                         })}/>
+                        
+                        <RootStack.Screen name="Reminders" component={RemindersScreen} options={({navigation}) => ({
+                            title: "Mis recordatorios",
+                        })}/>
+                        <RootStack.Screen name="CreateReminder" component={CreateReminderScreen} options={({navigation}) => ({
+                            title: "Crear recordatorio",
+                        })}/>
+                        <RootStack.Screen name="EditReminder" component={EditReminderScreen} options={({navigation}) => ({
+                            title: "Editar recordatorio",
+                        })}/>
+
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
                         <RootStack.Screen name="DeletePlant" component={DeletePlantScreen} options={{ headerShown: true, title: "Eliminar una planta"}} />
                     </>
