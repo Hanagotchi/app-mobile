@@ -209,8 +209,8 @@ const style = StyleSheet.create({
         borderRadius: 12,
     },
     fullImage: {
-        width: 453,
-        height: 400,
+        width: 320,
+        height: "100%",
         borderRadius: 12,
     },
     footer: {

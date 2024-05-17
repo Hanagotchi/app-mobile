@@ -7,7 +7,7 @@ import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { Post, PostAuthor } from "../../models/Post";
 import { useSession } from "../../hooks/useSession";
 import { useMemo } from "react";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Divider, Text } from "react-native-paper";
 import { BACKGROUND_COLOR, BROWN_DARK } from "../../themes/globalThemes";
 
 type PostDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "PostDetails">
@@ -50,6 +50,8 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                 onRedirectToProfile={redirectToAuthorProfile}
                 onDelete={deletePost}
             />
+            <Divider theme={{ colors: { primary: 'green' } }} />
+            <Text>Hola</Text>
         </SafeAreaView>
     )
 }
