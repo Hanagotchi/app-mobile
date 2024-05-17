@@ -169,10 +169,7 @@ const Navigator: React.FC = () => {
                             title: "Editar bitácora",
                         })}/>
                         <RootStack.Screen name="PostDetails" component={PostDetailsScreen} options={{
-                            headerShown: true,
-                            headerStyle: styles.header,
-                            headerTintColor: BLACK,
-                            headerTitleAlign: "center",
+                            title: ""
                         }} />
                         <RootStack.Screen name="CreatePost" component={CreatePostScreen} options={({navigation}) => ({
                             title: "Nueva publicación",

@@ -17,7 +17,7 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
     const myId = useSession((state) => state.session?.userId);
     const hanagotchiApi = useHanagotchiApi();
     const {isFetching, fetchedData: post, error} = useApiFetch<Post | null>(() => hanagotchiApi.getPostById(postId), null, [postId])
-    console.log(navigation.navigate);
+
     const redirectToAuthorProfile = useMemo(() => {
 /*         if (post) {
             return () => navigation.navigate(
