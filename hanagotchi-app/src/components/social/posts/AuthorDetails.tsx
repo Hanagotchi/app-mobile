@@ -1,10 +1,9 @@
-import {StyleSheet, View} from "react-native"
+import {StyleSheet, TouchableWithoutFeedback, View} from "react-native"
 import {PostAuthor} from "../../../models/Post"
 import ProfilePicture from "../../ProfilePicture";
 import {Text} from "react-native-paper"
 import {BROWN, BROWN_LIGHT} from "../../../themes/globalThemes";
 import React from "react";
-import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 type AuthorDetailsProp = {
     author: PostAuthor;

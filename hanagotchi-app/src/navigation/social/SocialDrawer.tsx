@@ -34,7 +34,8 @@ const SocialDrawer: React.FC<SocialDrawerProps> = (props) => {
             <Drawer.Screen name="SocialProfile" component={SocialProfileScreen} initialParams={{
                 profileId: 0, 
                 headerTitle: ""
-            }}options={({route}) => ({
+            }}
+                options={({route}) => ({
                 headerShown: true,
                 headerStyle: styles.header,
                 headerTintColor: BLACK,
