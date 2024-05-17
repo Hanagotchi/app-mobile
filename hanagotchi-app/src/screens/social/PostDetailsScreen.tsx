@@ -37,7 +37,9 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
     }
 
     if (!error && isFetching) {
-        return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+        return <SafeAreaView style={style.container}>
+            <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+        </SafeAreaView>
     }
 
     return (
