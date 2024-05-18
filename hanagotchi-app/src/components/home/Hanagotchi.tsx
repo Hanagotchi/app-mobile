@@ -21,6 +21,7 @@ const sources = {
     depressed: depressed, 
     annoyed: annoyed,
     drowned: drowned,
+    displeased: annoyed,
     happy: happy, 
     overwhelmed: overwhelmed, 
     relaxed: relaxed, 
