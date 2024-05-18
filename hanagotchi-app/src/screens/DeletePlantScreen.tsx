@@ -64,7 +64,7 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
     }
 
     return <SafeAreaView style={style.container}>
-        {isFetching ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
+        {isFetching ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>) :
             (<>
                 <SelectBox
                     label="PLANTA"
