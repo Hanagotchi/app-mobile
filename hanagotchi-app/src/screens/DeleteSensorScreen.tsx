@@ -74,7 +74,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     }, [plants, devicePlants]);
 
     return <SafeAreaView style={style.container}>
-        {(isFetchingPlants || isFetchingDevices) ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
+        {(isFetchingPlants || isFetchingDevices) ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>) :
             (<>
                 <SelectBox
                     label="PLANTA"
