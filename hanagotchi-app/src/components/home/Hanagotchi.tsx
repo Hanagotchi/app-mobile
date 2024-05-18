@@ -66,9 +66,9 @@ const Hanagotchi = forwardRef<HanagotchiRef, HanagotchiProps>((props, ref) => {
                     emotion ? sources[emotion] : sources["relaxed"]
                 }
                 style={{
-                    width: 300,
-                    height: 373,
-                    marginRight: 60,
+                    width: 250,
+                    height: 311,
+                    marginRight: 52,
                     zIndex: -1
                 }}
             />
