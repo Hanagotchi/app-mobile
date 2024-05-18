@@ -42,7 +42,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         if (!user) {
             return;
         }
-        console.log(user);
         try {
             const filepath = profilePictureUrl(user.email, 'avatar');
             const userUpdated: User = {
@@ -61,21 +60,22 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
     return (
         <SafeAreaView style={style.safeArea}>
-            <ScrollView contentContainerStyle={style.scrollViewContent} keyboardShouldPersistTaps="handled">
-                {isFetching ? (
+            {isFetching ? (
                     <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={style.activityIndicator} />
                 ) : (
-                    <View style={style.editContainer}>
-                        <EditUser
-                            user={user!}
-                            name_button='GUARDAR'
-                            onPressCompleteEdit={handleComplete}
-                            setUser={setUser}
-                        />
-                    </View>
-                    )
-                }
-            </ScrollView>
+                    <ScrollView contentContainerStyle={style.scrollViewContent} keyboardShouldPersistTaps="handled">
+                        
+                            <View style={style.editContainer}>
+                                <EditUser
+                                    user={user!}
+                                    name_button='GUARDAR'
+                                    onPressCompleteEdit={handleComplete}
+                                    setUser={setUser}
+                                />
+                            </View>
+                    </ScrollView>
+                )
+            }
         </SafeAreaView>
     )
 }
