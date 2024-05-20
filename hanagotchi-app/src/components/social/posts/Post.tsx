@@ -177,7 +177,6 @@ export const DetailedPost: React.FC<DetailedPostProps> = ({post, myId, onDelete,
 
 const style = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'flex-start',
         gap: 15,
         width: "100%",
