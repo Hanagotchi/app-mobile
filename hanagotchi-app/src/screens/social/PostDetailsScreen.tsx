@@ -7,8 +7,8 @@ import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { Comment as CommentModel, Post, PostAuthor } from "../../models/Post";
 import { useSession } from "../../hooks/useSession";
 import { useMemo } from "react";
-import { ActivityIndicator, Divider, Text } from "react-native-paper";
-import { BACKGROUND_COLOR, BEIGE_DARK, BROWN_DARK } from "../../themes/globalThemes";
+import { ActivityIndicator, Divider, FAB, Text } from "react-native-paper";
+import { BACKGROUND_COLOR, BEIGE_DARK, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import Comment from "../../components/social/posts/Comment";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
@@ -40,8 +40,12 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
         navigation.goBack();
     }
 
+    const addComment = () => {
+        // Add coment action
+    }
+
     const deleteComment = (commentId: string) => {
-        return;
+        // Delete coment action
     }
 
     if (!error && isFetching) {
@@ -92,6 +96,15 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                     
                 </>)))}
             </ScrollView>
+            <FAB 
+                icon={"comment"} 
+                mode="flat" 
+                style={style.fab}
+                variant="primary"
+                size="medium" 
+                color={BACKGROUND_COLOR}
+                onPress={addComment}
+            />
         </SafeAreaView>
     )
 }
@@ -107,6 +120,14 @@ const style = StyleSheet.create({
         gap: 10,
         backgroundColor: BACKGROUND_COLOR,
     },
+    fab: {
+        bottom: "4%",
+        right: "8%",
+        position: 'absolute',
+        backgroundColor: GREEN,
+        color: BACKGROUND_COLOR,
+        borderRadius: 30,
+    }
 });
 
 export default PostDetailsScreen;

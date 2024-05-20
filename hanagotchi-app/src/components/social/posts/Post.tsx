@@ -49,9 +49,10 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
 
 type PostActionsProps = {
     likeCount: number;
+    commentCount: number;
 }
 
-const PostActions: React.FC<PostActionsProps> = ({likeCount}) => {
+const PostActions: React.FC<PostActionsProps> = ({likeCount, commentCount}) => {
     const [like, toggleLike] = useToggle(false);
 
     return (
@@ -61,8 +62,8 @@ const PostActions: React.FC<PostActionsProps> = ({likeCount}) => {
                 <Text>{likeCount}</Text>
             </View>
             <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                <IconButton icon={"comment"} onPress={() => console.log("like!")}/>
-                <Text>0</Text>
+                <IconButton icon={"comment"}/>
+                <Text>{commentCount}</Text>
             </View>
             <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
         </View>
@@ -71,13 +72,14 @@ const PostActions: React.FC<PostActionsProps> = ({likeCount}) => {
 
 type PostFooterProps = {
     likeCount: number;
+    commentCount: number;
     createdAt: Date;
 }
 
-const PostFooter: React.FC<PostFooterProps> = ({likeCount, createdAt}) => {
+const PostFooter: React.FC<PostFooterProps> = ({likeCount,commentCount, createdAt}) => {
     return (
         <View style={style.footer}>
-            <PostActions likeCount={likeCount}/>
+            <PostActions likeCount={likeCount} commentCount={commentCount}/>
             <View style={{justifyContent: "center"}}>
                 <Text style={{color: GREEN}}>{createdAt.toLocaleString()}</Text>
             </View>
@@ -111,7 +113,11 @@ export const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, o
                         source={{uri: post.main_photo_link}} 
                     />
                 )}
-                <PostFooter likeCount={post.likes_count} createdAt={post.created_at}/>
+                <PostFooter 
+                    likeCount={post.likes_count}
+                    commentCount={post.comments_count ?? 0}
+                    createdAt={post.created_at}
+                />
             </View>
         </TouchableOpacity>
 
@@ -170,7 +176,11 @@ export const DetailedPost: React.FC<DetailedPostProps> = ({post, myId, onDelete,
             />
             <Text style={style.content}>{post.content}</Text>
             {displayImages()}
-            <PostFooter likeCount={post.likes_count} createdAt={post.created_at}/>
+            <PostFooter 
+                likeCount={post.likes_count} 
+                commentCount={post.comments_count ?? 0}
+                createdAt={post.created_at}
+            />
         </View>
     )
 }
