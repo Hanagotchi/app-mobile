@@ -4,18 +4,19 @@ import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { PlantType } from "../../models/PlantType";
 
 import { DeviationEnum } from "../../models/Measurement";
-import {ActivityIndicator, Dialog, FAB, Icon, IconButton, Portal, Text} from "react-native-paper";
+import {ActivityIndicator, FAB, Icon, IconButton, Portal, Text} from "react-native-paper";
 
 import { Pressable, Image, StyleSheet, View } from "react-native";
 import plus from "../../assets/plusicon.png";
 import info from "../../assets/infoicon.png";
 import close from "../../assets/closeicon.png";
 import openWeatherLogo from "../../assets/openweather/logo.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BEIGE_DARK, BEIGE_LIGHT, BROWN, BROWN_DARK, BROWN_LIGHT, RED_DARK } from "../../themes/globalThemes";
 
 import { usePlantInfo } from "../../hooks/usePlantInfo";
 import { InfoToShow } from "../../models/InfoToShow";
+import Dialog, { DialogRef } from "../Dialog";
 
 type PlantInfoProps = {
     plant: Plant;
@@ -27,6 +28,8 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
     const [plantTypeModalOpen, setPlantTypeModalOpen] = useState(false);
     const [plantDescriptionModalOpen, setPlantDescriptionModalOpen] = useState(false);
     const hanagotchiApi = useHanagotchiApi();
+    const plantTypeDialogRef = useRef<DialogRef>(null);
+    const plantInfoDialogRef = useRef<DialogRef>(null);
     const {
         isFetching: isFetchingPlantType,
         fetchedData: plantType,
@@ -93,7 +96,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                     <Pressable onPress={() => redirectToCreateLog(plant.id)}>
                         <Icon size={30} source={plus} />
                     </Pressable>
-                    <Pressable onPress={() => setPlantDescriptionModalOpen(true)}>
+                    <Pressable onPress={() => plantInfoDialogRef.current?.showDialog()}>
                         <Icon size={30} source={info} />
                     </Pressable>
                     <FAB
@@ -102,7 +105,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                       color={BEIGE_LIGHT}
                       customSize={30}
                       mode="flat"
-                      onPress={() => setPlantTypeModalOpen(true)}
+                      onPress={() => plantTypeDialogRef.current?.showDialog()}
                     />
                 </View>
             </View>
@@ -132,51 +135,22 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
               }}
             />
         </View>
-        <Portal>
-          <Dialog style={style.modalView} visible={plantTypeModalOpen} onDismiss={() => setPlantTypeModalOpen(false)}>
-            <Pressable onPress={() => {setPlantTypeModalOpen(false)}} style={{
-              flex: 3,
-              position: "absolute",
-              top: -3,
-              right: 20,
-            }}>
-              <Icon size={23} source={close} />
-            </Pressable>
-            <Dialog.Title style={{justifyContent: "space-between", flexDirection: "row", width: "50%"}}>
-              <Text style={style.modalTitle}>{plantType?.botanical_name}</Text>
-            </Dialog.Title>
-            <Dialog.Content style={style.description}>
-              <Text style={{...style.modalText, width: "53%",}}>{plantType!.description}</Text>
-              <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
-            </Dialog.Content>
-          </Dialog>
-        </Portal>
-        <Portal>
-          <Dialog style={style.modalView} visible={plantDescriptionModalOpen} onDismiss={() => setPlantDescriptionModalOpen(false)}>
-            <Pressable onPress={() => {setPlantDescriptionModalOpen(false)}} style={{
-              flex: 3,
-              position: "absolute",
-              top: -3,
-              right: 20,
-            }}>
-              <Icon size={23} source={close} />
-            </Pressable>
-            <Dialog.Title style={{justifyContent: "space-between", flexDirection: "row", width: "50%"}}>
-              <Text style={style.modalTitle}>{plant.name}</Text>
-            </Dialog.Title>
-            <Dialog.Content style={style.description}>
-              <View style={{gap: 10}}>
-                <Text style={style.modalText}>Nombre científico: {plant.scientific_name}.</Text>
-                {device ? (
-                  <Text style={style.modalText}>ID del sensor: {device.id_device}</Text>
-                ) : (
-                  <Text style={{...style.modalText, textAlign: "left"}}>Actualmente no existe ningun sensor asociado a {plant.name}. Los datos climaticos presentados son generales para su zona.</Text>
-                )}
-
-              </View>
-            </Dialog.Content>
-          </Dialog>
-        </Portal>
+        <Dialog ref={plantTypeDialogRef} title={plantType?.botanical_name ?? ''}>
+          <View style={style.modalView}>
+            <Text style={{...style.modalText, width: "53%",}}>{plantType!.description}</Text>
+            <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
+          </View>
+        </Dialog>
+        <Dialog ref={plantInfoDialogRef} title={plant.name ?? ''}>
+          <View style={{gap: 10}}>
+              <Text style={style.modalText}>Nombre científico: {plant.scientific_name}.</Text>
+              {device ? (
+                <Text style={style.modalText}>ID del sensor: {device.id_device}</Text>
+              ) : (
+                <Text style={{...style.modalText, textAlign: "left"}}>Actualmente no existe ningun sensor asociado a {plant.name}. Los datos climaticos presentados son generales para su zona.</Text>
+              )}
+          </View>
+        </Dialog>
       </>
     )
 }
@@ -240,35 +214,13 @@ const style = StyleSheet.create({
       height: 130,
     },
     modalView: {
-      margin: 20,
-      backgroundColor: "#E8DECF",
-      borderRadius: 20,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2
-      },
-      shadowOpacity: 0.35,
-      shadowRadius: 4,
-      elevation: 5
-    },
-    modalHeader: {
-      display: "flex",
       flexDirection: "row",
-      justifyContent: "space-between",
-      paddingBottom: 5
     },
     modalText: {
       textAlign: "justify",
       color: '#4F4C4F',
       fontFamily: "Roboto",
       paddingRight: 10,
-    },
-    modalTitle: {
-      textAlign: "left",
-      color: '#4F4C4F',
-      fontSize: 22,
-      fontFamily: "Roboto"
     },
     fab: {
       backgroundColor: BROWN_LIGHT,

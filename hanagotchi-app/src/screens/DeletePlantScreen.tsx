@@ -2,12 +2,14 @@ import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native"
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import { useSession } from "../hooks/useSession";
+import ConfirmBackpressDialog from "../components/ConfirmBackpressDialog";
+import Dialog, { DialogRef } from "../components/Dialog";
 
 interface SelectOption {
     key: number;
@@ -22,6 +24,7 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const[option, setOption] = useState(0);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false)
+    const dialogRef = useRef<DialogRef>(null);
 
     const {isFetching, fetchedData: plants} = useApiFetch(
         () => api.getPlants({id_user: userId}),
@@ -50,15 +53,18 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
         }
     }, [plants]);
 
+    const askForConfirmation = () => {
+        if (option == 0) return
+        dialogRef.current?.showDialog();
+    }
 
     const deletePlant = async () => {
-        if (option == 0) return
         await api.deletePlant(option);
         navigation.goBack();
     }
 
     return <SafeAreaView style={style.container}>
-        {isFetching ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
+        {isFetching ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>) :
             (<>
                 <SelectBox
                     label="PLANTA"
@@ -71,13 +77,28 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
                     <LoaderButton
                         mode="contained"
                         uppercase style={style.button}
-                        onPress={() => deletePlant()}
+                        onPress={() => askForConfirmation()}
                         labelStyle={{fontSize: 17}}
                         disabled={!isButtonEnabled}
                     >
                         Eliminar
                     </LoaderButton>
                 </View>
+                <Dialog
+                    ref={dialogRef}
+                    title="¿Desea eliminar esta planta?"
+                    content="Una vez eliminada no se podran recuperar los datos."
+                    primaryButtonProps={{
+                        onPress: () => {
+                            dialogRef.current?.hideDialog();
+                            deletePlant();
+                        },
+                    }}
+                    secondaryButtonProps={{
+                        onPress: () => dialogRef.current?.hideDialog(),
+                    }} 
+                children={undefined}
+                />
             </>)
         }
     </SafeAreaView>

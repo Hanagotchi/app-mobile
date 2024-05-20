@@ -60,7 +60,7 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
     }, [plantTypes]);
 
     return <SafeAreaView style={style.container}>
-        {isFetching ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/> :
+        {isFetching ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/> :
             <>
                 <TextInput label={`NOMBRE`} value={name} onChangeText={(text) => setName(text)} />
                 <SelectBox

@@ -70,7 +70,7 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     }, [devicePlants, plants]);
 
     return <SafeAreaView style={style.container}>
-        {(isFetchingPlant || isFetchingDevices) ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/> :
+        {(isFetchingPlant || isFetchingDevices) ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/> :
             <>
                 <TextInput label={`NUMERO DE SERIE`} value={serialNumber} onChangeText={(text) => setSerialNumber(text)} />
                 <SelectBox
