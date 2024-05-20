@@ -1,11 +1,11 @@
 import { View, StyleSheet } from "react-native"
 import { Text } from "react-native-paper";
-import AuthorDetails from "../social/posts/AuthorDetails";
-import { CommentAuthor, Comment as CommentModel, PostAuthor } from "../../models/Post";
+import AuthorDetails from "./AuthorDetails";
+import { CommentAuthor, Comment as CommentModel, PostAuthor } from "../../../models/Post";
 
 import { IconButton, Menu } from "react-native-paper";
-import { useToggle } from "../../hooks/useToggle";
-import { BEIGE, BROWN_DARK, GREEN } from "../../themes/globalThemes";
+import { useToggle } from "../../../hooks/useToggle";
+import { BEIGE, BROWN_DARK, GREEN } from "../../../themes/globalThemes";
 
 type CommentHeaderProps = {
     myId: number;

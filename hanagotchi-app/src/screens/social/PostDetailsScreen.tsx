@@ -9,7 +9,7 @@ import { useSession } from "../../hooks/useSession";
 import { useMemo } from "react";
 import { ActivityIndicator, Divider, Text } from "react-native-paper";
 import { BACKGROUND_COLOR, BEIGE_DARK, BROWN_DARK } from "../../themes/globalThemes";
-import Comment from "../../components/home/Comment";
+import Comment from "../../components/social/posts/Comment";
 
 type PostDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "PostDetails">
 
