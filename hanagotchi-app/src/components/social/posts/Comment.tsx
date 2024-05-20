@@ -47,23 +47,6 @@ const CommentHeader: React.FC<CommentHeaderProps> = ({myId, commentId, author, o
     );
 };
 
-type CommentActionsProps = {
-    likeCount: number;
-}
-
-const CommentActions: React.FC<CommentActionsProps> = ({likeCount}) => {
-    const [like, toggleLike] = useToggle(false);
-
-    return (
-        <View style={style.actions}>
-            <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={toggleLike}/>
-                <Text>{likeCount}</Text>
-            </View>
-        </View>
-    );
-}
-
 type CommentFooterProps = {
     createdAt: Date;
 }

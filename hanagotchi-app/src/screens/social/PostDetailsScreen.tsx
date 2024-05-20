@@ -41,11 +41,11 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
     }
 
     const addComment = () => {
-        // Add coment action
+        // TODO: Add coment action
     }
 
     const deleteComment = (commentId: string) => {
-        // Delete coment action
+        // TODO: Delete coment action
     }
 
     if (!error && isFetching) {
@@ -93,7 +93,6 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                         onDelete={deleteComment}
                         myId={myId!}
                     />
-                    
                 </>)))}
             </ScrollView>
             <FAB 

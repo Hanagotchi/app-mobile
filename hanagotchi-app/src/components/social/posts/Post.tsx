@@ -55,10 +55,15 @@ type PostActionsProps = {
 const PostActions: React.FC<PostActionsProps> = ({likeCount, commentCount}) => {
     const [like, toggleLike] = useToggle(false);
 
+    const handlePressLike = () => {
+        // TODO: Like / Unlike logic
+        toggleLike()
+    }
+
     return (
         <View style={style.actions}>
             <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={toggleLike}/>
+                <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={handlePressLike}/>
                 <Text>{likeCount}</Text>
             </View>
             <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
