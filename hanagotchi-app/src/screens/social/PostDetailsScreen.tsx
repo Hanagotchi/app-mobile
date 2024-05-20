@@ -1,5 +1,5 @@
 import { FlatList, SafeAreaView, StyleSheet, ScrollView } from "react-native"
-import { RootStackParamsList } from "../../navigation/Navigator";
+import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DetailedPost } from "../../components/social/posts/Post";
 import { useApiFetch } from "../../hooks/useApiFetch";
@@ -10,8 +10,17 @@ import { useMemo } from "react";
 import { ActivityIndicator, Divider, Text } from "react-native-paper";
 import { BACKGROUND_COLOR, BEIGE_DARK, BROWN_DARK } from "../../themes/globalThemes";
 import Comment from "../../components/social/posts/Comment";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
 
-type PostDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "PostDetails">
+//type PostDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "PostDetails">
+
+type PostDetailsScreenProps = CompositeScreenProps<
+    DrawerScreenProps<SocialDrawerList>,
+    NativeStackScreenProps<RootStackParamsList, "PostDetails">
+>;
 
 const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}) => {
     const postId = route.params.postId;
@@ -19,18 +28,12 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
     const hanagotchiApi = useHanagotchiApi();
     const {isFetching, fetchedData: post, error} = useApiFetch<Post | null>(() => hanagotchiApi.getPostById(postId), null, [postId])
 
-    const redirectToAuthorProfile = useMemo(() => {
-/*         if (post) {
-            return () => navigation.navigate(
-                "SocialProfile", 
-                {
-                    profileId: post.author.id,
-                    headerTitle: post.author.name!
-                }
-            )
-        } */
-        return (author: PostAuthor) => {}
-    }, [post])
+    const redirectToAuthorProfile = (author: PostAuthor) => {
+        navigation.navigate(
+            "SocialProfile", 
+            {profileId: author.id, headerTitle: author.id === myId ? "Mi perfil" : author.name!}
+        )
+    };
 
     const deletePost = () => {
         hanagotchiApi.deletePost(postId)
@@ -50,19 +53,19 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
     if (error) throw error;
 
     const dummyComments: CommentModel[] = [{
-        id: "ididididiid",
+        id: "1",
         author: post?.author,
         content: "ALTO COMENTARIO VIEJAAAAAA",
         created_at: new Date()
     },
     {
-        id: "ididididiid",
+        id: "2",
         author: post?.author,
         content: "ALTO COMENTARIO VIEJAAAAAA",
         created_at: new Date()
     },
     {
-        id: "ididididiid",
+        id: "3",
         author: post?.author,
         content: "ALTO COMENTARIO VIEJAAAAAA",
         created_at: new Date()
@@ -77,11 +80,11 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                     onRedirectToProfile={redirectToAuthorProfile}
                     onDelete={deletePost}
                 />
-                {dummyComments.map(((comment, index) => (<>
+                {dummyComments.map(((comment) => (<>
                     <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />
                     <Comment 
                         comment={comment}
-                        key={index} 
+                        key={comment.id} 
                         onRedirectToProfile={redirectToAuthorProfile}
                         onDelete={deleteComment}
                         myId={myId!}

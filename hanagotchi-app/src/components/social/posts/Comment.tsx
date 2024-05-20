@@ -26,7 +26,7 @@ const CommentHeader: React.FC<CommentHeaderProps> = ({myId, commentId, author, o
 
     return (
         <View style={style.header}>
-            <AuthorDetails onTouch={onRedirectToProfile} author={author} />
+            <AuthorDetails onTouch={onRedirectToProfile} author={author} size="comment"/>
             <Menu
                 visible={menuOpen}
                 onDismiss={toggleMenu}

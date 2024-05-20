@@ -198,7 +198,7 @@ const style = StyleSheet.create({
     },
     content: {
         color: BROWN_DARK,
-        fontSize: 15,
+        fontSize: 20,
         textAlign: "left",
         alignSelf: "flex-start"
     },
