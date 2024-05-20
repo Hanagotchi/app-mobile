@@ -2,12 +2,13 @@ import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native"
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import { useSession } from "../hooks/useSession";
+import Dialog, { DialogRef } from "../components/Dialog";
 
 interface SelectOption {
     key: number;
@@ -22,6 +23,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const[option, setOption] = useState(0);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false)
+    const dialogRef = useRef<DialogRef>(null);
     const {isFetching: isFetchingPlants, fetchedData: plants} = useApiFetch(
         () => api.getPlants({id_user: userId}),
         [{
@@ -50,16 +52,18 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
         setIsButtonEnabled(true)
     }, [option]);
 
+    const askForConfirmation = () => {
+        if (option.toString() == "---") return;
+        dialogRef.current?.showDialog();
+    }
+
     const deleteDevice = async () => {
-        if (option.toString() == "---") return
         await api.deleteDevice(option);
         navigation.goBack();
     }
 
     useEffect(() => {
         if (plants && plants.length > 0) {
-            console.log(plants);
-            console.log(devicePlants)
             const filteredPlants = plants.filter((plant) => devicePlants.some((it) => it.id_plant === plant.id));
             const updatedPlants = filteredPlants.map(plant => ({
                 key: plant.id,
@@ -70,7 +74,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     }, [plants, devicePlants]);
 
     return <SafeAreaView style={style.container}>
-        {(isFetchingPlants || isFetchingDevices) ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80}/>) :
+        {(isFetchingPlants || isFetchingDevices) ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>) :
             (<>
                 <SelectBox
                     label="PLANTA"
@@ -83,13 +87,28 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
                     <LoaderButton
                         mode="contained"
                         uppercase style={style.button}
-                        onPress={() => deleteDevice()}
+                        onPress={() => askForConfirmation()}
                         labelStyle={{fontSize: 17}}
                         disabled={!isButtonEnabled}
                     >
                         Eliminar
                     </LoaderButton>
                 </View>
+                <Dialog
+                    ref={dialogRef}
+                    title="¿Desea desasociar este sensor?"
+                    content={`Una vez eliminado, ${plantOptions.filter(p => p.key === option)[0]?.value} no recibirá mas mediciones del sensor. Sin embargo, aun podra recibir datos del clima local.`}
+                    primaryButtonProps={{
+                        onPress: () => {
+                            dialogRef.current?.hideDialog();
+                            deleteDevice();
+                        },
+                    }}
+                    secondaryButtonProps={{
+                        onPress: () => dialogRef.current?.hideDialog(),
+                    }} 
+                children={undefined}
+                />
             </>)
         }
     </SafeAreaView>
