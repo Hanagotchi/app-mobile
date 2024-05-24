@@ -45,6 +45,7 @@ export interface HanagotchiApi {
     editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
     addPhotoToLog: (logId: number, body: { photo_link: string }) => Promise<Log>;
     deletePhotoFromLog: (logId: number, photoId: number) => Promise<void>;
+    getPostById: (postId: string) => Promise<Post>;
     createPost: (post: PostData) => Promise<Post>;
     deletePost: (postId: string) => Promise<void>;
     getDevicePlants: (params?: {id_plant?: number, limit?: number}) => Promise<GetDevicePlantsResponse | null>
@@ -153,6 +154,12 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async deletePhotoFromLog(logId: number, photoId: number) {
         await this.axiosInstance.delete(`/logs/${logId}/photos/${photoId}`);
+    }
+
+    async getPostById(postId: string) {
+        const { data } = await this.axiosInstance.get(`/social/posts/${postId}`);
+        const parsedData = PostSchema.parse(data);
+        return parsedData;
     }
 
     async createPost(body: PostData) {

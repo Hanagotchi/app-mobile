@@ -1,5 +1,5 @@
 import { FlatList } from "react-native"
-import ReducedPost from "./Post";
+import {ReducedPost} from "./Post";
 import { ActivityIndicator, Divider, Text } from "react-native-paper";
 import { BEIGE_DARK, BROWN_DARK } from "../../../themes/globalThemes";
 import { PostAuthor, ReducedPost as ReducedPostType } from "../../../models/Post";
@@ -28,15 +28,22 @@ type PostListProps = {
     updatePosts: (page: number) => Promise<ReducedPostType[]>;
     myId: number;
     onRedirectToProfile: (author: PostAuthor) => void;
+    onRedirectToDetails: (postId: string) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfile}) => {
+const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfile, onRedirectToDetails}) => {
 
     const api = useHanagotchiApi();
     const {isFetching, posts, setPosts, error, pageControl, noMorePosts} = usePosts(updatePosts);
    
     const renderItem = useCallback(({item}) => (
-        <ReducedPost post={item} myId={myId} onDelete={handleDelete} onRedirectToProfile={onRedirectToProfile}/>
+        <ReducedPost 
+            post={item} 
+            myId={myId} 
+            onDelete={handleDelete} 
+            onRedirectToProfile={onRedirectToProfile}
+            onRedirectToDetails={onRedirectToDetails}
+            />
       ), []);
 
     if (error) throw error;

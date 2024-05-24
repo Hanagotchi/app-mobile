@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "hanagotchi-app",
+    "name": "Hanagotchi",
     "slug": "hanagotchi-app",
     "plugins": [
       [
@@ -37,7 +37,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo1.png",
+    "icon": "./assets/hanagotchi_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -53,7 +53,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo1.png",
+        "foregroundImage": "./assets/hanagotchi_icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.fiuba.hanagotchiapp",

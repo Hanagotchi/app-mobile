@@ -13,12 +13,12 @@ import { PostAuthor } from "../../models/Post";
 import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
 
 type FeedScreenProps = CompositeScreenProps<
-        DrawerScreenProps<SocialDrawerList, "Feed">,
-        CompositeScreenProps<
-            BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
-            NativeStackScreenProps<RootStackParamsList>
-        >
-    >;
+    DrawerScreenProps<SocialDrawerList, "Feed">,
+    CompositeScreenProps<
+        BottomTabScreenProps<MainTabParamsList, "SocialNetwork">,
+        NativeStackScreenProps<RootStackParamsList>
+    >
+>;
 
 const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
     const api = useHanagotchiApi();
@@ -30,6 +30,12 @@ const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
             {profileId: author.id, headerTitle: author.id === userId ? "Mi perfil" : author.name!}
         )
     };
+    const handleRedirectToDetails = (postId: string) => {
+        navigation.navigate(
+            "PostDetails",
+            {postId: postId}
+        )
+    }
 
     return (
         <SafeAreaView style={style.container}>
@@ -37,6 +43,7 @@ const FeedScreen: React.FC<FeedScreenProps> = ({navigation}) => {
                 updatePosts={(pageNum: number) => api.getMyFeed(pageNum, 10)}
                 myId={userId}
                 onRedirectToProfile={handleRedirectToProfile}
+                onRedirectToDetails={handleRedirectToDetails}
             />
             <FAB 
                 icon={"plus"} 
