@@ -27,6 +27,9 @@ import RemindersScreen from "../screens/reminders/RemindersScreen";
 import EditReminderScreen from "../screens/reminders/EditReminderScreen";
 import CreateReminderScreen from "../screens/reminders/CreateReminderScreen";
 import { Reminder } from "../models/Reminder";
+import SocialProfileScreen from "../screens/social/SocialProfileScreen";
+import { UserProfile } from "../models/User";
+import EditSocialProfileScreen from "../screens/social/EditSocialProfileScreen";
 
 // TODO: pa la demo che, arreglar este warning
 LogBox.ignoreLogs([
@@ -131,6 +134,7 @@ export type RootStackParamsList = {
     Reminders: undefined;
     CreateReminder: undefined;
     EditReminder: {reminder: Reminder};
+    EditSocialProfile: { socialProfile: UserProfile }
 }
 
 const Navigator: React.FC = () => {
@@ -182,6 +186,14 @@ const Navigator: React.FC = () => {
 
                         <RootStack.Screen name="AddPlant" component={AddPlantScreen} options={{ headerShown: true, title: "Agregar una planta"}} />
                         <RootStack.Screen name="DeletePlant" component={DeletePlantScreen} options={{ headerShown: true, title: "Eliminar una planta"}} />
+                        <RootStack.Screen name="EditSocialProfile" component={EditSocialProfileScreen} options={({route}) => ({
+                            headerShown: true,
+                            headerStyle: styles.header,
+                            headerTintColor: BLACK,
+                            headerTitleAlign: "center",
+                            title: "Edita tu perfil",
+                        })}
+                        />
                     </>
                 )}
             </RootStack.Navigator>
