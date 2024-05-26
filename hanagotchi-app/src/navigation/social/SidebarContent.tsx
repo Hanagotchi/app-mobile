@@ -4,15 +4,15 @@ import {
 import { DrawerDescriptorMap, DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import { DrawerNavigationState, ParamListBase } from '@react-navigation/native';
 import {ActivityIndicator, Drawer, List} from "react-native-paper";
-import useMyUser from '../../hooks/useMyUser';
 import AuthorDetails from '../../components/social/posts/AuthorDetails';
 import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN } from '../../themes/globalThemes';
 import { StyleSheet, View } from 'react-native';
 import { useHanagotchiApi } from '../../hooks/useHanagotchiApi';
-import { useApiFetch } from '../../hooks/useApiFetch';
 import { useSession } from '../../hooks/useSession';
 import { UserProfile } from '../../models/User';
 import { PostAuthor } from '../../models/Post';
+import useMyProfile from '../../hooks/useMyProfile';
+import { useFocusApiFetch } from '../../hooks/useFocusApiFetch';
 
 
 const drawerItemColor = (color: string) => ({ colors: {
@@ -31,35 +31,37 @@ type SidebarContentProps = {
 const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     const api = useHanagotchiApi();
     const myId = useSession((state) => state.session?.userId);
-    const {isFetchingMyUser, myUser} = useMyUser();
+    const {isFetchingMyProfile, myProfile } = useMyProfile();
     const {
         isFetching: isFetchingUsersProfiles, 
         fetchedData: userProfiles, 
         error
-    } = useApiFetch<UserProfile[]>(() => api.getUsersProfiles({follower: myId}), []);
+    } = useFocusApiFetch<UserProfile[]>(() => api.getFollowing({user_id: myId}), []);
 
     if (error) {
         throw error
     };
 
-    if (isFetchingMyUser || isFetchingUsersProfiles || !userProfiles || !myUser) {
-        return <DrawerContentScrollView {...props} style={style.container}>
+
+    if (isFetchingMyProfile || isFetchingUsersProfiles || !userProfiles || !myProfile) {
+        // if (isFetchingMyProfile || !myProfile) {
+            return <DrawerContentScrollView {...props} style={style.container}>
             <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
         </DrawerContentScrollView>
     }
-
+    
     return (
         <DrawerContentScrollView {...props} style={style.container} contentContainerStyle={{width: "101%"}}>
             <View style={{gap: 20}}>
                 <AuthorDetails 
                     author={{
-                        id: myUser.id,
-                        name: myUser.name,
-                        photo: myUser.photo,
-                        nickname: myUser.nickname,
+                        id: myProfile._id,
+                        name: myProfile.name,
+                        photo: myProfile.photo,
+                        nickname: myProfile.nickname,
                     }}
                     onTouch={(me: PostAuthor) => props.navigation.navigate("SocialProfile", {
-                        profileId: myUser!.id,
+                        profileId: myProfile!._id,
                         headerTitle: "Mi perfil"
                     })}
                 />
@@ -79,7 +81,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         onPress={() => props.navigation.navigate(
                             "SocialProfile", 
                             {
-                                profileId: myUser!.id,
+                                profileId: myProfile!._id,
                                 headerTitle: "Mi perfil"
                             }
                         )}
@@ -97,7 +99,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {mockedTags.map((tag) => (
+                            {myProfile.tags.map((tag) => (
                                 <Drawer.Item
                                     key={tag}
                                     id={tag} 
@@ -119,11 +121,13 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                 fontWeight: "bold"
                             }}
                             style={{gap: 0}}
+                            
+                            
                         >
-                            {userProfiles.filter(u => u.id !== myId).map((user) => (
+                            {userProfiles.filter(u => u._id !== myId).map((user) => (
                                 <Drawer.Item
-                                    key={user.id.toString()}
-                                    id={user.id.toString()} 
+                                    key={user._id.toString()}
+                                    id={user._id.toString()} 
                                     theme={drawerItemColor(BROWN)}
                                     label={user.name ?? ""}
                                     icon="account"
@@ -132,7 +136,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                     onPress={() => props.navigation.navigate(
                                         "SocialProfile", 
                                         {
-                                            profileId: user.id, 
+                                            profileId: user._id, 
                                             headerTitle: user.name
                                         }
                                     )}
