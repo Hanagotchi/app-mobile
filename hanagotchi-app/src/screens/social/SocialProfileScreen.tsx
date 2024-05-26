@@ -34,6 +34,13 @@ const SocialProfileScreen: React.FC<SocialProfileScreenProps> = ({ route, naviga
 
     const handleAddNewPost = () => navigation.navigate("CreatePost");
 
+    const handleRedirectToDetails = (postId: string) => {
+        navigation.navigate(
+            "PostDetails",
+            {postId: postId}
+        )
+    }
+
     const onEditProfile = () => {
         navigation.navigate("EditSocialProfile", { socialProfile: profile });
     }
@@ -55,6 +62,7 @@ const SocialProfileScreen: React.FC<SocialProfileScreenProps> = ({ route, naviga
                     updatePosts={(pageNum: number) => api.getAllPostsOfUser(profileId, pageNum, 10)}
                     myId={profileId}
                     onRedirectToProfile={(author: PostAuthor) => { }}
+                    onRedirectToDetails={handleRedirectToDetails}
                 />
                 {profileId === myProfile._id &&
                     <FAB
