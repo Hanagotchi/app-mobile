@@ -7,19 +7,18 @@ import AuthorDetails from "./AuthorDetails";
 import editFill from "../../../assets/editFill.png";
 import { UserProfile } from "../../../models/User";
 import FollowUnFollowButton from "./FollowUnfollowButton";
-import useMyProfile from "../../../hooks/useMyProfile";
 
 type ProfileDetailsProp = {
     profile: UserProfile;
+    myProfile: UserProfile;
     onEditProfile: () => void;
     onPressFollow: (userId: number) => Promise<void>;
     onPressUnFollow: (userId: number) => Promise<void>;
 }
 
-const ProfileDetails: React.FC<ProfileDetailsProp> = ({ profile, onEditProfile, onPressFollow, onPressUnFollow }) => {
-    const { isFetchingMyProfile, myProfile } = useMyProfile();
+const ProfileDetails: React.FC<ProfileDetailsProp> = ({ profile, myProfile, onEditProfile, onPressFollow, onPressUnFollow }) => {
 
-    if (isFetchingMyProfile || !myProfile || !profile) {
+    if ( !myProfile || !profile) {
         return <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
             <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{ justifyContent: "center", flexGrow: 1 }} />
         </SafeAreaView>
@@ -29,7 +28,7 @@ const ProfileDetails: React.FC<ProfileDetailsProp> = ({ profile, onEditProfile, 
             <View style={style.profile}>
                 <AuthorDetails
                     author={{ id: profile._id, name: profile.name, nickname: profile.nickname, photo: profile.photo }}
-                    onTouch={(user_tocado) => console.log("tocado")}
+                    onTouch={() => {}}
                     style_name={{ maxWidth: myProfile._id === profile._id ? 255 : 100 }}
                     style_nickname={{ maxWidth: myProfile._id === profile._id ? 255 : 100 }}
                 />
