@@ -50,7 +50,7 @@ export interface HanagotchiApi {
     getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
-    getUsersProfiles: (params: {user_id?: number, query?: string}) => Promise<UserProfile[]>;
+    getFollowing: (params: {user_id?: number, query?: string}) => Promise<UserProfile[]>;
     createReminder: (date_time: Date, content: string) => Promise<void>;
     getReminders: () => Promise<Reminder[]>;
     deleteReminder: (reminderId: number) => Promise<void>;
@@ -179,7 +179,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetPlantTypesResponseSchema.parse(data);
     }
 
-    async getUsersProfiles(params: { user_id?: number, query?: string }): Promise<UserProfile[]> {
+    async getFollowing(params: { user_id?: number, query?: string }): Promise<UserProfile[]> {
         // TODO: new endpoint or fix endpooitn to get following users?
         let user = await this.getUserProfile(params.user_id!);
         return Promise.all(user.following.map(async (id) => await this.getUserProfile(id)));
