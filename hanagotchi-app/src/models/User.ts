@@ -37,11 +37,14 @@ export const UserSchema = z.object({
 export type User = z.infer<typeof UserSchema>;
 
 export const UserProfileSchema = z.object({
-    id: z.number(),
+    _id: z.number(),
     name: z.string().nullable(),
     photo: z.string().nullable(),
     nickname: z.string().nullable(),
     biography: z.string().nullable().optional(),
+    followers: z.array(z.number()),
+    following: z.array(z.number()),
+    tags: z.array(z.string()),
 });
 
 export type UserProfile = z.infer< typeof UserProfileSchema>;
