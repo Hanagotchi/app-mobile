@@ -30,6 +30,7 @@ import { Reminder } from "../models/Reminder";
 import SocialProfileScreen from "../screens/social/SocialProfileScreen";
 import { UserProfile } from "../models/User";
 import EditSocialProfileScreen from "../screens/social/EditSocialProfileScreen";
+import PostDetailsScreen from "../screens/social/PostDetailsScreen";
 
 // TODO: pa la demo che, arreglar este warning
 LogBox.ignoreLogs([
@@ -128,6 +129,7 @@ export type RootStackParamsList = {
     DeleteSensor: undefined;
     CreateLog: {plantId?: number};
     EditLog: {log: Log};
+    PostDetails: {postId: string};
     CreatePost: undefined;
     AddPlant: undefined;
     DeletePlant: undefined;
@@ -170,10 +172,12 @@ const Navigator: React.FC = () => {
                         <RootStack.Screen name="EditLog" component={EditLogScreen} options={() => ({
                             title: "Editar bitácora",
                         })}/>
+                        <RootStack.Screen name="PostDetails" component={PostDetailsScreen} options={{
+                            title: ""
+                        }} />
                         <RootStack.Screen name="CreatePost" component={CreatePostScreen} options={({navigation}) => ({
                             title: "Nueva publicación",
                         })}/>
-                        
                         <RootStack.Screen name="Reminders" component={RemindersScreen} options={({navigation}) => ({
                             title: "Mis recordatorios",
                         })}/>

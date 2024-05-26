@@ -1,10 +1,11 @@
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native"
-import { ReducedPost as ReducedPostType, PostAuthor } from "../../../models/Post"
+import { View, StyleSheet, Image, TouchableOpacity, FlatList } from "react-native"
+import { ReducedPost as ReducedPostType, PostAuthor, Post } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
-import { IconButton, Menu, Text } from "react-native-paper"
+import { Divider, IconButton, Menu, Text } from "react-native-paper"
 import { BEIGE, BROWN_DARK, GREEN } from "../../../themes/globalThemes"
 import { useToggle } from "../../../hooks/useToggle"
 import React from "react"
+import ExpandibleImage from "../../ExpandibleImage"
 
 type PostHeaderProps = {
     myId: number;
@@ -48,20 +49,26 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
 
 type PostActionsProps = {
     likeCount: number;
+    commentCount: number;
 }
 
-const PostActions: React.FC<PostActionsProps> = ({likeCount}) => {
+const PostActions: React.FC<PostActionsProps> = ({likeCount, commentCount}) => {
     const [like, toggleLike] = useToggle(false);
+
+    const handlePressLike = () => {
+        // TODO: Like / Unlike logic
+        toggleLike()
+    }
 
     return (
         <View style={style.actions}>
             <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={toggleLike}/>
+                <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={handlePressLike}/>
                 <Text>{likeCount}</Text>
             </View>
             <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
-                <IconButton icon={"comment"} onPress={() => console.log("like!")}/>
-                <Text>0</Text>
+                <IconButton icon={"comment"}/>
+                <Text>{commentCount}</Text>
             </View>
             <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
         </View>
@@ -70,13 +77,14 @@ const PostActions: React.FC<PostActionsProps> = ({likeCount}) => {
 
 type PostFooterProps = {
     likeCount: number;
+    commentCount: number;
     createdAt: Date;
 }
 
-const PostFooter: React.FC<PostFooterProps> = ({likeCount, createdAt}) => {
+const PostFooter: React.FC<PostFooterProps> = ({likeCount,commentCount, createdAt}) => {
     return (
         <View style={style.footer}>
-            <PostActions likeCount={likeCount}/>
+            <PostActions likeCount={likeCount} commentCount={commentCount}/>
             <View style={{justifyContent: "center"}}>
                 <Text style={{color: GREEN}}>{createdAt.toLocaleString()}</Text>
             </View>
@@ -88,12 +96,13 @@ type ReducedPostProps = {
     post: ReducedPostType;
     myId: number;
     onRedirectToProfile: (author: PostAuthor) => void;
+    onRedirectToDetails: (postId: string) => void;
     onDelete: (postId: string) => void;
 }
 
-const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, onRedirectToProfile}) => {
+export const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, onRedirectToProfile, onRedirectToDetails}) => {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => onRedirectToDetails(post.id)}>
             <View style={style.container}>
                 <PostHeader 
                     myId={myId}
@@ -109,16 +118,80 @@ const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, onRedire
                         source={{uri: post.main_photo_link}} 
                     />
                 )}
-                <PostFooter likeCount={post.likes_count} createdAt={post.created_at}/>
+                <PostFooter 
+                    likeCount={post.likes_count}
+                    commentCount={post.comments_count ?? 0}
+                    createdAt={post.created_at}
+                />
             </View>
         </TouchableOpacity>
 
     )
 }
 
+type DetailedPostProps = {
+    post: Post;
+    myId: number;
+    onRedirectToProfile: (author: PostAuthor) => void;
+    onDelete: (postId: string) => void;
+}
+
+export const DetailedPost: React.FC<DetailedPostProps> = ({post, myId, onDelete, onRedirectToProfile}) => {
+
+    const displayImages = () => {
+        switch (post.photo_links.length) {
+            case 0:
+                return <></>;
+            case 1:
+                return <View style={{height: 240}}>
+                    <ExpandibleImage 
+                        minimizedImageStyle={{...style.image, width: 340}}
+                        maximizedImageStyle={style.fullImage}
+                        source={{uri: post.photo_links[0]}} 
+                    />
+                </View>
+            default:
+                return <View style={{height: 240}}>
+                    <FlatList
+                        horizontal
+                        data={post.photo_links}
+                        renderItem={({item}) =>
+                            <ExpandibleImage
+                                minimizedImageStyle={{...style.image, width: 340}}
+                                maximizedImageStyle={style.fullImage}
+                                source={{uri: item}}
+                            />
+                        }
+                        keyExtractor={(item, index) => String(index)}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={style.photoList}
+                    />
+                </View>
+        }
+    }
+
+    return (
+        <View style={style.container}>
+            <PostHeader 
+                myId={myId}
+                postId={post.id}
+                author={post.author}
+                onDelete={onDelete}
+                onRedirectToProfile={onRedirectToProfile}
+            />
+            <Text style={style.content}>{post.content}</Text>
+            {displayImages()}
+            <PostFooter 
+                likeCount={post.likes_count} 
+                commentCount={post.comments_count ?? 0}
+                createdAt={post.created_at}
+            />
+        </View>
+    )
+}
+
 const style = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'flex-start',
         gap: 15,
         width: "100%",
@@ -140,7 +213,7 @@ const style = StyleSheet.create({
     },
     content: {
         color: BROWN_DARK,
-        fontSize: 15,
+        fontSize: 20,
         textAlign: "left",
         alignSelf: "flex-start"
     },
@@ -151,7 +224,7 @@ const style = StyleSheet.create({
     },
     fullImage: {
         width: 320,
-        height: 300,
+        height: "100%",
         borderRadius: 12,
     },
     footer: {
@@ -163,8 +236,10 @@ const style = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
-    }
+    },
+    photoList: {
+        paddingHorizontal: "10%",
+        gap: 20,
+    },
 });
-
-export default React.memo(ReducedPost);
 

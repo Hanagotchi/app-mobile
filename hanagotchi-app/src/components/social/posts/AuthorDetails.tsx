@@ -1,23 +1,32 @@
-import {StyleSheet, View} from "react-native"
+import {StyleSheet, TouchableWithoutFeedback, View} from "react-native"
 import {PostAuthor} from "../../../models/Post"
 import ProfilePicture from "../../ProfilePicture";
 import {Text} from "react-native-paper"
 import {BROWN, BROWN_LIGHT} from "../../../themes/globalThemes";
 import React from "react";
-import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
+
+const sizes = {
+    post: 60,
+    comment: 50,
+}
 
 type AuthorDetailsProp = {
     author: PostAuthor;
     onTouch: (author: PostAuthor) => void;
     style_name?: any;
     style_nickname?: any;
+    size?: "post" | "comment";
 }
 
-const AuthorDetails: React.FC<AuthorDetailsProp> = ({author, onTouch, style_name, style_nickname}) => {
+const AuthorDetails: React.FC<AuthorDetailsProp> = ({author, onTouch, style_name, style_nickname, size = "post"}) => {
+
     return (
         <View style={style.container}>
             <TouchableWithoutFeedback onPress={() => onTouch(author)}>
-                <ProfilePicture uri={author.photo ?? "https://th.bing.com/th/id/OIP.Cl56H6WgxJ8npVqyhefTdQHaHa?rs=1&pid=ImgDetMain"} />
+                <ProfilePicture 
+                    uri={author.photo ?? "https://th.bing.com/th/id/OIP.Cl56H6WgxJ8npVqyhefTdQHaHa?rs=1&pid=ImgDetMain"}
+                    size={sizes[size]} 
+                />
             </TouchableWithoutFeedback>
             <View>
                 <Text style={{...style_name, ...style.name}} onPress={() => onTouch(author)}>{author.name ?? "undefined"}</Text>
