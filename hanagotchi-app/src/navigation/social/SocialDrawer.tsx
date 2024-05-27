@@ -8,10 +8,12 @@ import SidebarContent from "./SidebarContent";
 import { BEIGE, BEIGE_LIGHT, BLACK } from "../../themes/globalThemes";
 import {StyleSheet, View} from "react-native" 
 import SocialProfileScreen from "../../screens/social/SocialProfileScreen";
+import { useState } from "react";
+import { number } from "zod";
 
 export type SocialDrawerList = {
     Feed: undefined;
-    SocialProfile: { profileId: number, headerTitle: string },
+    SocialProfile: { profileId: number, headerTitle: string, handleUnfollowUser?: (userId: number) => void, handleFollowUser?: (userId: number) => Promise<void> };
 }
 
 export type SocialDrawerProps = CompositeScreenProps<

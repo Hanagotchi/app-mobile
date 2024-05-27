@@ -12,7 +12,7 @@ import { useSession } from '../../hooks/useSession';
 import { UserProfile } from '../../models/User';
 import { PostAuthor } from '../../models/Post';
 import useMyProfile from '../../hooks/useMyProfile';
-import { useFocusApiFetch } from '../../hooks/useFocusApiFetch';
+import { useApiFetch } from '../../hooks/useApiFetch';
 
 
 const drawerItemColor = (color: string) => ({ colors: {
@@ -20,7 +20,6 @@ const drawerItemColor = (color: string) => ({ colors: {
     onSurfaceVariant: color,
 }});
 
-const mockedTags = ["plantas", "Hola"];
 
 type SidebarContentProps = {
     state: DrawerNavigationState<ParamListBase>;
@@ -35,16 +34,27 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     const {
         isFetching: isFetchingUsersProfiles, 
         fetchedData: userProfiles, 
+        setFetchedData,
         error
-    } = useFocusApiFetch<UserProfile[]>(() => api.getFollowing({user_id: myId}), []);
-
+    } = useApiFetch<UserProfile[]>(() => api.getFollowing({user_id: myId}), []);
     if (error) {
         throw error
     };
 
+    const handleUnfollowUser = (userId: number) => {
+        if (!userProfiles.find(u => u._id === userId)) {
+            return;
+        }
+        setFetchedData(userProfiles.filter(u => u._id !== userId));
+    }
+
+    const handleFollowUser = async (userId: number) => {
+        const user = await api.getUserProfile(userId);
+        userProfiles.concat(user);
+        setFetchedData(userProfiles);
+    }
 
     if (isFetchingMyProfile || isFetchingUsersProfiles || !userProfiles || !myProfile) {
-        // if (isFetchingMyProfile || !myProfile) {
             return <DrawerContentScrollView {...props} style={style.container}>
             <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
         </DrawerContentScrollView>
@@ -62,7 +72,9 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                     }}
                     onTouch={(me: PostAuthor) => props.navigation.navigate("SocialProfile", {
                         profileId: myProfile!._id,
-                        headerTitle: "Mi perfil"
+                        headerTitle: "Mi perfil",
+                        handleFollowUser: handleFollowUser,
+                        handleUnfollowUser: handleUnfollowUser,
                     })}
                 />
                 <View>
@@ -82,7 +94,9 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             "SocialProfile", 
                             {
                                 profileId: myProfile!._id,
-                                headerTitle: "Mi perfil"
+                                headerTitle: "Mi perfil",
+                                handleFollowUser: handleFollowUser,
+                                handleUnfollowUser: handleUnfollowUser,
                             }
                         )}
                     />
@@ -137,7 +151,9 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                         "SocialProfile", 
                                         {
                                             profileId: user._id, 
-                                            headerTitle: user.name
+                                            headerTitle: user.name,
+                                            handleFollowUser: handleFollowUser,
+                                            handleUnfollowUser: handleUnfollowUser,
                                         }
                                     )}
                                 />

@@ -46,10 +46,16 @@ const SocialProfileScreen: React.FC<SocialProfileScreenProps> = ({ route, naviga
     }
 
     const onPressFollow = async (userId: number) => {
+        if (route.params.handleFollowUser){
+            await route.params.handleFollowUser(userId);
+        }
         await api.followUser(userId);
     }
 
     const onPressUnFollow = async (userId: number) => {
+        if (route.params.handleUnfollowUser) {
+            route.params.handleUnfollowUser(userId);
+        } 
         await api.unfollowUser(userId);
     }
 
