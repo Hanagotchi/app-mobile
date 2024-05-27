@@ -6,6 +6,7 @@ import { BEIGE, BROWN_DARK, GREEN } from "../../../themes/globalThemes"
 import { useToggle } from "../../../hooks/useToggle"
 import React from "react"
 import ExpandibleImage from "../../ExpandibleImage"
+import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi"
 
 type PostHeaderProps = {
     myId: number;
@@ -48,15 +49,19 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
 };
 
 type PostActionsProps = {
+    postId: string;
+    isLikedByMe: boolean;
     likeCount: number;
     commentCount: number;
 }
 
-const PostActions: React.FC<PostActionsProps> = ({likeCount, commentCount}) => {
-    const [like, toggleLike] = useToggle(false);
+const PostActions: React.FC<PostActionsProps> = ({postId, isLikedByMe, likeCount, commentCount}) => {
+    const [like, toggleLike] = useToggle(isLikedByMe);
+    const api = useHanagotchiApi();
 
-    const handlePressLike = () => {
-        // TODO: Like / Unlike logic
+    const handlePressLike = async () => {
+        if (like) await api.unlikePost(postId);
+        else await api.likePost(postId);
         toggleLike()
     }
 
@@ -76,15 +81,17 @@ const PostActions: React.FC<PostActionsProps> = ({likeCount, commentCount}) => {
 }
 
 type PostFooterProps = {
+    postId: string;
+    isLikedByMe: boolean;
     likeCount: number;
     commentCount: number;
     createdAt: Date;
 }
 
-const PostFooter: React.FC<PostFooterProps> = ({likeCount,commentCount, createdAt}) => {
+const PostFooter: React.FC<PostFooterProps> = ({postId, isLikedByMe, likeCount, commentCount, createdAt}) => {
     return (
         <View style={style.footer}>
-            <PostActions likeCount={likeCount} commentCount={commentCount}/>
+            <PostActions postId={postId} isLikedByMe={isLikedByMe} likeCount={likeCount} commentCount={commentCount}/>
             <View style={{justifyContent: "center"}}>
                 <Text style={{color: GREEN}}>{createdAt.toLocaleString()}</Text>
             </View>
@@ -119,6 +126,8 @@ export const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, o
                     />
                 )}
                 <PostFooter 
+                    postId={post.id}
+                    isLikedByMe={true}
                     likeCount={post.likes_count}
                     commentCount={post.comments_count ?? 0}
                     createdAt={post.created_at}
@@ -182,7 +191,9 @@ export const DetailedPost: React.FC<DetailedPostProps> = ({post, myId, onDelete,
             <Text style={style.content}>{post.content}</Text>
             {displayImages()}
             <PostFooter 
-                likeCount={post.likes_count} 
+                postId={post.id}
+                isLikedByMe={true}
+                likeCount={post.likes_count}
                 commentCount={post.comments_count ?? 0}
                 createdAt={post.created_at}
             />
