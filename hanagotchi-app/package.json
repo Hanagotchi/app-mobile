@@ -57,6 +57,7 @@
     "react-native-screens": "~3.29.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-web": "~0.19.6",
+    "text-encoding-polyfill": "^0.6.7",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },
