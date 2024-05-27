@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, StyleSheet, ScrollView } from "react-native"
+import { FlatList, SafeAreaView, StyleSheet, ScrollView, View } from "react-native"
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DetailedPost } from "../../components/social/posts/Post";
@@ -6,7 +6,7 @@ import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { Comment as CommentModel, Post, PostAuthor } from "../../models/Post";
 import { useSession } from "../../hooks/useSession";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Divider, FAB, Text } from "react-native-paper";
 import { BACKGROUND_COLOR, BEIGE_DARK, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import Comment from "../../components/social/posts/Comment";
@@ -14,6 +14,8 @@ import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
+import Dialog, { DialogRef } from "../../components/Dialog";
+import TextInput from "../../components/TextInput";
 
 //type PostDetailsScreenProps = NativeStackScreenProps<RootStackParamsList, "PostDetails">
 
@@ -24,7 +26,9 @@ type PostDetailsScreenProps = CompositeScreenProps<
 
 const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}) => {
     const postId = route.params.postId;
+    const ref = useRef<DialogRef>(null);
     const myId = useSession((state) => state.session?.userId);
+    const [comment, setComment] = useState<string>('');
     const hanagotchiApi = useHanagotchiApi();
     const {isFetching, fetchedData: post, error} = useApiFetch<Post | null>(() => hanagotchiApi.getPostById(postId), null, [postId])
 
@@ -40,12 +44,14 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
         navigation.goBack();
     }
 
-    const addComment = () => {
-       hanagotchiApi.commentPost(postId, "pepe")
+    const addComment = async () => {
+       await hanagotchiApi.commentPost(postId, comment)
+       ref.current?.hideDialog();
     }
 
-    const deleteComment = (commentId: string) => {
-        hanagotchiApi.deletePostComment(postId, commentId)
+    const deleteComment = async (commentId: string) => {
+        console.log("deleting... ")
+        await hanagotchiApi.deletePostComment(postId, commentId)
     }
 
     if (!error && isFetching) {
@@ -56,27 +62,19 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
 
     if (error) throw error;
 
-    const dummyComments: CommentModel[] = [{
-        id: "1",
-        author: post?.author,
-        content: "ALTO COMENTARIO VIEJAAAAAA",
-        created_at: new Date()
-    },
-    {
-        id: "2",
-        author: post?.author,
-        content: "ALTO COMENTARIO VIEJAAAAAA",
-        created_at: new Date()
-    },
-    {
-        id: "3",
-        author: post?.author,
-        content: "ALTO COMENTARIO VIEJAAAAAA",
-        created_at: new Date()
-    },];
-
     return (
         <SafeAreaView style={style.container}>
+            <Dialog
+                ref={ref}
+                title={"Agregar comentario"}
+                primaryButtonProps={{ onPress: (async () => { await addComment() }) }}
+                onDismiss={() => ref.current?.hideDialog()}
+                secondaryButtonProps={{ onPress: () => { ref.current?.hideDialog() }}}
+            >   
+                <View style={{gap: 10}}>
+                    <TextInput label="Comentario" value={comment} onChangeText={(text) => setComment(text)}/>
+                </View>
+            </Dialog>
             <ScrollView contentContainerStyle={{gap: 10}}>
                 <DetailedPost 
                     post={post!}
@@ -85,26 +83,20 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                     onDelete={deletePost}
                 />
                 {post!.comments?.map(((comment) => (<>
-                    <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />
-                    <Comment 
-                        comment={comment}
-                        key={comment.id} 
-                        onRedirectToProfile={redirectToAuthorProfile}
-                        onDelete={deleteComment}
-                        myId={myId!}
-                    />
+                    <View key={comment.id}>
+                        <View style={{marginBottom: 10}}>
+                            <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }}/>
+                        </View>
+                        <Comment 
+                            postId={postId}
+                            comment={comment}
+                            key={comment.id} 
+                            onRedirectToProfile={redirectToAuthorProfile}
+                            onDelete={deleteComment}
+                            myId={myId!}
+                        />
+                    </View>
                 </>)))}
-
-                {/* {dummyComments.map(((comment) => (<>
-                    <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />
-                    <Comment 
-                        comment={comment}
-                        key={comment.id} 
-                        onRedirectToProfile={redirectToAuthorProfile}
-                        onDelete={deleteComment}
-                        myId={myId!}
-                    />
-                </>)))} */}
             </ScrollView>
             <FAB 
                 icon={"comment"} 
@@ -113,7 +105,7 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                 variant="primary"
                 size="medium" 
                 color={BACKGROUND_COLOR}
-                onPress={addComment}
+                onPress={() => { ref.current?.showDialog() }}
             />
         </SafeAreaView>
     )

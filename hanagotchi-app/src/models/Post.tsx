@@ -37,7 +37,6 @@ export const PostSchema = z.object({
     content: z.string(),
     likes_count: z.number(),
     liked_by_me: z.boolean(),
-    liked_by: z.array(z.string()),
     comments_count: z.number().nullish(),
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),
