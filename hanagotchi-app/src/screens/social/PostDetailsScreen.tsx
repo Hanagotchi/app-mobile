@@ -41,11 +41,11 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
     }
 
     const addComment = () => {
-        // TODO: Add coment action
+       hanagotchiApi.commentPost(postId, "pepe")
     }
 
     const deleteComment = (commentId: string) => {
-        // TODO: Delete coment action
+        hanagotchiApi.deletePostComment(postId, commentId)
     }
 
     if (!error && isFetching) {
@@ -84,7 +84,7 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                     onRedirectToProfile={redirectToAuthorProfile}
                     onDelete={deletePost}
                 />
-                {dummyComments.map(((comment) => (<>
+                {post!.comments?.map(((comment) => (<>
                     <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />
                     <Comment 
                         comment={comment}
@@ -94,6 +94,17 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({route, navigation}
                         myId={myId!}
                     />
                 </>)))}
+
+                {/* {dummyComments.map(((comment) => (<>
+                    <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />
+                    <Comment 
+                        comment={comment}
+                        key={comment.id} 
+                        onRedirectToProfile={redirectToAuthorProfile}
+                        onDelete={deleteComment}
+                        myId={myId!}
+                    />
+                </>)))} */}
             </ScrollView>
             <FAB 
                 icon={"comment"} 

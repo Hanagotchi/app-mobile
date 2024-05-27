@@ -127,7 +127,7 @@ export const ReducedPost: React.FC<ReducedPostProps> = ({post, myId, onDelete, o
                 )}
                 <PostFooter 
                     postId={post.id}
-                    isLikedByMe={true}
+                    isLikedByMe={post.liked_by_me}
                     likeCount={post.likes_count}
                     commentCount={post.comments_count ?? 0}
                     createdAt={post.created_at}
@@ -192,7 +192,7 @@ export const DetailedPost: React.FC<DetailedPostProps> = ({post, myId, onDelete,
             {displayImages()}
             <PostFooter 
                 postId={post.id}
-                isLikedByMe={true}
+                isLikedByMe={post.liked_by_me}
                 likeCount={post.likes_count}
                 commentCount={post.comments_count ?? 0}
                 createdAt={post.created_at}

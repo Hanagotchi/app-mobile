@@ -52,6 +52,8 @@ export interface HanagotchiApi {
     getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
     likePost: (postId: string) => Promise<void>;
     unlikePost: (postId: string) => Promise<void>;
+    commentPost: (postId: string, body: string) => Promise<void>;
+    deletePostComment: (postId: string, commentId: string) => Promise<void>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
     getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
@@ -187,6 +189,16 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async unlikePost(postId: string) {
         await this.axiosInstance.post(`/social/posts/${postId}/unlike`);
+    }
+
+    async commentPost(postId: string, body: string) {
+        await this.axiosInstance.post(`/social/posts/${postId}/comments`, { body });
+    }
+
+    async deletePostComment(postId: string, commentId: string) {
+        await this.axiosInstance.delete(`/social/posts/${postId}/comments`, {
+            data: { comment_id: commentId }
+        });
     }
 
     async getPlantTypes(): Promise<GetPlantTypesResponse> {
