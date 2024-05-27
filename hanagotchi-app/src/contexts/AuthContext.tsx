@@ -50,11 +50,17 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
     const signIn = async () => {
         try {
+            GoogleSignin.configure({
+                webClientId: env.googleWebClientId,
+                offlineAccess: true, /* allows GoogleSignin.signIn() to return the auth_code for the api */
+            });
+            
             // Check if your device supports Google Play
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             console.log("ansdkjasndjksankdj")
 
             // Get the users ID token
+          
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
             
             
