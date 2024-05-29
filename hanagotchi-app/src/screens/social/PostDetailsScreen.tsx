@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DetailedPost } from "../../components/social/posts/Post";
 import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
-import { Comment as CommentModel, Post, PostAuthor } from "../../models/Post";
+import { CommentAuthor, Comment as CommentModel, Post, PostAuthor } from "../../models/Post";
 import { useSession } from "../../hooks/useSession";
 import { useRef, useState, useEffect } from "react";
 import { ActivityIndicator, Divider, FAB, Text } from "react-native-paper";
@@ -49,7 +49,19 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({ route, navigation
   };
 
   const addComment = async () => {
-    const newComment = await hanagotchiApi.commentPost(postId, comment);
+    const newReducedComment = await hanagotchiApi.commentPost(postId, comment);
+    const me = await hanagotchiApi.getUser(myId!);
+    const author: CommentAuthor = {
+      id: myId!,
+      name: me.name, 
+      photo: me.photo,
+      nickname: me.nickname
+    };
+  
+    const newComment: CommentModel = {
+      ...newReducedComment,
+      author: author
+    };
     setComments([...comments, newComment]);
     setComment('');
     ref.current?.hideDialog();
