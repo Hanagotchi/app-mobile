@@ -67,7 +67,7 @@ type CommentProps = {
     myId: number,
     comment: CommentModel;
     onRedirectToProfile: (author: PostAuthor) => void;
-    onDelete: (postId: string) => void;
+    onDelete: (postId: string, commentId: string) => void;
 }
 
 const Comment: React.FC<CommentProps> = ({postId, myId, comment, onRedirectToProfile, onDelete}) => {

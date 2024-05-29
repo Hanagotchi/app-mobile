@@ -22,7 +22,7 @@ import {
 
 import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
-import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
+import { ReducedPost, PostData, PostSchema, Post, Comment, CommentSchema, ReducedCommentSchema, ReducedComment } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
 import {Measurement, MeasurementSchema} from "../models/Measurement";
 import {AxiosInstance} from "axios";
@@ -52,7 +52,7 @@ export interface HanagotchiApi {
     getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
     likePost: (postId: string) => Promise<void>;
     unlikePost: (postId: string) => Promise<void>;
-    commentPost: (postId: string, body: string) => Promise<void>;
+    commentPost: (postId: string, body: string) => Promise<ReducedComment>;
     deletePostComment: (postId: string, commentId: string) => Promise<void>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
@@ -191,8 +191,9 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         await this.axiosInstance.post(`/social/posts/${postId}/unlike`);
     }
 
-    async commentPost(postId: string, body: string) {
-        await this.axiosInstance.post(`/social/posts/${postId}/comments`, { body });
+    async commentPost(postId: string, body: string): Promise<ReducedComment> {
+        const { data } = await this.axiosInstance.post(`/social/posts/${postId}/comments`, { body });
+        return ReducedCommentSchema.parse(data);
     }
 
     async deletePostComment(postId: string, commentId: string) {

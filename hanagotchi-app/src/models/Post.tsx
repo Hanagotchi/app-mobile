@@ -22,6 +22,15 @@ export type PostAuthor = z.infer<typeof PostAuthorSchema>;
 export const CommentAuthorSchema = AuthorSchema;
 export type CommentAuthor = z.infer<typeof CommentAuthorSchema>;
 
+export const ReducedCommentSchema = z.object({
+    id: z.string(),
+    author: z.number(),
+    content: z.string(),
+    created_at: z.coerce.date(),
+})
+
+export type ReducedComment = z.infer<typeof ReducedCommentSchema>;
+
 export const CommentSchema = z.object({
     id: z.string(),
     author: CommentAuthorSchema,
