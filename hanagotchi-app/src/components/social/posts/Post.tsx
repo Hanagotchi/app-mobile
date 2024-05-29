@@ -1,10 +1,10 @@
 import { View, StyleSheet, Image, TouchableOpacity, FlatList } from "react-native"
 import { ReducedPost as ReducedPostType, PostAuthor, Post } from "../../../models/Post"
 import AuthorDetails from "./AuthorDetails"
-import { Divider, IconButton, Menu, Text } from "react-native-paper"
+import { IconButton, Menu, Text } from "react-native-paper"
 import { BEIGE, BROWN_DARK, GREEN } from "../../../themes/globalThemes"
 import { useToggle } from "../../../hooks/useToggle"
-import React from "react"
+import React, { useState } from "react"
 import ExpandibleImage from "../../ExpandibleImage"
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi"
 
@@ -57,19 +57,26 @@ type PostActionsProps = {
 
 const PostActions: React.FC<PostActionsProps> = ({postId, isLikedByMe, likeCount, commentCount}) => {
     const [like, toggleLike] = useToggle(isLikedByMe);
+    const [likes, setLikes] = useState<number>(likeCount);
     const api = useHanagotchiApi();
 
     const handlePressLike = async () => {
-        if (like) await api.unlikePost(postId);
-        else await api.likePost(postId);
-        toggleLike()
+        if (like) {
+            await api.unlikePost(postId);
+            setLikes(likes-1);
+        }
+        else {
+            await api.likePost(postId);
+            setLikes(likes+1);
+        }
+        toggleLike();
     }
 
     return (
         <View style={style.actions}>
             <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
                 <IconButton icon={`thumb-up${like ? "" : "-outline"}`} onPress={handlePressLike}/>
-                <Text>{likeCount}</Text>
+                <Text>{likes}</Text>
             </View>
             <View style={{flexDirection: "row", alignItems: "center", gap: -10}}>
                 <IconButton icon={"comment"}/>
