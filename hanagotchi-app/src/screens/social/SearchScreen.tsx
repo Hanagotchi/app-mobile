@@ -33,22 +33,20 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
       { key: 'second', title: 'Usuarios' },
     ]);
 
-    const FirstRoute = () => (
-        <SearchResultPostsScreen
-            tag={query}
-            handleRedirectToDetails={handleRedirectToDetails}
-            handleRedirectToProfile={handleRedirectToProfile}
-        />
-    );
-    
-    const SecondRoute = () => (
-        <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
-    );
-    
-    const renderScene = SceneMap({
-        first: FirstRoute,
-        second: SecondRoute,
-    });
+    const renderScene = ({ route }) => {
+        switch (route.key) {
+          case 'first':
+            return <SearchResultPostsScreen
+                tag={query}
+                handleRedirectToDetails={handleRedirectToDetails}
+                handleRedirectToProfile={handleRedirectToProfile}
+            />;
+          case 'second':
+            return <View style={{ flex: 1, backgroundColor: '#673ab7' }} />;
+          default:
+            return null;
+        }
+      };
 
     const [query, setQuery] = useState<string>(route.params.initSearch);
     const userId = useSession((state) => state.session!.userId);
@@ -73,21 +71,22 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
         headerTitleStyle: {display: "none"},
     })
 
-    const handleRedirectToProfile = (author: PostAuthor) => {
+    const handleRedirectToProfile = useMemo(() => (author: PostAuthor) => {
         navigation.navigate(
             "SocialProfile", 
             {profileId: author.id, headerTitle: author.id === userId ? "Mi perfil" : author.name!}
         )
-    };
+    }, [navigation]);
     
-    const handleRedirectToDetails = (postId: string) => {
+    const handleRedirectToDetails = useMemo(() => (postId: string) => {
         navigation.navigate(
             "PostDetails",
             {postId: postId}
         )
-    }
+    }, [navigation]);
 
     return <TabView
+        lazy
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
@@ -95,18 +94,5 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
     />
 
 }
-
-const style = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: "center",
-        paddingTop: 20,
-        paddingBottom: 20,
-        paddingHorizontal: "5%",
-        gap: 20,
-        backgroundColor: BACKGROUND_COLOR,
-    }
-});
 
 export default SearchScreen;

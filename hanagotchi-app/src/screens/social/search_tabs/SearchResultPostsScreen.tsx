@@ -55,9 +55,4 @@ const style = StyleSheet.create({
     }
 });
 
-const areSamePosts = (prevProps: SearchResultPostsScreenProps, nextProps: SearchResultPostsScreenProps) => {
-    console.log(prevProps.tag, nextProps.tag);
-    return prevProps.tag === nextProps.tag;
-}
-
-export default React.memo(SearchResultPostsScreen, areSamePosts);
+export default React.memo(SearchResultPostsScreen);
