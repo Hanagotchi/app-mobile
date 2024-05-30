@@ -1,5 +1,5 @@
-import { SafeAreaView, StyleSheet } from "react-native";
-import { BACKGROUND_COLOR, BEIGE, BEIGE_DARK, GREEN } from "../../themes/globalThemes";
+import { SafeAreaView, StyleSheet, View, useWindowDimensions } from "react-native";
+import { BACKGROUND_COLOR, BEIGE, BEIGE_DARK, BROWN, GREEN } from "../../themes/globalThemes";
 import { Appbar, Searchbar, Text } from "react-native-paper";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
@@ -13,6 +13,8 @@ import { PostAuthor } from "../../models/Post";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { useSession } from "../../hooks/useSession";
 import PostList from "../../components/social/posts/PostList";
+import { TabView, SceneMap } from "react-native-tab-view";
+import SearchResultPostsScreen from "./search_tabs/SearchResultPostsScreen";
 
 type SearchScreenProps = CompositeScreenProps<
     DrawerScreenProps<SocialDrawerList, "Search">,
@@ -23,9 +25,53 @@ type SearchScreenProps = CompositeScreenProps<
 >;
 
 const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
+    const layout = useWindowDimensions();
+
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
+      { key: 'first', title: 'Publicaciones' },
+      { key: 'second', title: 'Usuarios' },
+    ]);
+
+    const FirstRoute = () => (
+        <SearchResultPostsScreen
+            tag={query}
+            handleRedirectToDetails={handleRedirectToDetails}
+            handleRedirectToProfile={handleRedirectToProfile}
+        />
+    );
+    
+    const SecondRoute = () => (
+        <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
+    );
+    
+    const renderScene = SceneMap({
+        first: FirstRoute,
+        second: SecondRoute,
+    });
+
     const [query, setQuery] = useState<string>(route.params.initSearch);
-    const api = useHanagotchiApi();
     const userId = useSession((state) => state.session!.userId);
+
+    navigation.setOptions({
+        headerRight: () => (
+            <Searchbar 
+                value={query} 
+                theme={{ colors: { elevation: {level3: BEIGE} } }}
+                onChangeText={(str) => setQuery(str.trim())}
+                style={{
+                    marginHorizontal: 20,
+                    width: 300,
+                    height: "80%",
+                    borderRadius: 10,
+                }}
+                inputStyle={{
+                    paddingBottom: 10,
+                }}
+            />
+        ),
+        headerTitleStyle: {display: "none"},
+    })
 
     const handleRedirectToProfile = (author: PostAuthor) => {
         navigation.navigate(
@@ -41,31 +87,13 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
         )
     }
 
-    const updatePost = useMemo(() => {
-        if (query.length >= 2) {
-            return (pageNum: number) => api.getPosts({
-                page: pageNum,
-                per_page: 10,
-                tag: query,
-            });
-        } else {
-            return (pageNum: number) => Promise.resolve([]);
-        }
-    }, [query])
+    return <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+    />
 
-    return <SafeAreaView style={style.container}>
-        <Searchbar 
-            value={query} 
-            theme={{ colors: { elevation: {level3: BEIGE} } }}
-            onChangeText={setQuery}
-        />
-        <PostList
-            updatePosts={updatePost}
-            myId={userId}
-            onRedirectToProfile={handleRedirectToProfile}
-            onRedirectToDetails={handleRedirectToDetails}
-        />
-    </SafeAreaView>
 }
 
 const style = StyleSheet.create({
