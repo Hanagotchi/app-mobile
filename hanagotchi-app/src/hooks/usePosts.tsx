@@ -32,6 +32,11 @@ export function usePosts(
         execFetch(pageNumber);
     }, []);
 
+    useEffect(() => {
+        setPosts([]);
+        restart();
+    }, [fetchPostsFn])
+
     const next = () => {
         if (noMorePosts) return;
         setPageNumber(n => n+1)

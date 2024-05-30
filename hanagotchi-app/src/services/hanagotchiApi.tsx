@@ -50,6 +50,7 @@ export interface HanagotchiApi {
     deletePost: (postId: string) => Promise<void>;
     getDevicePlants: (params?: {id_plant?: number, limit?: number}) => Promise<GetDevicePlantsResponse | null>
     getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
+    getPosts: (params: {page: number, per_page: number, author?: string, tag?: string}) => Promise<ReducedPost[]>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
     getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
@@ -165,7 +166,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     async createPost(body: PostData) {
         const { data } = await this.axiosInstance.post(`/social/posts`, body);
         const parsedData = PostSchema.parse(data);
-
         return parsedData;
     }
 
@@ -176,6 +176,12 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getMyFeed(page: number, size: number) {
         const { data } = await this.axiosInstance.get(`/social/users/me/feed?page=${page}&per_page=${size}`);
+        const result = GetMyFeedResponseSchema.parse(data);
+        return result;
+    }
+
+    async getPosts(params: {page: number, per_page: number, author?: string, tag?: string}) {
+        const { data } = await this.axiosInstance.get(`/social/posts`, {params});
         const result = GetMyFeedResponseSchema.parse(data);
         return result;
     }
