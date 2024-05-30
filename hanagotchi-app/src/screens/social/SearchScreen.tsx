@@ -1,6 +1,6 @@
-import { SafeAreaView, StyleSheet, View, useWindowDimensions } from "react-native";
-import { BACKGROUND_COLOR, BEIGE, BEIGE_DARK, BROWN, GREEN } from "../../themes/globalThemes";
-import { Appbar, Searchbar, Text } from "react-native-paper";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT, GREEN } from "../../themes/globalThemes";
+import { Searchbar } from "react-native-paper";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
@@ -8,13 +8,11 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useMemo, useState } from "react";
-import { useApiFetch } from "../../hooks/useApiFetch";
 import { PostAuthor } from "../../models/Post";
-import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { useSession } from "../../hooks/useSession";
-import PostList from "../../components/social/posts/PostList";
-import { TabView, SceneMap } from "react-native-tab-view";
+import { TabView } from "react-native-tab-view";
 import SearchResultPostsScreen from "./search_tabs/SearchResultPostsScreen";
+import SearchTabBar from "../../components/social/SearchTabBar";
 
 type SearchScreenProps = CompositeScreenProps<
     DrawerScreenProps<SocialDrawerList, "Search">,
@@ -87,6 +85,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
 
     return <TabView
         lazy
+        renderTabBar={SearchTabBar}
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
