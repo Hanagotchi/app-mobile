@@ -18,6 +18,8 @@ import {
     GetUsersProfileResponseSchema,
     GetMyFeedResponseSchema,
     GetReminders,
+    GetSuscribedTags,
+    GetSuscribedTagsSchema,
 } from "../models/hanagotchiApi";
 
 import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser } from "../models/User";
@@ -58,6 +60,9 @@ export interface HanagotchiApi {
     getReminders: () => Promise<Reminder[]>;
     deleteReminder: (reminderId: number) => Promise<void>;
     editReminder: (reminderId: number, date_time: Date, content: string) => Promise<void>;
+    getSuscribedTags: () => Promise<GetSuscribedTags>;
+    subscribeToTag: (tag: string) => Promise<void>;
+    unsubscribeToTag: (tag: string) => Promise<void>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -213,5 +218,18 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     
     async editReminder(reminderId: number, date_time: Date, content: string): Promise<void>{
         await this.axiosInstance.patch(`/users/me/notifications/${reminderId}`, {date_time, content});
+    }
+
+    async getSuscribedTags(): Promise<GetSuscribedTags> {
+        const { data } = await this.axiosInstance.get(`/social/users/me/tags`);
+        return GetSuscribedTagsSchema.parse(data);
+    }
+
+    async subscribeToTag(tag: string): Promise<void> {
+        await this.axiosInstance.post(`/social/users/tags/subscribe`, {tag});
+    }
+
+    async unsubscribeToTag(tag: string): Promise<void> {
+        await this.axiosInstance.post(`/social/users/tags/unsubscribe`, {tag});
     }
 }

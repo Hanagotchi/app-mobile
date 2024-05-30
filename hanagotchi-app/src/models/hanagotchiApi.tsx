@@ -6,6 +6,7 @@ import {PlantSchema} from "./Plant";
 import {PlantTypeSchema} from "./PlantType";
 import { ReducedPost, ReducedPostSchema } from "./Post";
 import { ReminderSchema } from "./Reminder";
+import { TagSchema } from "./Tags";
 
 export const LoginResponseSchema = z.object({
     data: z.object({
@@ -60,3 +61,6 @@ export type GetUsersProfileResponse = z.infer<typeof GetUsersProfileResponseSche
 
 export const GetMyFeedResponseSchema = z.array(ReducedPostSchema);
 export type GetMyFeedResponse = z.infer<typeof GetMyFeedResponseSchema>;
+
+export const GetSuscribedTagsSchema = z.array(TagSchema);
+export type GetSuscribedTags = z.infer<typeof GetSuscribedTagsSchema>;
