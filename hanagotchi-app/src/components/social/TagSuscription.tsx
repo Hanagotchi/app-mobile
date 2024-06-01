@@ -38,7 +38,7 @@ const TagSuscription: React.FC<TagSuscriptionProps> = ({tag, isSuscribed, suscri
             style={style.tag}
             numberOfLines={1}
         >
-            #{tag}
+            #{tag.toLocaleLowerCase()}
         </Text>
         <LoaderButton 
             onPress={subscribed ? onPressUnsubscribe : onPressSubscribe}
