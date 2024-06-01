@@ -5,14 +5,17 @@ import { useHanagotchiApi } from "./useHanagotchiApi"
 
 const useTags = () => {
     const hanagotchiApi = useHanagotchiApi();
-    const {isFetching, fetchedData: tagList, error} = useApiFetch<GetSuscribedTags>(hanagotchiApi.getSuscribedTags, []);
+    const {isFetching, fetchedData: tagList, error} = useApiFetch<GetSuscribedTags>(() => hanagotchiApi.getSuscribedTags(), []);
     const [tags, setTags] = useState<Set<string>>(new Set());
     
-    useEffect(() => setTags(new Set(tagList)), [tagList])
+    useEffect(() => setTags(new Set(tagList)), [tagList]);
     
     const subscribe = async (newTag: string) => {
         await hanagotchiApi.subscribeToTag(newTag);
-        setTags((oldSet) => oldSet.add(newTag))
+        setTags((oldSet) => {
+            oldSet.add(newTag);
+            return oldSet;
+        })
     }
 
     const unsubscribe = async (tag: string) => {
