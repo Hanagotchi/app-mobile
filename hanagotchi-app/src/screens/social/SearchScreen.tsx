@@ -1,5 +1,5 @@
-import { StyleSheet, View, useWindowDimensions } from "react-native";
-import { BACKGROUND_COLOR, BEIGE, BROWN_LIGHT, GREEN } from "../../themes/globalThemes";
+import { useWindowDimensions } from "react-native";
+import { BEIGE } from "../../themes/globalThemes";
 import { Searchbar } from "react-native-paper";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { DrawerScreenProps } from "@react-navigation/drawer";

@@ -6,6 +6,8 @@ import { PostAuthor, ReducedPost as ReducedPostType } from "../../../models/Post
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
 import { useCallback } from "react";
+import ErrorPlaceholder from "../../ErrorPlaceholder";
+import NoContent from "../../NoContent";
 
 type ListFooterProps = {
     isFetching: boolean,
@@ -60,6 +62,10 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
     }
 
+    if (error !== null) {
+        return <ErrorPlaceholder />
+    }
+
 
     return (
             <FlatList 
@@ -78,7 +84,7 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
                 windowSize={5}
                 ItemSeparatorComponent={() => <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />}
                 showsVerticalScrollIndicator={false}
-                ListEmptyComponent={<Text>No hay publicaciones en este momento</Text>}
+                ListEmptyComponent={<NoContent />}
             />
     );
 }
