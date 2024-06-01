@@ -13,6 +13,7 @@ import { useSession } from "../../hooks/useSession";
 import { TabView } from "react-native-tab-view";
 import SearchResultPostsScreen from "./search_tabs/SearchResultPostsScreen";
 import SearchTabBar from "../../components/social/SearchTabBar";
+import SearchResultUsersScreen from "./search_tabs/SearchResultUsersScreen";
 
 type SearchScreenProps = CompositeScreenProps<
     DrawerScreenProps<SocialDrawerList, "Search">,
@@ -40,7 +41,10 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
                 handleRedirectToProfile={handleRedirectToProfile}
             />;
           case 'second':
-            return <View style={{ flex: 1, backgroundColor: '#673ab7' }} />;
+            return <SearchResultUsersScreen 
+                nicknameQuery={query}
+                handleRedirectToProfile={handleRedirectToProfile}
+            />;
           default:
             return null;
         }

@@ -4,7 +4,7 @@ import {
   } from '@react-navigation/drawer';
 import { DrawerDescriptorMap, DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import { DrawerNavigationState, ParamListBase } from '@react-navigation/native';
-import {ActivityIndicator, Drawer, List} from "react-native-paper";
+import {ActivityIndicator, Drawer, List, Text} from "react-native-paper";
 import useMyUser from '../../hooks/useMyUser';
 import AuthorDetails from '../../components/social/posts/AuthorDetails';
 import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN } from '../../themes/globalThemes';
@@ -16,6 +16,9 @@ import { UserProfile } from '../../models/User';
 import { PostAuthor } from '../../models/Post';
 import useTags from '../../hooks/useTags';
 
+const ErrorText = () => {
+    return <Text>Ha ocurrido un error inesperado</Text>
+}
 
 const drawerItemColor = (color: string) => ({ colors: {
     onSecondaryContainer: color,
@@ -52,7 +55,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     };
 
     if (isFetchingMyUser || isFetchingUsersProfiles || !userProfiles || !myUser) {
-        return <DrawerContentScrollView {...props} style={style.container}>
+        return <DrawerContentScrollView {...props} style={style.container} contentContainerStyle={{alignItems: "center"}}>
             <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
         </DrawerContentScrollView>
     }
@@ -106,7 +109,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {Array.from(tags).map((tag) => (
+                            {tagsError ? <ErrorText /> : Array.from(tags).map((tag) => (
                                 <Drawer.Item
                                     key={tag}
                                     id={tag} 
