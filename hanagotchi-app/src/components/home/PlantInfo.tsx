@@ -94,7 +94,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
                 }
                 <View style={{ gap: 10, justifyContent: "center" }}>
                     <Pressable onPress={() => redirectToCreateLog(plant.id)}>
-                        <Icon size={30} source={plus} />
+                    <Icon size={30} source={plus} />
                     </Pressable>
                     <Pressable onPress={() => plantInfoDialogRef.current?.showDialog()}>
                         <Icon size={30} source={info} />

@@ -13,10 +13,13 @@ const sizes = {
 type AuthorDetailsProp = {
     author: PostAuthor;
     onTouch: (author: PostAuthor) => void;
+    style_name?: any;
+    style_nickname?: any;
     size?: "post" | "comment";
 }
 
-const AuthorDetails: React.FC<AuthorDetailsProp> = ({author, onTouch, size = "post"}) => {
+const AuthorDetails: React.FC<AuthorDetailsProp> = ({author, onTouch, style_name, style_nickname, size = "post"}) => {
+
     return (
         <View style={style.container}>
             <TouchableWithoutFeedback onPress={() => onTouch(author)}>
@@ -26,8 +29,8 @@ const AuthorDetails: React.FC<AuthorDetailsProp> = ({author, onTouch, size = "po
                 />
             </TouchableWithoutFeedback>
             <View>
-                <Text style={style.name} onPress={() => onTouch(author)}>{author.name?.toUpperCase() ?? "undefined"}</Text>
-                <Text style={style.nickname} onPress={() => onTouch(author)}>@{author.nickname ?? "undefined"}</Text>
+                <Text style={{...style_name, ...style.name}} onPress={() => onTouch(author)}>{author.name ?? "undefined"}</Text>
+                <Text style={{...style_nickname, ...style.nickname}} onPress={() => onTouch(author)}>@{author.nickname ?? "undefined"}</Text>
             </View>
         </View>
     );
