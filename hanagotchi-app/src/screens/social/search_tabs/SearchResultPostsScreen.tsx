@@ -21,7 +21,7 @@ const SearchResultPostsScreen: React.FC<SearchResultPostsScreenProps> = ({
 }) => {
     const api = useHanagotchiApi();
     const userId = useSession((state) => state.session!.userId);
-    const {isFetching, tags: myTags, error, subscribe} = useTags();
+    const {isFetching, tags: myTags, error, subscribe, unsubscribe} = useTags();
     const isSuscribed = useMemo(() => {
         console.log(myTags);
         return myTags.has(tag.toLowerCase());
@@ -59,6 +59,7 @@ const SearchResultPostsScreen: React.FC<SearchResultPostsScreenProps> = ({
                     tag={tag}
                     isSuscribed={isSuscribed}
                     suscribeToTag={subscribe}
+                    unSuscribeToTag={unsubscribe}
                     showError={error !== null}
                 />
                 <Divider bold style={{width: "100%"}}/>

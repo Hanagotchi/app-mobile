@@ -3,7 +3,7 @@ import { GetSuscribedTags } from "../models/hanagotchiApi";
 import { useApiFetch } from "./useApiFetch"
 import { useHanagotchiApi } from "./useHanagotchiApi"
 
-const useTags = (deps: React.DependencyList) => {
+const useTags = (deps: React.DependencyList = []) => {
     const hanagotchiApi = useHanagotchiApi();
     const {isFetching, fetchedData: tagList, error} = useApiFetch<GetSuscribedTags>(() => hanagotchiApi.getSuscribedTags(), [] ,deps);
     const [tags, setTags] = useState<Set<string>>(new Set());

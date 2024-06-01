@@ -45,7 +45,6 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         isFetching: isFetchingTags,
         tags,
         error: tagsError,
-        unsubscribe,
     } = useTags([drawerStatus]);
 
     if (error) {

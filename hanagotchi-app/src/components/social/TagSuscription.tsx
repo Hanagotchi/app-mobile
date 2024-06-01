@@ -8,10 +8,11 @@ type TagSuscriptionProps = {
     tag: string;
     isSuscribed: boolean
     suscribeToTag: (newTag: string) => Promise<void>;
+    unSuscribeToTag: (tag: string) => Promise<void>;
     showError?: boolean;
 }
 
-const TagSuscription: React.FC<TagSuscriptionProps> = ({tag, isSuscribed, suscribeToTag, showError = false}) => {
+const TagSuscription: React.FC<TagSuscriptionProps> = ({tag, isSuscribed, suscribeToTag, unSuscribeToTag, showError = false}) => {
     const [subscribed, setSuscribed] = useState<boolean>(isSuscribed);
     useEffect(() => setSuscribed(isSuscribed), [tag]);
 
@@ -21,9 +22,14 @@ const TagSuscription: React.FC<TagSuscriptionProps> = ({tag, isSuscribed, suscri
         </View>
     }
 
-    const onPressSuscribe = async () => {
+    const onPressSubscribe = async () => {
         await suscribeToTag(tag);
         setSuscribed(true);
+    }
+
+    const onPressUnsubscribe = async () => {
+        await unSuscribeToTag(tag);
+        setSuscribed(false);
     }
 
     return <View style={style.container}>
@@ -35,12 +41,11 @@ const TagSuscription: React.FC<TagSuscriptionProps> = ({tag, isSuscribed, suscri
             #{tag}
         </Text>
         <LoaderButton 
-            disabled={subscribed}
-            onPress={onPressSuscribe}
+            onPress={subscribed ? onPressUnsubscribe : onPressSubscribe}
             style={subscribed ? style.disabledButton : style.enabledButton}
         >
             <Text style={subscribed ? style.disabledButtonLabel : style.enabledButtonLabel}>
-                SUSCRIBIRSE
+                {subscribed ? "DESUSCRIBIRSE" : "SUSCRIBIRSE"}
             </Text>
         </LoaderButton>
     </View>
