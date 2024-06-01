@@ -1,5 +1,6 @@
 import {
     DrawerContentScrollView,
+    useDrawerStatus,
   } from '@react-navigation/drawer';
 import { DrawerDescriptorMap, DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import { DrawerNavigationState, ParamListBase } from '@react-navigation/native';
@@ -13,6 +14,7 @@ import { useApiFetch } from '../../hooks/useApiFetch';
 import { useSession } from '../../hooks/useSession';
 import { UserProfile } from '../../models/User';
 import { PostAuthor } from '../../models/Post';
+import useTags from '../../hooks/useTags';
 
 
 const drawerItemColor = (color: string) => ({ colors: {
@@ -29,6 +31,7 @@ type SidebarContentProps = {
 };
 
 const SidebarContent: React.FC<SidebarContentProps> = (props) => {
+    const drawerStatus = useDrawerStatus();
     const api = useHanagotchiApi();
     const myId = useSession((state) => state.session?.userId);
     const {isFetchingMyUser, myUser} = useMyUser();
@@ -37,6 +40,13 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         fetchedData: userProfiles, 
         error
     } = useApiFetch<UserProfile[]>(() => api.getUsersProfiles({follower: myId}), []);
+
+    const {
+        isFetching: isFetchingTags,
+        tags,
+        error: tagsError,
+        unsubscribe,
+    } = useTags([drawerStatus]);
 
     if (error) {
         throw error
@@ -59,7 +69,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         nickname: myUser.nickname,
                     }}
                     onTouch={(me: PostAuthor) => props.navigation.navigate("SocialProfile", {
-                        profileId: myUser!.id,
+                        profileId: me.id,
                         headerTitle: "Mi perfil"
                     })}
                 />
@@ -97,14 +107,14 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {mockedTags.map((tag) => (
+                            {Array.from(tags).map((tag) => (
                                 <Drawer.Item
                                     key={tag}
                                     id={tag} 
                                     theme={drawerItemColor(BROWN)}
                                     label={`#${tag}`}
                                     style={style.hashtagItem}
-                                    onPress={() => console.log("Navigate to tag search")}
+                                    onPress={() => props.navigation.navigate("Search", {initSearch: tag})}
                                 />  
                             ))}
                         </List.Accordion>

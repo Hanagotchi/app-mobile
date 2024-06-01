@@ -54,6 +54,7 @@ const SocialDrawer: React.FC<SocialDrawerProps> = (props) => {
                 headerStyle: styles.header,
                 headerTintColor: BLACK,
                 headerTitleAlign: "center",
+                unmountOnBlur: true,
             })}/>
         </Drawer.Navigator>
     )
