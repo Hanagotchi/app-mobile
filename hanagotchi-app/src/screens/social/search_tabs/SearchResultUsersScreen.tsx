@@ -2,7 +2,7 @@ import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 import { BACKGROUND_COLOR, BROWN_DARK } from "../../../themes/globalThemes";
 import { ActivityIndicator } from "react-native-paper";
 import { useApiFetch } from "../../../hooks/useApiFetch";
-import { UserProfile } from "../../../models/User";
+import { ReducedUserProfile, UserProfile } from "../../../models/User";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { useSession } from "../../../hooks/useSession";
 import NoContent from "../../../components/NoContent";
@@ -22,7 +22,7 @@ const SearchResultUsersScreen: React.FC<SearchResultUsersScreenProps> = ({nickna
         isFetching, 
         fetchedData: userProfiles, 
         error
-    } = useApiFetch<UserProfile[]>(() => api.getUserProfilesByNickname(nicknameQuery), [], [nicknameQuery]);
+    } = useApiFetch<ReducedUserProfile[]>(() => api.getUserProfilesByNickname(nicknameQuery), [], [nicknameQuery]);
 
     if (isFetching) {
         return (
@@ -61,7 +61,7 @@ const SearchResultUsersScreen: React.FC<SearchResultUsersScreenProps> = ({nickna
         );
     }
 
-    if (userProfiles.length === 0) {
+    if (userProfiles.length === 0 || nicknameQuery.length === 0) {
         return (
             <SafeAreaView style={style.container}>
                 <NoContent />

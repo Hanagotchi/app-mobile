@@ -264,7 +264,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetUsersProfileResponseSchema
             .parse(data)
             .message
-            .filter(u => u.nickname?.startsWith(nickname));
+            .filter(u => u.nickname?.startsWith(nickname.toLowerCase()));
     }
 
     async getPostsByTag(params: {tag: string, page: number, size: number}): Promise<ReducedPost[]> {
