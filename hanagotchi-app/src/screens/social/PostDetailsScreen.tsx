@@ -1,3 +1,4 @@
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { SafeAreaView, StyleSheet, ScrollView, View } from "react-native";
 import { RootStackParamsList } from "../../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -6,7 +7,6 @@ import { useApiFetch } from "../../hooks/useApiFetch";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 import { CommentAuthor, Comment as CommentModel, Post, PostAuthor } from "../../models/Post";
 import { useSession } from "../../hooks/useSession";
-import { useRef, useState, useEffect } from "react";
 import { ActivityIndicator, Divider, FAB, Text } from "react-native-paper";
 import { BACKGROUND_COLOR, BEIGE_DARK, BROWN_DARK, GREEN } from "../../themes/globalThemes";
 import Comment from "../../components/social/posts/Comment";
@@ -27,28 +27,30 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({ route, navigation
   const myId = useSession((state) => state.session?.userId);
   const [comment, setComment] = useState<string>('');
   const [comments, setComments] = useState<CommentModel[]>([]);
+  const [commentCount, setCommentCount] = useState<number>(0);
   const hanagotchiApi = useHanagotchiApi();
   const { isFetching, fetchedData: post, error } = useApiFetch<Post | null>(() => hanagotchiApi.getPostById(postId), null, [postId]);
 
   useEffect(() => {
     if (post && post.comments) {
       setComments(post.comments);
+      setCommentCount(post.comments.length);
     }
   }, [post]);
 
-  const redirectToAuthorProfile = (author: PostAuthor) => {
+  const redirectToAuthorProfile = useCallback((author: PostAuthor) => {
     navigation.navigate(
       "SocialProfile",
       { profileId: author.id, headerTitle: author.id === myId ? "Mi perfil" : author.name! }
     );
-  };
+  }, [navigation, myId]);
 
-  const deletePost = () => {
-    hanagotchiApi.deletePost(postId);
+  const deletePost = useCallback(async () => {
+    await hanagotchiApi.deletePost(postId);
     navigation.goBack();
-  };
+  }, [hanagotchiApi, postId, navigation]);
 
-  const addComment = async () => {
+  const addComment = useCallback(async () => {
     const newReducedComment = await hanagotchiApi.commentPost(postId, comment);
     const me = await hanagotchiApi.getUser(myId!);
     const author: CommentAuthor = {
@@ -62,56 +64,67 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({ route, navigation
       ...newReducedComment,
       author: author
     };
-    setComments([...comments, newComment]);
+    setComments((prevComments) => [...prevComments, newComment]);
     setComment('');
+    setCommentCount((prevCount) => prevCount + 1);
     ref.current?.hideDialog();
-  };
+  }, [hanagotchiApi, comment, postId, myId]);
 
-  const deleteComment = async (postId: string, commentId: string) => {
+  const deleteComment = useCallback(async (commentId: string) => {
     await hanagotchiApi.deletePostComment(postId, commentId);
-    setComments(comments.filter(c => c.id !== commentId));
-  };
+    setComments((prevComments) => prevComments.filter(c => c.id !== commentId));
+    setCommentCount((prevCount) => prevCount - 1);
+  }, [hanagotchiApi, postId]);
 
   if (!error && isFetching) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{ justifyContent: "center", flexGrow: 1 }} />
+        <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={styles.loader} />
       </SafeAreaView>
     );
   }
 
-  if (error) throw error;
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorText}>Error loading post: {error.message}</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <Dialog
         ref={ref}
         title={"Agregar comentario"}
-        primaryButtonProps={{ onPress: (async () => { await addComment() }) }}
+        primaryButtonProps={{ onPress: addComment }}
         onDismiss={() => ref.current?.hideDialog()}
-        secondaryButtonProps={{ onPress: () => { ref.current?.hideDialog() } }}
+        secondaryButtonProps={{ onPress: () => ref.current?.hideDialog() }}
       >
-        <View style={{ gap: 10 }}>
-          <TextInput label="Comentario" value={comment} numberOfLines={2} onChangeText={(text) => setComment(text)} />
+        <View style={styles.dialogContent}>
+          <TextInput label="Comentario" value={comment} numberOfLines={2} onChangeText={setComment} />
         </View>
       </Dialog>
-      <ScrollView contentContainerStyle={{ gap: 10 }}>
-        <DetailedPost
-          post={post!}
-          myId={myId!}
-          onRedirectToProfile={redirectToAuthorProfile}
-          onDelete={deletePost}
-        />
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {post && (
+          <DetailedPost
+            post={post}
+            myId={myId!}
+            onRedirectToProfile={redirectToAuthorProfile}
+            onDelete={deletePost}
+            commentCount={commentCount}
+          />
+        )}
         {comments.map((comment) => (
           <View key={comment.id}>
-            <View style={{ marginBottom: 10 }}>
+            <View style={styles.commentDivider}>
               <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />
             </View>
             <Comment
               postId={postId}
               comment={comment}
               onRedirectToProfile={redirectToAuthorProfile}
-              onDelete={() => deleteComment(postId, comment.id)}
+              onDelete={() => deleteComment(comment.id)}
               myId={myId!}
             />
           </View>
@@ -124,7 +137,7 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({ route, navigation
         variant="primary"
         size="medium"
         color={BACKGROUND_COLOR}
-        onPress={() => { ref.current?.showDialog() }}
+        onPress={() => ref.current?.showDialog()}
       />
     </SafeAreaView>
   );
@@ -140,6 +153,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: "5%",
     gap: 10,
     backgroundColor: BACKGROUND_COLOR,
+  },
+  loader: {
+    justifyContent: "center",
+    flexGrow: 1,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+  },
+  dialogContent: {
+    gap: 10,
+  },
+  scrollViewContent: {
+    gap: 10,
+  },
+  commentDivider: {
+    marginBottom: 10,
   },
   fab: {
     bottom: "4%",
