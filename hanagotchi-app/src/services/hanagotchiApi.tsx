@@ -25,7 +25,7 @@ import {
 
 import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser, UserProfileSchema, ReducedUserProfile, ReducedUserProfileSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
-import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
+import { ReducedPost, PostData, PostSchema, Post, Comment, CommentSchema, ReducedCommentSchema, ReducedComment } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
 import {Measurement, MeasurementSchema} from "../models/Measurement";
 import {AxiosInstance} from "axios";
@@ -54,6 +54,10 @@ export interface HanagotchiApi {
     getDevicePlants: (params?: {id_plant?: number, limit?: number}) => Promise<GetDevicePlantsResponse | null>
     getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
     //getPosts: (params: {page: number, per_page: number, author?: string, tag?: string}) => Promise<ReducedPost[]>;
+    likePost: (postId: string) => Promise<void>;
+    unlikePost: (postId: string) => Promise<void>;
+    commentPost: (postId: string, body: string) => Promise<ReducedComment>;
+    deletePostComment: (postId: string, commentId: string) => Promise<void>;
     getAllPostsOfUser: (userId: number, page: number, size: number) => Promise<ReducedPost[]>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
@@ -189,6 +193,25 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         const { data } = await this.axiosInstance.get(`/social/users/me/feed?page=${page}&per_page=${size}`);
         const result = GetMyFeedResponseSchema.parse(data);
         return result;
+    }
+
+    async likePost(postId: string) {
+        await this.axiosInstance.post(`/social/posts/${postId}/like`);
+    }
+
+    async unlikePost(postId: string) {
+        await this.axiosInstance.post(`/social/posts/${postId}/unlike`);
+    }
+
+    async commentPost(postId: string, body: string): Promise<ReducedComment> {
+        const { data } = await this.axiosInstance.post(`/social/posts/${postId}/comments`, { body });
+        return ReducedCommentSchema.parse(data);
+    }
+
+    async deletePostComment(postId: string, commentId: string) {
+        await this.axiosInstance.delete(`/social/posts/${postId}/comments`, {
+            data: { comment_id: commentId }
+        });
     }
 
     async getAllPostsOfUser(userId: number, page: number, size: number) {

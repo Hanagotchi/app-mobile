@@ -23,6 +23,15 @@ export type PostAuthor = z.infer<typeof PostAuthorSchema>;
 export const CommentAuthorSchema = AuthorSchema;
 export type CommentAuthor = z.infer<typeof CommentAuthorSchema>;
 
+export const ReducedCommentSchema = z.object({
+    id: z.string(),
+    author: z.number(),
+    content: z.string(),
+    created_at: z.coerce.date(),
+})
+
+export type ReducedComment = z.infer<typeof ReducedCommentSchema>;
+
 export const CommentSchema = z.object({
     id: z.string(),
     author: CommentAuthorSchema,
@@ -37,6 +46,7 @@ export const PostSchema = z.object({
     author: PostAuthorSchema,
     content: z.string(),
     likes_count: z.number(),
+    liked_by_me: z.boolean(),
     comments_count: z.number().nullish(),
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),
@@ -51,6 +61,7 @@ export const ReducedPostSchema = z.object({
     author: PostAuthorSchema,
     content: z.string(),
     likes_count: z.number(),
+    liked_by_me: z.boolean(),
     comments_count: z.number().nullish(),
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),

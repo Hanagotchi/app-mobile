@@ -8,19 +8,20 @@ import { useToggle } from "../../../hooks/useToggle";
 import { BEIGE, BROWN_DARK, GREEN } from "../../../themes/globalThemes";
 
 type CommentHeaderProps = {
+    postId: string;
     myId: number;
     commentId: string;
     author: CommentAuthor;
     onRedirectToProfile: (author: PostAuthor) => void;
-    onDelete: (postId: string) => void;
+    onDelete: (postId: string, commentId: string) => void;
 }
 
-const CommentHeader: React.FC<CommentHeaderProps> = ({myId, commentId, author, onDelete, onRedirectToProfile}) => {
+const CommentHeader: React.FC<CommentHeaderProps> = ({postId, myId, commentId, author, onDelete, onRedirectToProfile}) => {
     const [menuOpen, toggleMenu] = useToggle(false);
     const iAmTheAuthor = author.id === myId;
 
     const handleDelete = () => {
-        onDelete(commentId);
+        onDelete(postId, commentId);
         toggleMenu();
     }
 
@@ -39,9 +40,9 @@ const CommentHeader: React.FC<CommentHeaderProps> = ({myId, commentId, author, o
                 onPress={handleDelete}
                 style={{minWidth: "50%"}} 
                 />}
-                <Menu.Item 
+                {/* <Menu.Item 
                     title={`Id: ${commentId}`} 
-                />
+                /> */}
             </Menu>
         </View>
     );
@@ -62,15 +63,17 @@ const CommentFooter: React.FC<CommentFooterProps> = ({createdAt}) => {
 }
 
 type CommentProps = {
+    postId: string,
     myId: number,
     comment: CommentModel;
     onRedirectToProfile: (author: PostAuthor) => void;
-    onDelete: (postId: string) => void;
+    onDelete: (postId: string, commentId: string) => void;
 }
 
-const Comment: React.FC<CommentProps> = ({myId, comment, onRedirectToProfile, onDelete}) => {
+const Comment: React.FC<CommentProps> = ({postId, myId, comment, onRedirectToProfile, onDelete}) => {
     return <View style={style.container}>
         <CommentHeader 
+            postId={postId}
             myId={myId}
             commentId={comment.id}
             author={comment.author}
