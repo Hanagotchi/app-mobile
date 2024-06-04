@@ -92,7 +92,7 @@ const PostDetailsScreen: React.FC<PostDetailsScreenProps> = ({ route, navigation
         secondaryButtonProps={{ onPress: () => { ref.current?.hideDialog() } }}
       >
         <View style={{ gap: 10 }}>
-          <TextInput label="Comentario" value={comment} onChangeText={(text) => setComment(text)} />
+          <TextInput label="Comentario" value={comment} numberOfLines={2} onChangeText={(text) => setComment(text)} />
         </View>
       </Dialog>
       <ScrollView contentContainerStyle={{ gap: 10 }}>
