@@ -49,6 +49,7 @@ export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children })
       // Do something with response data
       // console.log("Response", response);
 
+      console.log("Success", response);
       return response;
     },
     function (error) {

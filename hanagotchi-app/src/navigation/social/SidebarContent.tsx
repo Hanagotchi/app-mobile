@@ -11,7 +11,7 @@ import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN } from '../../themes/globalT
 import { StyleSheet, View } from 'react-native';
 import { useHanagotchiApi } from '../../hooks/useHanagotchiApi';
 import { useSession } from '../../hooks/useSession';
-import { UserProfile } from '../../models/User';
+import { ReducedUserProfile, UserProfile } from '../../models/User';
 import { PostAuthor } from '../../models/Post';
 import useTags from '../../hooks/useTags';
 import useMyProfile from '../../hooks/useMyProfile';
@@ -43,7 +43,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         fetchedData: userProfiles, 
         setFetchedData,
         error
-    } = useApiFetch<UserProfile[]>(() => api.getFollowing({user_id: myId}), [], [drawerStatus]);
+    } = useApiFetch<ReducedUserProfile[]>(() => api.getFollowing({user_id: myId}), [], [drawerStatus]);
 
     const {
         isFetching: isFetchingTags,
@@ -56,15 +56,20 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     };
 
     const handleUnfollowUser = (userId: number) => {
-        if (!userProfiles.find(u => u._id === userId)) {
+        if (!userProfiles.find(u => u.id === userId)) {
             return;
         }
-        setFetchedData(userProfiles.filter(u => u._id !== userId));
+        setFetchedData(userProfiles.filter(u => u.id !== userId));
     }
 
     const handleFollowUser = async (userId: number) => {
         const user = await api.getUserProfile(userId);
-        userProfiles.concat(user);
+        userProfiles.concat({
+            id: user._id,
+            name: user.name,
+            nickname: user.nickname,
+            photo: user.photo
+        });
         setFetchedData(userProfiles);
     }
 
@@ -150,10 +155,10 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {userProfiles.filter(u => u._id !== myId).map((user) => (
+                            {userProfiles.filter(u => u.id !== myId).map((user) => (
                                 <Drawer.Item
-                                    key={user._id.toString()}
-                                    id={user._id.toString()} 
+                                    key={user.id.toString()}
+                                    id={user.id.toString()} 
                                     theme={drawerItemColor(BROWN)}
                                     label={user.name ?? ""}
                                     icon="account"
@@ -162,7 +167,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                     onPress={() => props.navigation.navigate(
                                         "SocialProfile", 
                                         {
-                                            profileId: user._id, 
+                                            profileId: user.id, 
                                             headerTitle: user.name,
                                             handleFollowUser: handleFollowUser,
                                             handleUnfollowUser: handleUnfollowUser,

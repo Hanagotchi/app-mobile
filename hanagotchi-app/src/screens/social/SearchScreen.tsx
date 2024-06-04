@@ -7,13 +7,14 @@ import { SocialDrawerList } from "../../navigation/social/SocialDrawer";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { MainTabParamsList, RootStackParamsList } from "../../navigation/Navigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PostAuthor } from "../../models/Post";
 import { useSession } from "../../hooks/useSession";
 import { TabView } from "react-native-tab-view";
 import SearchResultPostsScreen from "./search_tabs/SearchResultPostsScreen";
 import SearchTabBar from "../../components/social/SearchTabBar";
 import SearchResultUsersScreen from "./search_tabs/SearchResultUsersScreen";
+import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
 
 type SearchScreenProps = CompositeScreenProps<
     DrawerScreenProps<SocialDrawerList, "Search">,
@@ -31,12 +32,29 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
       { key: 'first', title: 'Publicaciones' },
       { key: 'second', title: 'Usuarios' },
     ]);
+    const api = useHanagotchiApi();
+    const [query, setQuery] = useState<string>(route.params.initSearch);
+    const userId = useSession((state) => state.session!.userId);
 
-    const renderScene = ({ route }) => {
+    const updatePostList = useMemo(() => {
+        console.log(query);
+        if (query.length >= 2) {
+            return (pageNum: number) => api.getPostsByTag({
+                page: pageNum,
+                size: 10,
+                tag: query,
+            });
+        } else {
+            return (pageNum: number) => Promise.resolve([]);
+        }
+    }, [query])
+
+    const renderScene = useCallback(({ route }) => {
         switch (route.key) {
           case 'first':
             return <SearchResultPostsScreen
                 tag={query}
+                updatePostList={updatePostList}
                 handleRedirectToDetails={handleRedirectToDetails}
                 handleRedirectToProfile={handleRedirectToProfile}
             />;
@@ -48,10 +66,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
           default:
             return null;
         }
-      };
-
-    const [query, setQuery] = useState<string>(route.params.initSearch);
-    const userId = useSession((state) => state.session!.userId);
+      }, [query]);
 
     navigation.setOptions({
         headerRight: () => (

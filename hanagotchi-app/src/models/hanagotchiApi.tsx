@@ -68,3 +68,9 @@ export type GetSuscribedTags = z.infer<typeof GetSuscribedTagsSchema>;
 
 export const GetPostsByTagSchema = z.array(ReducedPostSchema);
 export type GetPostsByTag = z.infer<typeof GetPostsByTagSchema>;
+
+export const GetUserFollowingsSchema = z.object({
+    status: z.number(),
+    message: z.array(ReducedUserProfileSchema),
+});;
+export type GetUserFollowings = z.infer<typeof GetUserFollowingsSchema>;

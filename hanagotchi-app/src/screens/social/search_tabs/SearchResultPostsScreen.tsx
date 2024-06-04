@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet } from "react-native"
 import PostList from "../../../components/social/posts/PostList"
 import { BACKGROUND_COLOR, BROWN_DARK } from "../../../themes/globalThemes";
-import { PostAuthor } from "../../../models/Post";
+import { PostAuthor, ReducedPost } from "../../../models/Post";
 import { useCallback, useMemo } from "react";
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { useSession } from "../../../hooks/useSession";
@@ -12,32 +12,19 @@ import useTags from "../../../hooks/useTags";
 
 type SearchResultPostsScreenProps = {
     tag: string;
+    updatePostList: (pageNum: number) => Promise<ReducedPost[]>
     handleRedirectToProfile: (author: PostAuthor) => void;
     handleRedirectToDetails: (postId: string) => void;
 }
 
 const SearchResultPostsScreen: React.FC<SearchResultPostsScreenProps> = ({
-    tag, handleRedirectToDetails, handleRedirectToProfile
+    tag, handleRedirectToDetails, handleRedirectToProfile, updatePostList
 }) => {
-    const api = useHanagotchiApi();
     const userId = useSession((state) => state.session!.userId);
     const {isFetching, tags: myTags, error, subscribe, unsubscribe} = useTags();
     const isSuscribed = useMemo(() => {
-        console.log(myTags);
         return myTags.has(tag.toLowerCase());
     }, [myTags, tag]);
-
-    const updatePost = useMemo(() => {
-        if (tag.length >= 2) {
-            return (pageNum: number) => api.getPostsByTag({
-                page: pageNum,
-                size: 10,
-                tag: tag,
-            });
-        } else {
-            return (pageNum: number) => Promise.resolve([]);
-        }
-    }, [tag])
 
     if (isFetching) {
         return (
@@ -65,7 +52,7 @@ const SearchResultPostsScreen: React.FC<SearchResultPostsScreenProps> = ({
                 <Divider bold style={{width: "100%"}}/>
             </>}
             <PostList
-                updatePosts={updatePost}
+                updatePosts={updatePostList}
                 myId={userId}
                 onRedirectToProfile={handleRedirectToProfile}
                 onRedirectToDetails={handleRedirectToDetails}
