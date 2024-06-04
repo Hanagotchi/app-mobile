@@ -49,11 +49,26 @@ export const UserProfileSchema = z.object({
 
 export type UserProfile = z.infer< typeof UserProfileSchema>;
 
-export const ReducedUserProfileSchema = z.object({
-    id: z.number(),
-    name: z.string().nullable(),
-    photo: z.string().nullable(),
-    nickname: z.string().nullable(),
-});
+export const ReducedUserProfileSchema = z.union([
+    z.object({
+        id: z.number(),
+        name: z.string().nullable(),
+        photo: z.string().nullable(),
+        nickname: z.string().nullable(),
+    }),
+    z.object({
+        _id: z.number(),
+        name: z.string().nullable(),
+        photo: z.string().nullable(),
+        nickname: z.string().nullable(),
+    })
+]).transform(data => {
+    if ('_id' in data) {
+      const { _id, ...rest } = data;
+      return { id: _id, ...rest };
+    }
+
+    return data;
+  });
 
 export type ReducedUserProfile = z.infer< typeof ReducedUserProfileSchema>;

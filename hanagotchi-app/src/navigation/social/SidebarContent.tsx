@@ -157,8 +157,8 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         >
                             {userProfiles.filter(u => u.id !== myId).map((user) => (
                                 <Drawer.Item
-                                    key={user.id.toString()}
-                                    id={user.id.toString()} 
+                                    key={user.id!.toString()}
+                                    id={user.id!.toString()} 
                                     theme={drawerItemColor(BROWN)}
                                     label={user.name ?? ""}
                                     icon="account"

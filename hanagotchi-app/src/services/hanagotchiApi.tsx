@@ -300,7 +300,11 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getUserProfilesByNickname(nickname: string): Promise<ReducedUserProfile[]> {
         // TODO: Use this endpoint when it is created
-        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
+        /* const { data } = await this.axiosInstance.get(`/social/user`, {params: {
+            query: nickname,
+            offset: 0,
+            limit: 200
+        }}); */
         const {data} = await this.axiosInstance.get('users/');
         return GetUsersProfileResponseSchema
             .parse(data)
