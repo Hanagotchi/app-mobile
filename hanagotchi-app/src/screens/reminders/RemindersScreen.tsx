@@ -58,7 +58,7 @@ const RemindersScreen: React.FC<RemindersScreenProps> = ({ navigation }) => {
                                 redirectToEditReminder={() => navigation.navigate("EditReminder", { reminder: reminder })}
                                 refreshScreenAfterDelete={() => {
                                     setFocus(!focus);
-                                  ;
+                                    ;
                                 }}
                             />
                         </View>

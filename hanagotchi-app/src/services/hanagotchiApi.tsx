@@ -15,12 +15,11 @@ import {
     GetPlantTypesResponseSchema,
     LoginResponse,
     LoginResponseSchema,
-    GetUsersProfileResponseSchema,
     GetMyFeedResponseSchema,
     GetReminders,
 } from "../models/hanagotchiApi";
 
-import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser } from "../models/User";
+import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser, UserProfileSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 import { ReducedPost, PostData, PostSchema, Post, Comment, CommentSchema, ReducedCommentSchema, ReducedComment } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
@@ -54,13 +53,17 @@ export interface HanagotchiApi {
     unlikePost: (postId: string) => Promise<void>;
     commentPost: (postId: string, body: string) => Promise<ReducedComment>;
     deletePostComment: (postId: string, commentId: string) => Promise<void>;
+    getAllPostsOfUser: (userId: number, page: number, size: number) => Promise<ReducedPost[]>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
-    getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
+    getFollowing: (params: {user_id?: number, query?: string}) => Promise<UserProfile[]>;
     createReminder: (date_time: Date, content: string) => Promise<void>;
     getReminders: () => Promise<Reminder[]>;
     deleteReminder: (reminderId: number) => Promise<void>;
     editReminder: (reminderId: number, date_time: Date, content: string) => Promise<void>;
+    getUserProfile: (userId: number) => Promise<UserProfile>;
+    followUser: (userId: number) => Promise<void>;
+    unfollowUser: (userId: number) => Promise<void>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -202,17 +205,32 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         });
     }
 
+    async getAllPostsOfUser(userId: number, page: number, size: number) {
+        const { data } = await this.axiosInstance.get(`/social/posts?page=${page}&per_page=${size}&author=${userId}`);
+        const result = GetMyFeedResponseSchema.parse(data);
+        return result;
+    }
+
     async getPlantTypes(): Promise<GetPlantTypesResponse> {
         const { data } = await this.axiosInstance.get(`/plant-type`);
         return GetPlantTypesResponseSchema.parse(data);
     }
 
-    async getUsersProfiles(params: { follower?: number, q?: string }): Promise<UserProfile[]> {
-        // TODO: Use this endpoint when it is created
-        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
-        const { data } = await this.axiosInstance.get(`/users`);
-        return GetUsersProfileResponseSchema.parse(data).message;
+    async getFollowing(params: { user_id?: number, query?: string }): Promise<UserProfile[]> {
+        // TODO: new endpoint or fix endpooitn to get following users?
+        let user = await this.getUserProfile(params.user_id!);
+        return Promise.all(user.following.map(async (id) => await this.getUserProfile(id)));
     }
+
+
+    async getUserProfile(userId: number): Promise<UserProfile> {
+        // TODO: add biography to the social user endpoint!!!!
+        let user = await this.getUser(userId);
+        let { data } = await this.axiosInstance.get(`/social/users/${userId}`);
+        data.biography = user.biography;
+        return UserProfileSchema.parse(data);
+    }
+
 
     async createReminder(date_time: Date, content: String): Promise<void> {
         await this.axiosInstance.post(`/users/me/notification/`, {date_time, content});
@@ -229,5 +247,13 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     
     async editReminder(reminderId: number, date_time: Date, content: string): Promise<void>{
         await this.axiosInstance.patch(`/users/me/notifications/${reminderId}`, {date_time, content});
+    }
+
+    async followUser(userId: number): Promise<void> {
+        await this.axiosInstance.post(`/social/users/follow`, { user_id: userId });
+    }
+
+    async unfollowUser(userId: number): Promise<void> {
+        await this.axiosInstance.post(`/social/users/unfollow`, { user_id: userId });
     }
 }

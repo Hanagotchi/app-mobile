@@ -56,7 +56,7 @@ const ReminderPreview: React.FC<ReminderPreviewProps> = ({ id, date_time, conten
             />
             <BackgroundCard style_content={styles.content_card}>
 
-                <View style={styles.icons}>
+            <View style={styles.icons}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={styles.datetime}>{formatHour(date_time)}</Text>
                         <Text style={styles.datetime}> - </Text>
