@@ -15,14 +15,15 @@ import {
     GetPlantTypesResponseSchema,
     LoginResponse,
     LoginResponseSchema,
-    GetUsersProfileResponseSchema,
     GetMyFeedResponseSchema,
     GetReminders,
     GetSuscribedTags,
     GetSuscribedTagsSchema,
+    GetUsersProfileResponseSchema,
+    GetPostsByTagSchema,
 } from "../models/hanagotchiApi";
 
-import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser } from "../models/User";
+import { UpdateUserSchema, User, UserProfile, UserSchema, UpdateUser, UserProfileSchema, ReducedUserProfile, ReducedUserProfileSchema } from "../models/User";
 import { CreateLog, Log, LogSchema, PartialUpdateLog } from "../models/Log";
 import { ReducedPost, PostData, ReducedPostSchema, PostSchema, Post } from "../models/Post";
 import {Plant, PlantSchema } from "../models/Plant";
@@ -52,10 +53,11 @@ export interface HanagotchiApi {
     deletePost: (postId: string) => Promise<void>;
     getDevicePlants: (params?: {id_plant?: number, limit?: number}) => Promise<GetDevicePlantsResponse | null>
     getMyFeed: (page: number, size: number) => Promise<ReducedPost[]>;
-    getPosts: (params: {page: number, per_page: number, author?: string, tag?: string}) => Promise<ReducedPost[]>;
+    //getPosts: (params: {page: number, per_page: number, author?: string, tag?: string}) => Promise<ReducedPost[]>;
+    getAllPostsOfUser: (userId: number, page: number, size: number) => Promise<ReducedPost[]>;
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
-    getUsersProfiles: (params: {follower?: number, q?: string}) => Promise<UserProfile[]>;
+    getFollowing: (params: {user_id?: number, query?: string}) => Promise<UserProfile[]>;
     createReminder: (date_time: Date, content: string) => Promise<void>;
     getReminders: () => Promise<Reminder[]>;
     deleteReminder: (reminderId: number) => Promise<void>;
@@ -63,6 +65,11 @@ export interface HanagotchiApi {
     getSuscribedTags: () => Promise<GetSuscribedTags>;
     subscribeToTag: (tag: string) => Promise<void>;
     unsubscribeToTag: (tag: string) => Promise<void>;
+    getUserProfile: (userId: number) => Promise<UserProfile>;
+    followUser: (userId: number) => Promise<void>;
+    unfollowUser: (userId: number) => Promise<void>;
+    getUserProfilesByNickname: (nickname: string) => Promise <ReducedUserProfile[]>;
+    getPostsByTag: (params: {tag: string, page: number, size: number}) => Promise<ReducedPost[]>;
 }
 
 export class HanagotchiApiImpl implements HanagotchiApi {
@@ -176,7 +183,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async deletePost(postId: string) {
         await this.axiosInstance.delete(`/social/posts/${postId}`);
-        // dummyPosts = dummyPosts.filter(p => p.id !== postId);
     }
 
     async getMyFeed(page: number, size: number) {
@@ -185,8 +191,8 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return result;
     }
 
-    async getPosts(params: {page: number, per_page: number, author?: string, tag?: string}) {
-        const { data } = await this.axiosInstance.get(`/social/posts`, {params});
+    async getAllPostsOfUser(userId: number, page: number, size: number) {
+        const { data } = await this.axiosInstance.get(`/social/posts?page=${page}&per_page=${size}&author=${userId}`);
         const result = GetMyFeedResponseSchema.parse(data);
         return result;
     }
@@ -196,12 +202,21 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         return GetPlantTypesResponseSchema.parse(data);
     }
 
-    async getUsersProfiles(params: { follower?: number, q?: string }): Promise<UserProfile[]> {
-        // TODO: Use this endpoint when it is created
-        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
-        const { data } = await this.axiosInstance.get(`/users`);
-        return GetUsersProfileResponseSchema.parse(data).message;
+    async getFollowing(params: { user_id?: number, query?: string }): Promise<UserProfile[]> {
+        // TODO: new endpoint or fix endpooitn to get following users?
+        let user = await this.getUserProfile(params.user_id!);
+        return Promise.all(user.following.map(async (id) => await this.getUserProfile(id)));
     }
+
+
+    async getUserProfile(userId: number): Promise<UserProfile> {
+        // TODO: add biography to the social user endpoint!!!!
+        let user = await this.getUser(userId);
+        let { data } = await this.axiosInstance.get(`/social/users/${userId}`);
+        data.biography = user.biography;
+        return UserProfileSchema.parse(data);
+    }
+
 
     async createReminder(date_time: Date, content: String): Promise<void> {
         await this.axiosInstance.post(`/users/me/notification/`, {date_time, content});
@@ -231,5 +246,29 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async unsubscribeToTag(tag: string): Promise<void> {
         await this.axiosInstance.post(`/social/users/tags/unsubscribe`, {tag});
+    }
+
+    async followUser(userId: number): Promise<void> {
+        await this.axiosInstance.post(`/social/users/follow`, { user_id: userId });
+    }
+
+    async unfollowUser(userId: number): Promise<void> {
+        await this.axiosInstance.post(`/social/users/unfollow`, { user_id: userId });
+    }
+
+    async getUserProfilesByNickname(nickname: string): Promise<ReducedUserProfile[]> {
+        // TODO: Use this endpoint when it is created
+        /* const { data } = await this.axiosInstance.get(`/social/users`, {params}); */
+        const {data} = await this.axiosInstance.get('users/');
+        console.log(data);
+        return GetUsersProfileResponseSchema
+            .parse(data)
+            .message
+            .filter(u => u.nickname?.startsWith(nickname));
+    }
+
+    async getPostsByTag(params: {tag: string, page: number, size: number}): Promise<ReducedPost[]> {
+        const { data } = await this.axiosInstance.get(`/social/posts`, {params});
+        return GetPostsByTagSchema.parse(data);
     }
 }

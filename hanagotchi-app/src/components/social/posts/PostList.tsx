@@ -48,8 +48,6 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
             />
       ), []);
 
-    if (error) throw error;
-
     const loadNextPage = async () => pageControl.next();
     const resetPages = async () => pageControl.restart();
 
@@ -58,11 +56,12 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
         setPosts((posts) => posts.filter(p => p.id !== postId));
     }
 
-    if (!error && isFetching) {
+    if (!posts && isFetching) {
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
     }
 
     if (error !== null) {
+        console.log(error);
         return <ErrorPlaceholder />
     }
 

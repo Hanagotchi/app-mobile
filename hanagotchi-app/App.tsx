@@ -1,5 +1,6 @@
 import "expo-dev-client";
 import 'react-native-gesture-handler';
+import 'text-encoding-polyfill'
 import { theme } from './src/themes/globalThemes';
 import { PaperProvider, ThemeProvider } from 'react-native-paper';
 import { AuthProvider } from "./src/contexts/AuthContext";

@@ -10,11 +10,12 @@ import AuthorDetails from '../../components/social/posts/AuthorDetails';
 import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN } from '../../themes/globalThemes';
 import { StyleSheet, View } from 'react-native';
 import { useHanagotchiApi } from '../../hooks/useHanagotchiApi';
-import { useApiFetch } from '../../hooks/useApiFetch';
 import { useSession } from '../../hooks/useSession';
 import { UserProfile } from '../../models/User';
 import { PostAuthor } from '../../models/Post';
 import useTags from '../../hooks/useTags';
+import useMyProfile from '../../hooks/useMyProfile';
+import { useApiFetch } from '../../hooks/useApiFetch';
 
 const ErrorText = () => {
     return <Text>Ha ocurrido un error inesperado</Text>
@@ -25,7 +26,6 @@ const drawerItemColor = (color: string) => ({ colors: {
     onSurfaceVariant: color,
 }});
 
-const mockedTags = ["plantas", "Hola"];
 
 type SidebarContentProps = {
     state: DrawerNavigationState<ParamListBase>;
@@ -37,12 +37,13 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
     const drawerStatus = useDrawerStatus();
     const api = useHanagotchiApi();
     const myId = useSession((state) => state.session?.userId);
-    const {isFetchingMyUser, myUser} = useMyUser();
+    const {isFetchingMyProfile, myProfile } = useMyProfile();
     const {
         isFetching: isFetchingUsersProfiles, 
         fetchedData: userProfiles, 
+        setFetchedData,
         error
-    } = useApiFetch<UserProfile[]>(() => api.getUsersProfiles({follower: myId}), []);
+    } = useApiFetch<UserProfile[]>(() => api.getFollowing({user_id: myId}), [], [drawerStatus]);
 
     const {
         isFetching: isFetchingTags,
@@ -54,25 +55,40 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         throw error
     };
 
-    if (isFetchingMyUser || isFetchingUsersProfiles || !userProfiles || !myUser) {
-        return <DrawerContentScrollView {...props} style={style.container} contentContainerStyle={{alignItems: "center"}}>
+    const handleUnfollowUser = (userId: number) => {
+        if (!userProfiles.find(u => u._id === userId)) {
+            return;
+        }
+        setFetchedData(userProfiles.filter(u => u._id !== userId));
+    }
+
+    const handleFollowUser = async (userId: number) => {
+        const user = await api.getUserProfile(userId);
+        userProfiles.concat(user);
+        setFetchedData(userProfiles);
+    }
+
+    if (isFetchingMyProfile || !userProfiles || !myProfile) {
+            return <DrawerContentScrollView {...props} style={style.container}>
             <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
         </DrawerContentScrollView>
     }
-
+    
     return (
         <DrawerContentScrollView {...props} style={style.container} contentContainerStyle={{width: "101%"}}>
             <View style={{gap: 20}}>
                 <AuthorDetails 
                     author={{
-                        id: myUser.id,
-                        name: myUser.name,
-                        photo: myUser.photo,
-                        nickname: myUser.nickname,
+                        id: myProfile._id,
+                        name: myProfile.name,
+                        photo: myProfile.photo,
+                        nickname: myProfile.nickname,
                     }}
                     onTouch={(me: PostAuthor) => props.navigation.navigate("SocialProfile", {
-                        profileId: me.id,
-                        headerTitle: "Mi perfil"
+                        profileId: myProfile!._id,
+                        headerTitle: "Mi perfil",
+                        handleFollowUser: handleFollowUser,
+                        handleUnfollowUser: handleUnfollowUser,
                     })}
                 />
                 <View>
@@ -91,8 +107,10 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                         onPress={() => props.navigation.navigate(
                             "SocialProfile", 
                             {
-                                profileId: myUser!.id,
-                                headerTitle: "Mi perfil"
+                                profileId: myProfile!._id,
+                                headerTitle: "Mi perfil",
+                                handleFollowUser: handleFollowUser,
+                                handleUnfollowUser: handleUnfollowUser,
                             }
                         )}
                     />
@@ -132,10 +150,10 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {userProfiles.filter(u => u.id !== myId).map((user) => (
+                            {userProfiles.filter(u => u._id !== myId).map((user) => (
                                 <Drawer.Item
-                                    key={user.id.toString()}
-                                    id={user.id.toString()} 
+                                    key={user._id.toString()}
+                                    id={user._id.toString()} 
                                     theme={drawerItemColor(BROWN)}
                                     label={user.name ?? ""}
                                     icon="account"
@@ -144,8 +162,10 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                     onPress={() => props.navigation.navigate(
                                         "SocialProfile", 
                                         {
-                                            profileId: user.id, 
-                                            headerTitle: user.name
+                                            profileId: user._id, 
+                                            headerTitle: user.name,
+                                            handleFollowUser: handleFollowUser,
+                                            handleUnfollowUser: handleUnfollowUser,
                                         }
                                     )}
                                 />

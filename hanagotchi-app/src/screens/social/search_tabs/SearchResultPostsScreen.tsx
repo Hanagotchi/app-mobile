@@ -29,9 +29,9 @@ const SearchResultPostsScreen: React.FC<SearchResultPostsScreenProps> = ({
 
     const updatePost = useMemo(() => {
         if (tag.length >= 2) {
-            return (pageNum: number) => api.getPosts({
+            return (pageNum: number) => api.getPostsByTag({
                 page: pageNum,
-                per_page: 10,
+                size: 10,
                 tag: tag,
             });
         } else {

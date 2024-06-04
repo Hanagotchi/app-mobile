@@ -6,15 +6,15 @@ import FeedScreen from "../../screens/social/FeedScreen";
 import { MainTabParamsList, RootStackParamsList } from "../Navigator";
 import SidebarContent from "./SidebarContent";
 import { BEIGE, BEIGE_LIGHT, BLACK } from "../../themes/globalThemes";
-import {StyleSheet, View} from "react-native" 
+import {StyleSheet} from "react-native" 
 import SocialProfileScreen from "../../screens/social/SocialProfileScreen";
 import { IconButton } from "react-native-paper";
 import SearchScreen from "../../screens/social/SearchScreen";
 
 export type SocialDrawerList = {
     Feed: undefined;
-    SocialProfile: { profileId: number, headerTitle: string },
-    Search: { initSearch: string },
+    SocialProfile: { profileId: number, headerTitle: string, handleUnfollowUser?: (userId: number) => void, handleFollowUser?: (userId: number) => Promise<void> };
+    Search: { initSearch: string };
 }
 
 export type SocialDrawerProps = CompositeScreenProps<

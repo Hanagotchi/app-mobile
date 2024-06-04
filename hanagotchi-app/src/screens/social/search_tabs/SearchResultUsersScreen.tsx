@@ -22,7 +22,7 @@ const SearchResultUsersScreen: React.FC<SearchResultUsersScreenProps> = ({nickna
         isFetching, 
         fetchedData: userProfiles, 
         error
-    } = useApiFetch<UserProfile[]>(() => api.getUsersProfiles({q: nicknameQuery}), [], [nicknameQuery]);
+    } = useApiFetch<UserProfile[]>(() => api.getUserProfilesByNickname(nicknameQuery), [], [nicknameQuery]);
 
     if (isFetching) {
         return (
@@ -53,6 +53,7 @@ const SearchResultUsersScreen: React.FC<SearchResultUsersScreenProps> = ({nickna
     }
 
     if (error !== null) {
+        console.log(error);
         return (
             <SafeAreaView style={style.container}>
                 <ErrorPlaceholder />

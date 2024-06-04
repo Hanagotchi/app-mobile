@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { UserProfileSchema, UserSchema } from "./User";
+import { ReducedUserProfileSchema, UserProfileSchema, UserSchema } from "./User";
 import { LogSchema } from "./Log";
 import {DevicePlantSchema} from "./DevicePlant";
 import {PlantSchema} from "./Plant";
@@ -50,8 +50,9 @@ export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
 
 export const GetUsersProfileResponseSchema = z.object({
     status: z.number(),
-    message: z.array(UserProfileSchema),
-});
+    message: z.array(ReducedUserProfileSchema),
+});;
+
 export const GetReminders = z.object({
     status: z.number(),
     message: z.array(ReminderSchema),
@@ -64,3 +65,6 @@ export type GetMyFeedResponse = z.infer<typeof GetMyFeedResponseSchema>;
 
 export const GetSuscribedTagsSchema = z.array(TagSchema);
 export type GetSuscribedTags = z.infer<typeof GetSuscribedTagsSchema>;
+
+export const GetPostsByTagSchema = z.array(ReducedPostSchema);
+export type GetPostsByTag = z.infer<typeof GetPostsByTagSchema>;
