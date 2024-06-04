@@ -75,7 +75,7 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
                 removeClippedSubviews
                 refreshing={isFetching}
                 onRefresh={resetPages}
-                onEndReachedThreshold={2}
+                onEndReachedThreshold={0.5}
                 onEndReached={loadNextPage}
                 ListFooterComponent={<ListFooter isFetching={isFetching} noMorePosts={noMorePosts} />}
                 maxToRenderPerBatch={10}
