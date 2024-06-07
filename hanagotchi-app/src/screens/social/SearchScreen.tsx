@@ -15,6 +15,7 @@ import SearchResultPostsScreen from "./search_tabs/SearchResultPostsScreen";
 import SearchTabBar from "../../components/social/SearchTabBar";
 import SearchResultUsersScreen from "./search_tabs/SearchResultUsersScreen";
 import { useHanagotchiApi } from "../../hooks/useHanagotchiApi";
+import useTimeout from "../../hooks/useTimeout";
 
 type SearchScreenProps = CompositeScreenProps<
     DrawerScreenProps<SocialDrawerList, "Search">,
@@ -26,7 +27,7 @@ type SearchScreenProps = CompositeScreenProps<
 
 const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
     const layout = useWindowDimensions();
-
+    const sendEmptyPostList = (pageNum: number) => Promise.resolve([]);
     const [index, setIndex] = useState(0);
     const [routes] = useState([
       { key: 'first', title: 'Publicaciones' },
@@ -34,20 +35,27 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
     ]);
     const api = useHanagotchiApi();
     const [query, setQuery] = useState<string>(route.params.initSearch);
+    const {start} = useTimeout();
     const userId = useSession((state) => state.session!.userId);
 
-    const updatePostList = useMemo(() => {
-        console.log(query);
+    //const [updatePostList, setUpdatePostList] = useState<(pageNum: number) => Promise<any[]>>(() => sendEmptyPostList);
+
+    const updateQuery = (newQuery: string) => {
+        setQuery(newQuery);
+    }
+
+    const updatePostList = useCallback((pageNum: number) => {
         if (query.length >= 2) {
-            return (pageNum: number) => api.getPostsByTag({
+            console.log(query);
+            return api.getPostsByTag({
                 page: pageNum,
                 size: 10,
                 tag: query,
             });
         } else {
-            return (pageNum: number) => Promise.resolve([]);
+            return Promise.resolve([]);
         }
-    }, [query])
+    }, [query]);
 
     const renderScene = useCallback(({ route }) => {
         switch (route.key) {
@@ -73,7 +81,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
             <Searchbar 
                 value={query} 
                 theme={{ colors: { elevation: {level3: BEIGE} } }}
-                onChangeText={(str) => setQuery(str.trim())}
+                onChangeText={(str) => updateQuery(str.trim())}
                 style={{
                     marginHorizontal: 20,
                     width: 300,

@@ -1,4 +1,4 @@
-import { FlatList } from "react-native"
+import { FlatList, RefreshControl } from "react-native"
 import {ReducedPost} from "./Post";
 import { ActivityIndicator, Divider, Text } from "react-native-paper";
 import { BEIGE_DARK, BROWN_DARK } from "../../../themes/globalThemes";
@@ -48,8 +48,10 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
             />
       ), []);
 
-    const loadNextPage = async () => pageControl.next();
-    const resetPages = async () => pageControl.restart();
+    const loadNextPage = useCallback(async () => await pageControl.next(), [pageControl]);
+    const resetPages = useCallback(async () => {
+        await pageControl.restart();
+    }, [pageControl]);
 
     const handleDelete = async (postId: string) => {
         await api.deletePost(postId);
@@ -73,8 +75,9 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
                 keyExtractor={(item, index) => String(index)}
                 contentContainerStyle={{gap: 20}}
                 removeClippedSubviews
-                refreshing={isFetching}
-                onRefresh={resetPages}
+                refreshControl={
+                    <RefreshControl refreshing={isFetching} onRefresh={resetPages} />
+                }
                 onEndReachedThreshold={0.5}
                 onEndReached={loadNextPage}
                 ListFooterComponent={<ListFooter isFetching={isFetching} noMorePosts={noMorePosts} />}

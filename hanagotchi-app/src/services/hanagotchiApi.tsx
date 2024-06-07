@@ -231,7 +231,9 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         let user = await this.getUserProfile(params.user_id!);
         const parsedUser = UserProfileSchema.parse(user);
         const followingIds = parsedUser.following; // Hexa code for comma
-        console.log(followingIds)
+        if (followingIds.length === 0) {
+            return [];
+        }
         const {data} = await this.axiosInstance.get(
             '/users', 
             {
@@ -300,16 +302,23 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getUserProfilesByNickname(nickname: string): Promise<ReducedUserProfile[]> {
         // TODO: Use this endpoint when it is created
-        /* const { data } = await this.axiosInstance.get(`/social/user`, {params: {
+        const { data, status } = await this.axiosInstance.get(`/social/user`, {params: {
             query: nickname,
             offset: 0,
             limit: 200
-        }}); */
-        const {data} = await this.axiosInstance.get('users/');
+        }});
+
+        if (status === 204) {
+            return [];
+        }
+
+        return GetUsersProfileResponseSchema.parse(data);
+
+        /* const {data} = await this.axiosInstance.get('users/');
         return GetUsersProfileResponseSchema
             .parse(data)
             .message
-            .filter(u => u.nickname?.startsWith(nickname.toLowerCase()));
+            .filter(u => u.nickname?.startsWith(nickname.toLowerCase())); */
     }
 
     async getPostsByTag(params: {tag: string, page: number, size: number}): Promise<ReducedPost[]> {

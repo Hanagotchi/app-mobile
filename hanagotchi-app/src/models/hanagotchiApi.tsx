@@ -48,10 +48,7 @@ export type GetPlantTypesResponse = z.infer<typeof GetPlantTypesResponseSchema>;
 export const GetPlantsResponseSchema = z.array(PlantSchema);
 export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
 
-export const GetUsersProfileResponseSchema = z.object({
-    status: z.number(),
-    message: z.array(ReducedUserProfileSchema),
-});;
+export const GetUsersProfileResponseSchema = z.array(ReducedUserProfileSchema);
 
 export const GetReminders = z.object({
     status: z.number(),
