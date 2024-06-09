@@ -13,7 +13,6 @@ export function usePosts(
     const [noMorePosts, setNoMorePosts] = useState<boolean>(false);
  
     const execFetch = async (pageNumber: number, ignoreNoMorePosts = false) => {
-        console.log(noMorePosts, pageNumber);
         if (noMorePosts && !ignoreNoMorePosts) return;
         
         try {
@@ -41,7 +40,6 @@ export function usePosts(
     }, [fetchPostsFn])
 
     const next = async () => {
-        console.log("Hola");
         if (noMorePosts) return;
         setPageNumber(n => n+1)
         await execFetch(pageNumber+1)

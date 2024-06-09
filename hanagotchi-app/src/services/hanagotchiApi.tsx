@@ -63,6 +63,7 @@ export interface HanagotchiApi {
     deleteDevice: (plantId: number) => Promise<void>
     addSensor: (deviceId: string, plantId: number) => Promise<void>
     getFollowing: (params: {user_id?: number, query?: string}) => Promise<ReducedUserProfile[]>;
+    getFollowers: (params: {user_id?: number, offset?: number, limit?: number}) => Promise<ReducedUserProfile[]>;
     createReminder: (date_time: Date, content: string) => Promise<void>;
     getReminders: () => Promise<Reminder[]>;
     deleteReminder: (reminderId: number) => Promise<void>;
@@ -227,10 +228,8 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async getFollowing(params: { user_id?: number, query?: string }): Promise<ReducedUserProfile[]> {
-        // TODO: new endpoint or fix endpooitn to get following users?
         let user = await this.getUserProfile(params.user_id!);
-        const parsedUser = UserProfileSchema.parse(user);
-        const followingIds = parsedUser.following; // Hexa code for comma
+        const followingIds = UserProfileSchema.parse(user).following; // Hexa code for comma
         if (followingIds.length === 0) {
             return [];
         }
@@ -242,15 +241,20 @@ export class HanagotchiApiImpl implements HanagotchiApi {
                     ids: followingIds.join(","),
                     offset: 0,
                     limit: 200
-                }, //
+                },
                 paramsSerializer: params => {
                     return Object.entries(params)
                       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
                       .join('&');
-                  }
+                }
             }
         );
         return GetUserFollowingsSchema.parse(data).message;
+    }
+
+    async getFollowers(params: {user_id?: number, offset?: number, limit?: number}) {
+        const {data} = await this.axiosInstance.get("/social/users/followers");
+        return GetUsersProfileResponseSchema.parse(data);
     }
 
     async getUserProfile(userId: number): Promise<UserProfile> {
@@ -301,7 +305,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
     }
 
     async getUserProfilesByNickname(nickname: string): Promise<ReducedUserProfile[]> {
-        // TODO: Use this endpoint when it is created
         const { data, status } = await this.axiosInstance.get(`/social/user`, {params: {
             query: nickname,
             offset: 0,
@@ -313,12 +316,6 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         }
 
         return GetUsersProfileResponseSchema.parse(data);
-
-        /* const {data} = await this.axiosInstance.get('users/');
-        return GetUsersProfileResponseSchema
-            .parse(data)
-            .message
-            .filter(u => u.nickname?.startsWith(nickname.toLowerCase())); */
     }
 
     async getPostsByTag(params: {tag: string, page: number, size: number}): Promise<ReducedPost[]> {
