@@ -48,7 +48,6 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
 
     const updatePostList = useCallback((pageNum: number) => {
         if (query.length >= 2) {
-            console.log(query);
             return api.getPostsByTag({
                 page: pageNum,
                 size: 10,
