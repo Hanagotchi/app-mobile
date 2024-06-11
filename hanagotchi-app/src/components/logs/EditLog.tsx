@@ -25,6 +25,7 @@ const defaultData: LogData = {
     photos: [],
 }
 
+const TITLE_MAX_LENGTH = 80;
 const CONTENT_MAX_LENGTH = 500;
 
 const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, buttonLabel}) => {
@@ -59,7 +60,12 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
     return (
         <View style={style.container}>
             <ScrollView style={style.form} contentContainerStyle={style.content}>
-                <TextInput label="TÍTULO *" value={data.title} onChangeText={onChangeTitle}/>
+                <TextInput
+                    maxLenght={TITLE_MAX_LENGTH}
+                    label={`TÍTULO ${data.title.length}/${TITLE_MAX_LENGTH} *`} 
+                    value={data.title} 
+                    onChangeText={onChangeTitle}
+                />
                 <SelectBox 
                     label="PLANTA" 
                     data={myPlants} 
