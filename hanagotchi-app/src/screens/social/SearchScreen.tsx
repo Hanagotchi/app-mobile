@@ -35,13 +35,15 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
     ]);
     const api = useHanagotchiApi();
     const [query, setQuery] = useState<string>(route.params.initSearch);
+    const [search, setSearch] = useState<string>(route.params.initSearch);
     const {start} = useTimeout();
     const userId = useSession((state) => state.session!.userId);
 
     //const [updatePostList, setUpdatePostList] = useState<(pageNum: number) => Promise<any[]>>(() => sendEmptyPostList);
 
     const updateQuery = (newQuery: string) => {
-        setQuery(newQuery);
+        start(() => setQuery(newQuery), 500);
+        setSearch(newQuery);
     }
 
     const updatePostList = useCallback((pageNum: number) => {
@@ -79,7 +81,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
     navigation.setOptions({
         headerRight: () => (
             <Searchbar 
-                value={query} 
+                value={search} 
                 theme={{ colors: { elevation: {level3: BEIGE} } }}
                 onChangeText={(str) => updateQuery(str.trim())}
                 style={{
