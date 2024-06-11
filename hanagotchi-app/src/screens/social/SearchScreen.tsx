@@ -27,7 +27,6 @@ type SearchScreenProps = CompositeScreenProps<
 
 const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
     const layout = useWindowDimensions();
-    const sendEmptyPostList = (pageNum: number) => Promise.resolve([]);
     const [index, setIndex] = useState(0);
     const [routes] = useState([
       { key: 'first', title: 'Publicaciones' },
@@ -38,8 +37,6 @@ const SearchScreen: React.FC<SearchScreenProps> = ({route, navigation}) => {
     const [search, setSearch] = useState<string>(route.params.initSearch);
     const {start} = useTimeout();
     const userId = useSession((state) => state.session!.userId);
-
-    //const [updatePostList, setUpdatePostList] = useState<(pageNum: number) => Promise<any[]>>(() => sendEmptyPostList);
 
     const updateQuery = (newQuery: string) => {
         start(() => setQuery(newQuery), 500);
