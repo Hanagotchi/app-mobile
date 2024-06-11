@@ -14,9 +14,9 @@ export const logPhotoUrl = (plantId: number) => {
     return `plants/${plantId}/${date}`;
 }
 
-export const postPhotoUrl = (userId: number) => {
+export const postPhotoUrl = (userId: number, increment: number = 0) => {
     const date = new Date().getTime();
-    return `social/${userId}/posts/${date}`;
+    return `social/${userId}/posts/${date+increment}`;
 }
 
 export type FirebaseContextProps = {

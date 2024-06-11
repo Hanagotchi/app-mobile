@@ -18,18 +18,15 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
 
     const handleSubmit = async (postData: PostDataWithoutAuthorId) => {
         const photo_links = await Promise.all(
-            postData.photo_links.map(photo => uploadImage(photo, postPhotoUrl(userId)))
+            postData.photo_links.map((photo, idx) => uploadImage(photo, postPhotoUrl(userId, idx)))
         );
+
+        console.log(photo_links);
 
         let tags = postData.content.split(" ")
         tags = tags.filter(word => word.startsWith('#'))
-        console.log(tags)
         tags = tags.map(word => word.substring(1))
-        console.log(tags);
         tags = tags.filter(word => !word.includes('#'))
-        console.log(tags);
-
-
 
         const newPost: PostData = {
             author_user_id: userId,
