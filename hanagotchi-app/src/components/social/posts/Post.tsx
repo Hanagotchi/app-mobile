@@ -79,7 +79,6 @@ const PostActions: React.FC<PostActionsProps> = ({postId, isLikedByMe, likeCount
                 <IconButton icon={"comment"}/>
                 <Text>{commentCount}</Text>
             </View>
-            <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
         </View>
     );
 }
