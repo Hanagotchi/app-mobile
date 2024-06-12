@@ -28,7 +28,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
     return (
         <View style={style.header}>
             <AuthorDetails onTouch={onRedirectToProfile} author={author} />
-            <Menu
+            {iAmTheAuthor && <Menu
                 visible={menuOpen}
                 onDismiss={toggleMenu}
                 anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
@@ -40,7 +40,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
                 onPress={handleDelete}
                 style={{minWidth: "50%"}} 
                 />}
-            </Menu>
+            </Menu>}
         </View>
     );
 };
