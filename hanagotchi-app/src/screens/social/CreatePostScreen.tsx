@@ -20,10 +20,22 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
         const photo_links = await Promise.all(
             postData.photo_links.map(photo => uploadImage(photo, postPhotoUrl(userId)))
         );
+
+        let tags = postData.content.split(" ")
+        tags = tags.filter(word => word.startsWith('#'))
+        console.log(tags)
+        tags = tags.map(word => word.substring(1))
+        console.log(tags);
+        tags = tags.filter(word => !word.includes('#'))
+        console.log(tags);
+
+
+
         const newPost: PostData = {
             author_user_id: userId,
             content: postData.content,
-            photo_links
+            photo_links,
+            tags
         };
         const createdPost = await api.createPost(newPost);
         navigation.goBack();

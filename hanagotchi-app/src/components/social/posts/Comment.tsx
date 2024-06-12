@@ -40,9 +40,6 @@ const CommentHeader: React.FC<CommentHeaderProps> = ({postId, myId, commentId, a
                 onPress={handleDelete}
                 style={{minWidth: "50%"}} 
                 />}
-                {/* <Menu.Item 
-                    title={`Id: ${commentId}`} 
-                /> */}
             </Menu>
         </View>
     );

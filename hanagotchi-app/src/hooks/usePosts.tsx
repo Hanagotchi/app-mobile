@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ReducedPost } from "../models/Post";
+import { useToggle } from "./useToggle";
 
 export function usePosts(
     fetchPostsFn: (pageNum: number) => Promise<ReducedPost[]>,
@@ -11,12 +12,13 @@ export function usePosts(
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [noMorePosts, setNoMorePosts] = useState<boolean>(false);
  
-    const execFetch = async (pageNumber: number) => {
-        if (noMorePosts) return;
+    const execFetch = async (pageNumber: number, ignoreNoMorePosts = false) => {
+        if (noMorePosts && !ignoreNoMorePosts) return;
+        
         try {
             setIsFetching(true);
             const newPage = await fetchPostsFn(pageNumber);
-            if (newPage.length === 0) {
+            if (newPage.length === 0 && pageNumber > 1) {
                 setNoMorePosts(true);
                 return;
             }
@@ -32,15 +34,20 @@ export function usePosts(
         execFetch(pageNumber);
     }, []);
 
-    const next = () => {
+    useEffect(() => {
+        setPosts([]);
+        restart();
+    }, [fetchPostsFn])
+
+    const next = async () => {
         if (noMorePosts) return;
         setPageNumber(n => n+1)
-        execFetch(pageNumber+1)
+        await execFetch(pageNumber+1)
     };
-    const restart = () => {
+    const restart = async () => {
         setNoMorePosts(false);
         setPageNumber(1);
-        execFetch(1)
+        await execFetch(1, true)
     };
 
     return { posts, setPosts, isFetching, error, pageControl: { next, restart }, noMorePosts };

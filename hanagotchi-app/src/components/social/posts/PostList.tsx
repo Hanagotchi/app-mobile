@@ -1,4 +1,4 @@
-import { FlatList } from "react-native"
+import { FlatList, RefreshControl } from "react-native"
 import {ReducedPost} from "./Post";
 import { ActivityIndicator, Divider, Text } from "react-native-paper";
 import { BEIGE_DARK, BROWN_DARK } from "../../../themes/globalThemes";
@@ -6,6 +6,8 @@ import { PostAuthor, ReducedPost as ReducedPostType } from "../../../models/Post
 import { useHanagotchiApi } from "../../../hooks/useHanagotchiApi";
 import { usePosts } from "../../../hooks/usePosts";
 import { useCallback } from "react";
+import ErrorPlaceholder from "../../ErrorPlaceholder";
+import NoContent from "../../NoContent";
 
 type ListFooterProps = {
     isFetching: boolean,
@@ -46,18 +48,23 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
             />
       ), []);
 
-    if (error) throw error;
-
-    const loadNextPage = async () => pageControl.next();
-    const resetPages = async () => pageControl.restart();
+    const loadNextPage = useCallback(async () => await pageControl.next(), [pageControl]);
+    const resetPages = useCallback(async () => {
+        await pageControl.restart();
+    }, [pageControl]);
 
     const handleDelete = async (postId: string) => {
         await api.deletePost(postId);
         setPosts((posts) => posts.filter(p => p.id !== postId));
     }
 
-    if (!error && isFetching) {
+    if (!posts && isFetching) {
         return <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>
+    }
+
+    if (error !== null) {
+        console.log(error);
+        return <ErrorPlaceholder />
     }
 
 
@@ -68,9 +75,10 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
                 keyExtractor={(item, index) => String(index)}
                 contentContainerStyle={{gap: 20}}
                 removeClippedSubviews
-                refreshing={isFetching}
-                onRefresh={resetPages}
-                onEndReachedThreshold={2}
+                refreshControl={
+                    <RefreshControl refreshing={isFetching} onRefresh={resetPages} />
+                }
+                onEndReachedThreshold={0.5}
                 onEndReached={loadNextPage}
                 ListFooterComponent={<ListFooter isFetching={isFetching} noMorePosts={noMorePosts} />}
                 maxToRenderPerBatch={10}
@@ -78,7 +86,7 @@ const PostList: React.FC<PostListProps> = ({updatePosts, myId, onRedirectToProfi
                 windowSize={5}
                 ItemSeparatorComponent={() => <Divider bold theme={{ colors: { outlineVariant: BEIGE_DARK } }} />}
                 showsVerticalScrollIndicator={false}
-                ListEmptyComponent={<Text>No hay publicaciones en este momento</Text>}
+                ListEmptyComponent={<NoContent />}
             />
     );
 }

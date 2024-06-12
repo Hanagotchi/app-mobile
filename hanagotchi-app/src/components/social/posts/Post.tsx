@@ -40,9 +40,6 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
                 onPress={handleDelete}
                 style={{minWidth: "50%"}} 
                 />}
-                <Menu.Item 
-                    title={`Id: ${postId}`} 
-                />
             </Menu>
         </View>
     );

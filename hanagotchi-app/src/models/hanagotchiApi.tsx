@@ -1,11 +1,12 @@
 import { z } from "zod";
-import { UserProfileSchema, UserSchema } from "./User";
+import { ReducedUserProfileSchema, UserProfileSchema, UserSchema } from "./User";
 import { LogSchema } from "./Log";
 import {DevicePlantSchema} from "./DevicePlant";
 import {PlantSchema} from "./Plant";
 import {PlantTypeSchema} from "./PlantType";
 import { ReducedPost, ReducedPostSchema } from "./Post";
 import { ReminderSchema } from "./Reminder";
+import { TagSchema } from "./Tags";
 
 export const LoginResponseSchema = z.object({
     data: z.object({
@@ -47,7 +48,8 @@ export type GetPlantTypesResponse = z.infer<typeof GetPlantTypesResponseSchema>;
 export const GetPlantsResponseSchema = z.array(PlantSchema);
 export type GetPlantsResponse = z.infer<typeof GetPlantsResponseSchema>;
 
-export const GetUsersProfileResponseSchema = z.array(UserProfileSchema);
+export const GetUsersProfileResponseSchema = z.array(ReducedUserProfileSchema);
+
 export const GetReminders = z.object({
     status: z.number(),
     message: z.array(ReminderSchema),
@@ -57,3 +59,15 @@ export type GetUsersProfileResponse = z.infer<typeof GetUsersProfileResponseSche
 
 export const GetMyFeedResponseSchema = z.array(ReducedPostSchema);
 export type GetMyFeedResponse = z.infer<typeof GetMyFeedResponseSchema>;
+
+export const GetSuscribedTagsSchema = z.array(TagSchema);
+export type GetSuscribedTags = z.infer<typeof GetSuscribedTagsSchema>;
+
+export const GetPostsByTagSchema = z.array(ReducedPostSchema);
+export type GetPostsByTag = z.infer<typeof GetPostsByTagSchema>;
+
+export const GetUserFollowingsSchema = z.object({
+    status: z.number(),
+    message: z.array(ReducedUserProfileSchema),
+});;
+export type GetUserFollowings = z.infer<typeof GetUserFollowingsSchema>;

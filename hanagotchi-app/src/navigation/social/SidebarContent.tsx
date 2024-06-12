@@ -1,19 +1,25 @@
 import {
     DrawerContentScrollView,
+    useDrawerStatus,
   } from '@react-navigation/drawer';
 import { DrawerDescriptorMap, DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import { DrawerNavigationState, ParamListBase } from '@react-navigation/native';
-import {ActivityIndicator, Drawer, List} from "react-native-paper";
+import {ActivityIndicator, Drawer, List, Text} from "react-native-paper";
+import useMyUser from '../../hooks/useMyUser';
 import AuthorDetails from '../../components/social/posts/AuthorDetails';
 import { BACKGROUND_COLOR, BROWN, BROWN_DARK, GREEN } from '../../themes/globalThemes';
 import { StyleSheet, View } from 'react-native';
 import { useHanagotchiApi } from '../../hooks/useHanagotchiApi';
 import { useSession } from '../../hooks/useSession';
-import { UserProfile } from '../../models/User';
+import { ReducedUserProfile, UserProfile } from '../../models/User';
 import { PostAuthor } from '../../models/Post';
+import useTags from '../../hooks/useTags';
 import useMyProfile from '../../hooks/useMyProfile';
 import { useApiFetch } from '../../hooks/useApiFetch';
 
+const ErrorText = () => {
+    return <Text>Ha ocurrido un error inesperado</Text>
+}
 
 const drawerItemColor = (color: string) => ({ colors: {
     onSecondaryContainer: color,
@@ -28,6 +34,7 @@ type SidebarContentProps = {
 };
 
 const SidebarContent: React.FC<SidebarContentProps> = (props) => {
+    const drawerStatus = useDrawerStatus();
     const api = useHanagotchiApi();
     const myId = useSession((state) => state.session?.userId);
     const {isFetchingMyProfile, myProfile } = useMyProfile();
@@ -36,25 +43,37 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         fetchedData: userProfiles, 
         setFetchedData,
         error
-    } = useApiFetch<UserProfile[]>(() => api.getFollowing({user_id: myId}), []);
+    } = useApiFetch<ReducedUserProfile[]>(() => api.getFollowing({user_id: myId}), [], [drawerStatus]);
+
+    const {
+        isFetching: isFetchingTags,
+        tags,
+        error: tagsError,
+    } = useTags([drawerStatus]);
+
     if (error) {
         throw error
     };
 
     const handleUnfollowUser = (userId: number) => {
-        if (!userProfiles.find(u => u._id === userId)) {
+        if (!userProfiles.find(u => u.id === userId)) {
             return;
         }
-        setFetchedData(userProfiles.filter(u => u._id !== userId));
+        setFetchedData(userProfiles.filter(u => u.id !== userId));
     }
 
     const handleFollowUser = async (userId: number) => {
         const user = await api.getUserProfile(userId);
-        userProfiles.concat(user);
+        userProfiles.concat({
+            id: user._id,
+            name: user.name,
+            nickname: user.nickname,
+            photo: user.photo
+        });
         setFetchedData(userProfiles);
     }
 
-    if (isFetchingMyProfile || isFetchingUsersProfiles || !userProfiles || !myProfile) {
+    if (isFetchingMyProfile || !userProfiles || !myProfile) {
             return <DrawerContentScrollView {...props} style={style.container}>
             <ActivityIndicator animating={true} color={BROWN_DARK} size={20} style={{justifyContent: "center", flexGrow: 1}}/>
         </DrawerContentScrollView>
@@ -113,14 +132,14 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                             }}
                             style={{gap: 0}}
                         >
-                            {myProfile.tags.map((tag) => (
+                            {tagsError ? <ErrorText /> : Array.from(tags).map((tag) => (
                                 <Drawer.Item
                                     key={tag}
                                     id={tag} 
                                     theme={drawerItemColor(BROWN)}
                                     label={`#${tag}`}
                                     style={style.hashtagItem}
-                                    onPress={() => console.log("Navigate to tag search")}
+                                    onPress={() => props.navigation.navigate("Search", {initSearch: tag})}
                                 />  
                             ))}
                         </List.Accordion>
@@ -135,13 +154,11 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                 fontWeight: "bold"
                             }}
                             style={{gap: 0}}
-                            
-                            
                         >
-                            {userProfiles.filter(u => u._id !== myId).map((user) => (
+                            {userProfiles.filter(u => u.id !== myId).map((user) => (
                                 <Drawer.Item
-                                    key={user._id.toString()}
-                                    id={user._id.toString()} 
+                                    key={user.id!.toString()}
+                                    id={user.id!.toString()} 
                                     theme={drawerItemColor(BROWN)}
                                     label={user.name ?? ""}
                                     icon="account"
@@ -150,7 +167,7 @@ const SidebarContent: React.FC<SidebarContentProps> = (props) => {
                                     onPress={() => props.navigation.navigate(
                                         "SocialProfile", 
                                         {
-                                            profileId: user._id, 
+                                            profileId: user.id, 
                                             headerTitle: user.name,
                                             handleFollowUser: handleFollowUser,
                                             handleUnfollowUser: handleUnfollowUser,
