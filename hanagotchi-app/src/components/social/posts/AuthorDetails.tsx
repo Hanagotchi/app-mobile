@@ -21,16 +21,14 @@ type AuthorDetailsProp = {
 const AuthorDetails: React.FC<AuthorDetailsProp> = ({author, onTouch, style_name, style_nickname, size = "post"}) => {
 
     return (
-        <View style={style.container}>
-            <TouchableWithoutFeedback onPress={() => onTouch(author)}>
-                <ProfilePicture 
-                    uri={author.photo ?? "https://th.bing.com/th/id/OIP.Cl56H6WgxJ8npVqyhefTdQHaHa?rs=1&pid=ImgDetMain"}
-                    size={sizes[size]} 
-                />
-            </TouchableWithoutFeedback>
+        <View style={style.container} onTouchEnd={() => onTouch(author)}>
+            <ProfilePicture 
+                uri={author.photo ?? "https://th.bing.com/th/id/OIP.Cl56H6WgxJ8npVqyhefTdQHaHa?rs=1&pid=ImgDetMain"}
+                size={sizes[size]} 
+            />
             <View>
-                <Text style={{...style_name, ...style.name}} onPress={() => onTouch(author)}>{author.name ?? "undefined"}</Text>
-                <Text style={{...style_nickname, ...style.nickname}} onPress={() => onTouch(author)}>@{author.nickname ?? "undefined"}</Text>
+                <Text style={{...style_name, ...style.name}} >{author.name ?? "undefined"}</Text>
+                <Text style={{...style_nickname, ...style.nickname}} >@{author.nickname ?? "undefined"}</Text>
             </View>
         </View>
     );
@@ -40,7 +38,7 @@ const style = StyleSheet.create({
     container: {
         flexDirection: "row",
         gap: 20,
-        alignItems: "center"
+        alignItems: "center",
     },
     name: {
         color: BROWN,
