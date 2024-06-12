@@ -50,22 +50,22 @@ const FollowUnFollowButton: React.FC<FollowButtonProps> = ({ profile, myProfile,
 const styles = StyleSheet.create({
     background_follow: {
         borderRadius: 7,
-        backgroundColor: BEIGE_DARK,
-        minWidth: 125,
-        maxWidth: 125
-    },
-    label_follow: {
-        color: BROWN_DARK,
-        fontSize: 13
-    },
-    background_unfollow: {
-        borderRadius: 7,
         backgroundColor: GREEN,
         minWidth: 125,
         maxWidth: 125
     },
-    label_unfollow: {
+    label_follow: {
         color: BEIGE_LIGHT,
+        fontSize: 13
+    },
+    background_unfollow: {
+        borderRadius: 7,
+        backgroundColor: BEIGE_DARK,
+        minWidth: 125,
+        maxWidth: 125
+    },
+    label_unfollow: {
+        color: BROWN_DARK,
         fontSize: 13
     },
 });
