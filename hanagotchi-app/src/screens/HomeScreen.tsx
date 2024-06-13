@@ -17,6 +17,7 @@ import HomeContent from '../components/home/HomeContent';
 import Carousel from 'react-native-snap-carousel';
 import { Plant } from '../models/Plant';
 import messaging from '@react-native-firebase/messaging';
+import NoPlantsHomeScreen from './NoPlantsHomeScreen';
 
 
 
@@ -71,9 +72,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
 
   if (plants.length == 0 && !isFetching) return (
-    <View style={{ margin: 100 }}>
-      <NoContent />
-    </View>
+      <NoPlantsHomeScreen />
   )
 
   if (isFetching) {
