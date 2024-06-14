@@ -69,6 +69,7 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
             const filepath = profilePictureUrl(user.email, 'avatar');
             const userUpdated: User = {
                 ...user,
+                birthdate: new Date(user!.birthdate!.toISOString().split('T')[0]),
                 photo: user?.photo?.startsWith('file://') ? await uploadImage(user.photo ?? DEFAULT_PHOTO, filepath) : user.photo
             } as User;
             setUser(userUpdated);
