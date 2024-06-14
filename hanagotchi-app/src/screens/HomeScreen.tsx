@@ -72,7 +72,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
 
   if (plants.length == 0 && !isFetching) return (
-      <NoPlantsHomeScreen />
+      <NoPlantsHomeScreen redirectToAddPlantScreen={() => navigation.navigate("AddPlant")}/>
   )
 
   if (isFetching) {
