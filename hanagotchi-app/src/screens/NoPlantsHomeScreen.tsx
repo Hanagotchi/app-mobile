@@ -35,7 +35,7 @@ const NoPlantsHomeScreen: React.FC<NoPlantsHomeScreenProps> = ({redirectToAddPla
                 buttonColor={GREEN}
                 textColor={BEIGE_LIGHT}
                 style={style.button}
-                labelStyle={{fontSize: 17}}
+                labelStyle={{fontSize: 15}}
                 onPress={redirectToAddPlantScreen}
             >
                 AÑADIR HANAGOTCHI
