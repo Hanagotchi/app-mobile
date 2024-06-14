@@ -86,20 +86,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
       <SafeAreaView style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
         <View style={style.container}>
-          <IconButton icon={left} onPress={previousPlant} style={{
-            ...style.arrow,
-            position: 'absolute',
-            left: "3%",
-            top: "20%",
-            zIndex: 3,
-          }} />
-          <IconButton icon={right} onPress={nextPlant} style={{
+          {plants.length > 1 && <>
+            <IconButton icon={left} onPress={previousPlant} style={{
               ...style.arrow,
               position: 'absolute',
-              right: "3%",
+              left: "3%",
               top: "20%",
               zIndex: 3,
-          }} />
+            }} />
+            <IconButton icon={right} onPress={nextPlant} style={{
+                ...style.arrow,
+                position: 'absolute',
+                right: "3%",
+                top: "20%",
+                zIndex: 3,
+            }} />
+          </>}
           <Carousel
             loop
             scrollEnabled={false}
