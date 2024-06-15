@@ -23,7 +23,7 @@ const CreateLogScreen: React.FC<CreateLogScreenProps> = ({navigation, route}) =>
     const submit = async (data: LogData) => {
         try {
             const photos = await Promise.all(
-                data.photos.map(photo => uploadImage(photo, logPhotoUrl(data.plant_id)))
+                data.photos.map((photo, index) => uploadImage(photo, logPhotoUrl(data.plant_id, index)))
             );
             const createLogBody = CreateLogSchema.parse({
                 ...data,
