@@ -12,6 +12,8 @@ import { useSession } from "../hooks/useSession";
 import { AxiosError } from "axios";
 import { Text } from "react-native-paper";
 
+const SERIAL_NUMBER_MAX_LENGTH = 32
+
 interface SelectOption {
     key: number;
     value: string;
@@ -89,7 +91,12 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     return <SafeAreaView style={style.container}>
         {(isFetchingPlant || isFetchingDevices) ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/> :
             <>
-                <TextInput label={`NUMERO DE SERIE`} value={serialNumber} onChangeText={(text) => setSerialNumber(text)} />
+                <TextInput 
+                    label={`NUMERO DE SERIE ${serialNumber.length}/${SERIAL_NUMBER_MAX_LENGTH} *`} 
+                    value={serialNumber} 
+                    maxLenght={SERIAL_NUMBER_MAX_LENGTH}
+                    onChangeText={(text) => setSerialNumber(text)} 
+                />
                 {plantOptions.length > 0 && <SelectBox
                     label="PLANTA"
                     data={plantOptions}
