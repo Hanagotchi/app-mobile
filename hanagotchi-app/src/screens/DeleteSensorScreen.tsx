@@ -9,6 +9,7 @@ import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import { useSession } from "../hooks/useSession";
 import Dialog, { DialogRef } from "../components/Dialog";
+import {Text} from "react-native-paper";
 
 interface SelectOption {
     key: number;
