@@ -28,13 +28,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
         [],
         [myPlants]
     );
-    const [hasDevicePlants, setHasDevicePlants] = useState<boolean>(false);
+    const [somePlantHasSensor, setSomePlantHasSensor] = useState<boolean>(false);
     const [allPlantsHaveSensor, setAllPlantsHaveSensor] = useState<boolean>(true);
 
     useEffect(() => {
         if (myPlants && myPlants.length > 0) {
             const filteredPlants = myPlants.filter((plant) => devicePlants!.some((it) => it.id_plant === plant.id));
-            setHasDevicePlants(filteredPlants.length > 0);
+            setSomePlantHasSensor(filteredPlants.length > 0);
             setAllPlantsHaveSensor(myPlants.length === filteredPlants.length)
         }
     }, [myPlants, devicePlants]);
@@ -71,16 +71,18 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                     <Text style={style.text}>Eliminar planta</Text>
                     <Icon source={chevronRight} size={23}/>
                 </Pressable>
-                {!allPlantsHaveSensor && <>
+                {!allPlantsHaveSensor &&
                     <Pressable style={style.item} onPress={() => navigation.navigate("AddSensor")}>
                         <Text style={style.text}>Agregar sensor</Text>
                         <Icon source={chevronRight} size={23}/>
                     </Pressable>
-                    {hasDevicePlants && <Pressable style={style.item} onPress={() => navigation.navigate("DeleteSensor")}>
+                }
+                {somePlantHasSensor && 
+                    <Pressable style={style.item} onPress={() => navigation.navigate("DeleteSensor")}>
                         <Text style={style.text}>Eliminar sensor</Text>
                         <Icon source={chevronRight} size={23}/>
-                    </Pressable>}
-                </>}
+                    </Pressable>
+                }
             </>
             }
         </View>
