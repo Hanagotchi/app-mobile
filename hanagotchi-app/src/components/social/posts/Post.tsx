@@ -28,7 +28,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
     return (
         <View style={style.header}>
             <AuthorDetails onTouch={onRedirectToProfile} author={author} />
-            <Menu
+            {iAmTheAuthor && <Menu
                 visible={menuOpen}
                 onDismiss={toggleMenu}
                 anchor={<IconButton icon={"dots-horizontal"} onPress={toggleMenu} />}
@@ -40,7 +40,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({myId, postId, author, onDelete, 
                 onPress={handleDelete}
                 style={{minWidth: "50%"}} 
                 />}
-            </Menu>
+            </Menu>}
         </View>
     );
 };
@@ -79,7 +79,6 @@ const PostActions: React.FC<PostActionsProps> = ({postId, isLikedByMe, likeCount
                 <IconButton icon={"comment"}/>
                 <Text>{commentCount}</Text>
             </View>
-            <IconButton icon={"share-variant"} onPress={() => console.log("like!")}/>
         </View>
     );
 }

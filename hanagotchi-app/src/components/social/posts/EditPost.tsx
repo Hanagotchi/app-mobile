@@ -14,6 +14,7 @@ type EditPostProps = {
 const defaultData: PostDataWithoutAuthorId = {
     content: "",
     photo_links: [],
+    tags: []
 }
 
 const CONTENT_MAX_LENGTH = 500;

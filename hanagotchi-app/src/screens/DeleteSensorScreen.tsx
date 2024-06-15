@@ -3,12 +3,13 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
 import React, {useEffect, useRef, useState} from "react";
-import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
+import {BACKGROUND_COLOR, BROWN_DARK, RED} from "../themes/globalThemes";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import { useSession } from "../hooks/useSession";
 import Dialog, { DialogRef } from "../components/Dialog";
+import {Text} from "react-native-paper";
 
 interface SelectOption {
     key: number;
@@ -24,6 +25,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     const[option, setOption] = useState(0);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false)
     const dialogRef = useRef<DialogRef>(null);
+    const [errorMsg, setErrorMsg] = useState<string>("");
     const {isFetching: isFetchingPlants, fetchedData: plants} = useApiFetch(
         () => api.getPlants({id_user: userId}),
         [{
@@ -69,6 +71,14 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
                 key: plant.id,
                 value: plant.name
             }));
+
+            if (updatedPlants.length === 0) {
+                console.log(updatedPlants);
+                setErrorMsg("No tienes ningun sensor asociado a alguna planta")
+            } else {
+                setErrorMsg("");
+            }
+
             setPlantOptions(updatedPlants);
         }
     }, [plants, devicePlants]);
@@ -76,13 +86,14 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     return <SafeAreaView style={style.container}>
         {(isFetchingPlants || isFetchingDevices) ? ( <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/>) :
             (<>
-                <SelectBox
+                {plantOptions.length > 0 && <SelectBox
                     label="PLANTA"
                     data={plantOptions}
                     setSelected={(option) => setOption(option)}
                     save="key"
                     defaultOption={{ key: "---", value: "---" }}
-                />
+                />}
+                <Text style={style.errorText}>{errorMsg}</Text>
                 <View style={style.buttonContainer}>
                     <LoaderButton
                         mode="contained"
@@ -135,8 +146,10 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: "center",
     },
-    items: {
-
+    errorText: {
+        color: RED,
+        textAlign: "center",
+        width: "80%"
     },
     text: {
         fontSize: 20,

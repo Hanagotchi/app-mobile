@@ -10,6 +10,7 @@ import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import { useSession } from "../hooks/useSession";
 
+const NAME_MAX_LENGTH = 32;
 
 type AddPlantProps = NativeStackScreenProps<RootStackParamsList, "AddPlant">;
 
@@ -62,7 +63,7 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({navigation}) => {
     return <SafeAreaView style={style.container}>
         {isFetching ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/> :
             <>
-                <TextInput label={`NOMBRE`} value={name} onChangeText={(text) => setName(text)} />
+                <TextInput label={`NOMBRE ${name.length}/${NAME_MAX_LENGTH} *`} maxLenght={NAME_MAX_LENGTH} value={name} onChangeText={(text) => setName(text)} />
                 <SelectBox
                         label="TIPO DE PLANTA"
                         data={types}

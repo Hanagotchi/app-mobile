@@ -10,6 +10,7 @@ import PostList from "../../components/social/posts/PostList";
 import { PostAuthor } from "../../models/Post";
 import { FAB } from "react-native-paper";
 import useMyProfile from "../../hooks/useMyProfile";
+import { useSession } from "../../hooks/useSession";
 
 type SocialProfileScreenProps = CompositeScreenProps<
     DrawerScreenProps<SocialDrawerList, "SocialProfile">,
@@ -19,6 +20,8 @@ type SocialProfileScreenProps = CompositeScreenProps<
 const SocialProfileScreen: React.FC<SocialProfileScreenProps> = ({ route, navigation, }) => {
     const profileId = route.params.profileId;
     const api = useHanagotchiApi();
+    const myId = useSession((state) => state.session?.userId)
+
 
     const { isFetching: isFetchingProfile, fetchedData: profile, error } = useFocusApiFetch(() => api.getUserProfile(profileId), null, [profileId]);
     const { isFetchingMyProfile, myProfile } = useMyProfile();
@@ -66,7 +69,7 @@ const SocialProfileScreen: React.FC<SocialProfileScreenProps> = ({ route, naviga
             <View style={style.posts}>
                 <PostList
                     updatePosts={(pageNum: number) => api.getAllPostsOfUser(profileId, pageNum, 10)}
-                    myId={profileId}
+                    myId={myId!}
                     onRedirectToProfile={(author: PostAuthor) => { }}
                     onRedirectToDetails={handleRedirectToDetails}
                 />

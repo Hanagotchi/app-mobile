@@ -9,14 +9,14 @@ export const profilePictureUrl = (user_email: string, subfolder: string) => {
     return `users/${user_email}/${subfolder}/${date}`;
 };
 
-export const logPhotoUrl = (plantId: number) => {
+export const logPhotoUrl = (plantId: number, increment: number = 0) => {
     const date = new Date().getTime();
-    return `plants/${plantId}/${date}`;
+    return `plants/${plantId}/${date+increment}`;
 }
 
-export const postPhotoUrl = (userId: number) => {
+export const postPhotoUrl = (userId: number, increment: number = 0) => {
     const date = new Date().getTime();
-    return `social/${userId}/posts/${date}`;
+    return `social/${userId}/posts/${date+increment}`;
 }
 
 export type FirebaseContextProps = {

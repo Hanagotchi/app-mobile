@@ -3,12 +3,16 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamsList} from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
 import React, {useEffect, useState} from "react";
-import {BACKGROUND_COLOR, BROWN_DARK} from "../themes/globalThemes";
+import {BACKGROUND_COLOR, BROWN_DARK, RED} from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
 import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
 import {useApiFetch} from "../hooks/useApiFetch";
 import { useSession } from "../hooks/useSession";
+import { AxiosError } from "axios";
+import { Text } from "react-native-paper";
+
+const SERIAL_NUMBER_MAX_LENGTH = 32
 
 interface SelectOption {
     key: number;
@@ -23,7 +27,8 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
     const [option, setOption] = useState(0);
     const [serialNumber, setSerialNumber] = useState("");
-    const [isButtonEnabled, setIsButtonEnabled] = useState(false)
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string>("");
     const {isFetching: isFetchingPlant, fetchedData: plants} = useApiFetch(
         () => api.getPlants({id_user: userId}),
         [{
@@ -45,8 +50,16 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
 
     const createSensor = async () => {
         if (option.toString() == "---" || serialNumber == "") return
-        await api.addSensor(serialNumber, option);
-        navigation.goBack();
+        try {
+            await api.addSensor(serialNumber, option);
+            navigation.goBack();
+        } catch (e) {
+            console.log((e as AxiosError).response?.status);
+            if ((e as AxiosError).response?.status === 400) {
+                setErrorMsg("El numero de serie indicado ya se encuentra asociado a una planta existente.");
+            }
+        }
+
     }
 
     useEffect(() => {
@@ -65,6 +78,12 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
                 key: plant.id,
                 value: plant.name
             }));
+            if (updatedPlants.length === 0) {
+                console.log(updatedPlants);
+                setErrorMsg("No tiene plantas a las cuales puedas asociarle un sensor nuevo. ¡Ve y crea nuevas plantas!")
+            } else {
+                setErrorMsg("");
+            }
             setPlantOptions(updatedPlants);
         }
     }, [devicePlants, plants]);
@@ -72,14 +91,20 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     return <SafeAreaView style={style.container}>
         {(isFetchingPlant || isFetchingDevices) ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/> :
             <>
-                <TextInput label={`NUMERO DE SERIE`} value={serialNumber} onChangeText={(text) => setSerialNumber(text)} />
-                <SelectBox
+                <TextInput 
+                    label={`NUMERO DE SERIE ${serialNumber.length}/${SERIAL_NUMBER_MAX_LENGTH} *`} 
+                    value={serialNumber} 
+                    maxLenght={SERIAL_NUMBER_MAX_LENGTH}
+                    onChangeText={(text) => setSerialNumber(text)} 
+                />
+                {plantOptions.length > 0 && <SelectBox
                     label="PLANTA"
                     data={plantOptions}
                     setSelected={(option) => setOption(option)}
                     save="key"
                     defaultOption={{ key: "---", value: "---" }}
-                />
+                />}
+                <Text style={style.errorText}>{errorMsg}</Text>
                 <View style={style.buttonContainer}>
                     <LoaderButton
                         mode="contained"
@@ -118,9 +143,6 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: "center",
     },
-    items: {
-        
-    },
     text: {
         fontSize: 20,
         fontWeight: "bold",
@@ -134,6 +156,11 @@ const style = StyleSheet.create({
         justifyContent: "space-between",
         flex: 1,
     },
+    errorText: {
+        color: RED,
+        textAlign: "center",
+        width: "80%"
+    }
 })
 
 export default AddSensorScreen;
