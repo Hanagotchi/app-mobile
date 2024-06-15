@@ -20,7 +20,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({navigation}) => {
         const photo_links = await Promise.all(
             postData.photo_links.map((photo, idx) => uploadImage(photo, postPhotoUrl(userId, idx)))
         );
-
         console.log(photo_links);
 
         let tags = postData.content.split(" ")
