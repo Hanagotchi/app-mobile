@@ -136,9 +136,6 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: "center",
     },
-    items: {
-        
-    },
     text: {
         fontSize: 20,
         fontWeight: "bold",
