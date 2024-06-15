@@ -4,7 +4,7 @@ export type InfoToShow = {
     origin: "Hanagotchi" | "OpenWeather",
     info: {
         temperature?: number;
-        humidity?: number;
+        humidity?: number | null;
         light?: number;
         watering?: number;
         deviations?: Deviation;

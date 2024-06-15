@@ -16,7 +16,7 @@ export const MeasurementSchema = z.object({
     id: z.number(),
     id_plant: z.number(),
     temperature: z.number(),
-    humidity: z.number(),
+    humidity: z.number().nullable(),
     light: z.number(),
     watering: z.number(),
     time_stamp: z.date(),

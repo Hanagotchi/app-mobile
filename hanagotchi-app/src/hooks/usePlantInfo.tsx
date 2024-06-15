@@ -43,7 +43,7 @@ export const usePlantInfo = (plant: Plant) => {
                         setPlantInfo({
                             origin: "OpenWeather",
                             info: {
-                                temperature: Math.round(weatherData.main.temp - 273.15),
+                                temperature: Number((weatherData.main.temp - 273.15).toFixed(1)),
                                 humidity: weatherData.main.humidity,
                                 time_stamp: timestamp,
                             }
