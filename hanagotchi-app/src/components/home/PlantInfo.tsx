@@ -25,8 +25,6 @@ type PlantInfoProps = {
 }
 
 const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChange}) => {
-    const [plantTypeModalOpen, setPlantTypeModalOpen] = useState(false);
-    const [plantDescriptionModalOpen, setPlantDescriptionModalOpen] = useState(false);
     const hanagotchiApi = useHanagotchiApi();
     const plantTypeDialogRef = useRef<DialogRef>(null);
     const plantInfoDialogRef = useRef<DialogRef>(null);
@@ -75,18 +73,18 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
             <View style={style.boxElements}>
             {plantInfo ?
                 <View style={style.measurements}>
-                    {plantInfo.info.humidity && 
+                    {( plantInfo.info.humidity !== undefined && plantInfo.info.humidity !== null) && 
                         parseParameter(`Humedad: ${plantInfo.info.humidity}%`, plantInfo.info.deviations?.humidity)
-                    }
-                    {plantInfo.info.temperature && 
+                      }
+                    {(plantInfo.info.temperature !== undefined && plantInfo.info.temperature !== null) &&
                         parseParameter(`Temperatura: ${plantInfo.info.temperature}°C`, plantInfo.info.deviations?.temperature)
-                    }
-                    {plantInfo.info.light && 
-                        parseParameter(`Luz: ${plantInfo.info.light} ftc.`, plantInfo.info.deviations?.light)
-                    }
-                    {plantInfo.info.watering && 
+                      }
+                    {(plantInfo.info.light !== undefined && plantInfo.info.light !== null) &&
+                        parseParameter(`Luz: ${plantInfo.info.light} ft-c`, plantInfo.info.deviations?.light)
+                      }
+                    {( plantInfo.info.watering !== undefined && plantInfo.info.watering !== null) &&
                         parseParameter(`Riego: ${plantInfo.info.watering}%`, plantInfo.info.deviations?.watering)
-                    }
+                      }
                 </View> :
                 <View style={style.noMeasurements}>
                     <Text style={{...style.measurement, color: BROWN}}> No se registran {'\n'} mediciones</Text>
@@ -195,7 +193,7 @@ const style = StyleSheet.create({
       padding: 20,
       marginTop: 50,
       height: 190,
-      width: 240
+      width: 270
     },
     boxElements: {
       display: "flex",
