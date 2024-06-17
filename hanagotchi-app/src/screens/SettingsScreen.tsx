@@ -33,7 +33,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
     useEffect(() => {
         if (myPlants && myPlants.length > 0) {
-            const filteredPlants = myPlants.filter((plant) => devicePlants!.some((it) => it.id_plant === plant.id));
+            const filteredPlants = myPlants.filter((plant) => devicePlants.some((it) => it.id_plant === plant.id));
             setHasDevicePlants(filteredPlants.length > 0);
             setAllPlantsHaveSensor(myPlants.length === filteredPlants.length)
         }
