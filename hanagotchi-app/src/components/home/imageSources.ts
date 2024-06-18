@@ -13,7 +13,7 @@ export const sources = {
     depressed: depressed, 
     annoyed: annoyed,
     drowned: drowned,
-    displeased: annoyed,
+    displeased: uncomfortable,
     happy: happy, 
     overwhelmed: overwhelmed, 
     relaxed: relaxed, 
