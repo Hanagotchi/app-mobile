@@ -39,7 +39,7 @@ export interface HanagotchiApi {
     getPlantType: (name: string) => Promise<GetPlantTypeResponse>;
     getUser: (userId: number) => Promise<User>;
     getLastMeasurement: (plantId: number) => Promise<Measurement | null>;
-    patchUser: (user: UpdateUser) => Promise<void>;
+    patchUser: (user: Partial<UpdateUser>) => Promise<void>;
     getPlantTypes: () => Promise<GetPlantTypesResponse>;
     createPlant: (id_user: number, name: string, scientific_name: string) => Promise<Plant>;
     deletePlant: (plantId: number) => Promise<void>;
