@@ -16,10 +16,10 @@ const api: HanagotchiApi = new HanagotchiApiImpl(axiosInstance);
 export const HanagotchiApiContext = createContext<HanagotchiApi | undefined>(api);
 
 export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const accessToken = useSession((state) => state.session?.accessToken);
-  console.log("access token", accessToken);
+  const getAccessToken = useSession((state) => state.getAccessToken);
 
-  const updateHeader = (request: InternalAxiosRequestConfig) => {
+  const updateHeader = async (request: InternalAxiosRequestConfig) => {
+    const accessToken = await getAccessToken();
     if (accessToken) {
       request.headers = {
         ...request.headers,
