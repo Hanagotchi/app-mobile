@@ -57,10 +57,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             
             // Check if your device supports Google Play
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-            console.log("ansdkjasndjksankdj")
 
             // Get the users ID token
-          
             const { idToken, serverAuthCode } = await GoogleSignin.signIn();
             
             
@@ -72,6 +70,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                     "x-access-token": accessToken
                 }
             } : LoginResponse = await hanagotchiApi.logIn(serverAuthCode ?? "null");
+            console.log(user.id, accessToken);
             createSession(user.id, accessToken);
 
             // Create a Google credential with the token

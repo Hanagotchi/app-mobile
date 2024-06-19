@@ -17,6 +17,7 @@ export const HanagotchiApiContext = createContext<HanagotchiApi | undefined>(api
 
 export const HanagotchiApiProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const accessToken = useSession((state) => state.session?.accessToken);
+  console.log("access token", accessToken);
 
   const updateHeader = (request: InternalAxiosRequestConfig) => {
     if (accessToken) {
