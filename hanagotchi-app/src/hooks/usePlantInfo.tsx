@@ -23,7 +23,6 @@ export const usePlantInfo = (plant: Plant) => {
             setIsFetching(true);
             setDevice(undefined);
             const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
-            console.log(devicePlant);
             if ((devicePlant as DevicePlant[]).length > 0) {
                 setDevice(devicePlant as DevicePlant)
                 const measurement = await hanagotchiApi.getLastMeasurement(plant.id);
@@ -38,9 +37,7 @@ export const usePlantInfo = (plant: Plant) => {
             } else {
                 try {
                     if (myUser?.location) {
-                        console.log("nasdjkasd")
                         const weatherData = await openWeatherApi.getCurrentWeather(myUser.location.lat!, myUser.location.long!)
-                        console.log(weatherData);
                         const timestamp = new Date(0);
                         timestamp.setUTCSeconds(weatherData.dt);
                         setPlantInfo({
