@@ -83,9 +83,9 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({ navigation }) => {
                         />
                         {plantSelected ?
                             <>
-                                <Text style={{ ...style.modalText, fontWeight: "bold" }}>{plantSelected.botanical_name}</Text>
+                                <Text style={{ ...style.plantDescription, fontWeight: "bold" }}>{plantSelected.botanical_name}</Text>
                                 <Image style={style.imageDescription} source={{ uri: plantSelected.photo_link }} />
-                                <Text style={{ ...style.modalText, width: "80%", }}>{plantSelected.description}</Text>
+                                <Text style={{ ...style.plantDescription, width: "80%", }}>{plantSelected.description}</Text>
                             </> : null
 
                         }
@@ -146,7 +146,7 @@ const style = StyleSheet.create({
         justifyContent: "space-between",
         flex: 1,
     },
-    modalText: {
+    plantDescription: {
         fontSize: 15,
         fontFamily: "IBMPlexMono_Italic",
         textAlign: 'center',
