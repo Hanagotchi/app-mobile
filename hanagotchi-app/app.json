@@ -4,6 +4,12 @@
     "slug": "hanagotchi-app",
     "plugins": [
       [
+        "expo-notifications",
+        {
+          "icon": "./assets/hanagotchi_icon_96_96.png"
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "android": {
