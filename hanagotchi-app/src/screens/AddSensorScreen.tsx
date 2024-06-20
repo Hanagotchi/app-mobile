@@ -116,6 +116,15 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
                         Asociar
                     </LoaderButton>
                 </View>
+                <Text style={{ ...style.wifiDescription, width: "80%", }}>
+                    <Text style={{ fontWeight: "bold" }}>{"¡Antes de registrar tu sensor no olvides tener conectado tu sensor a la red WiFi de tu hogar!\n\n"}</Text>
+                    <Text>{"Para conectarlo a la red WiFi de tu hogar, primero conéctate a la red WiFi que inicialmente genera tu sensor:\n\n"}</Text>
+                    <Text style={{ fontWeight: "bold" }}>{"WiFi SSID"}</Text>
+                    <Text>: Hanagotchi Fallback Hotspot</Text>
+                    <Text style={{ fontWeight: "bold" }}>{"\nWiFi Password"}</Text>
+                    <Text>: kOHXDFUYLE8K</Text>
+                    <Text>{"\n\nUna vez conectado, se te redirigirá a una página donde deberás seleccionar la red WiFi de tu hogar para que tu sensor se conecte a ella."}</Text>
+                </Text>
             </>
         }
 
@@ -160,7 +169,13 @@ const style = StyleSheet.create({
         color: RED,
         textAlign: "center",
         width: "80%"
-    }
+    },
+    wifiDescription: {
+        fontSize: 15,
+        fontFamily: "IBMPlexMono_Italic",
+        textAlign: 'left',
+        color: '#4F4C4F',
+    },
 })
 
 export default AddSensorScreen;
