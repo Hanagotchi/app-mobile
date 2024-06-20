@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import {create, UseBoundStore} from "zustand";
 import * as SecureStore from "expo-secure-store";
 
 type SessionData = {
@@ -11,9 +11,10 @@ type Session = {
     createSession: (newUserId: number, newAccessToken: string) => Promise<void>;
     deleteSession: () => Promise<void>;
     loadFromSecureStore: () => Promise<SessionData | null>;
+    getAccessToken: () => Promise<string | undefined>;
 }
 
-export const useSession = create<Session>()((set) => ({
+export const useSession = create<Session>()((set, get) => ({
     session: null,
     createSession: async (newUserId: number, newAccessToken: string) => {
         const newSession = {userId: newUserId, accessToken: newAccessToken};
@@ -33,4 +34,5 @@ export const useSession = create<Session>()((set) => ({
         set((_) => ({session: lastSession}));
         return lastSession;
     },
-}))
+    getAccessToken: async () => get().session?.accessToken,
+}));

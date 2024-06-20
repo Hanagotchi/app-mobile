@@ -23,6 +23,7 @@ export const usePlantInfo = (plant: Plant) => {
             setIsFetching(true);
             setDevice(undefined);
             const devicePlant = await hanagotchiApi.getDevicePlants({id_plant: plant.id});
+            console.log(devicePlant);
             if (devicePlant) {
                 setDevice(devicePlant as DevicePlant)
                 const measurement = await hanagotchiApi.getLastMeasurement(plant.id);

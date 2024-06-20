@@ -23,7 +23,7 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
     const { signOut, completeSignIn } = useAuth();
     const { requestLocation, revokeLocation } = useLocation();
     const { uploadImage } = useFirebase();
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<Partial<User>>();
     const { isFetching, fetchedData, error } = useApiFetch(
         () => api.getUser(userId),
         user
@@ -66,13 +66,15 @@ const CompleteLoginScreen: React.FC<CompleteLoginProps> = ({ navigation, route }
             return;
         }
         try {
-            const filepath = profilePictureUrl(user.email, 'avatar');
-            const userUpdated: User = {
+            const filepath = profilePictureUrl(user.email!, 'avatar');
+            const userUpdated: Partial<User> = {
                 ...user,
                 birthdate: new Date(user!.birthdate!.toISOString().split('T')[0]),
                 photo: user?.photo?.startsWith('file://') ? await uploadImage(user.photo ?? DEFAULT_PHOTO, filepath) : user.photo
             } as User;
+            delete userUpdated.nickname;
             setUser(userUpdated);
+            console.log(userUpdated)
             await api.patchUser(userUpdated);
             await completeSignIn();
             navigation.navigate("MainScreens", { screen: "Home", params: { bgColor: "blue" } });

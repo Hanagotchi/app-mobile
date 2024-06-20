@@ -13,10 +13,10 @@ import { User } from '../models/User';
 import { Text } from 'react-native-paper';
 
 type EditUserProps = {
-    user: User;
+    user: Partial<User>;
     name_button: string,
     onPressCompleteEdit: ((() => void) & Function);
-    setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+    setUser: React.Dispatch<React.SetStateAction<Partial<User> | undefined>>;
 }
 
 const EditUser: React.FC<EditUserProps> = ({ user, name_button, onPressCompleteEdit, setUser }) => {

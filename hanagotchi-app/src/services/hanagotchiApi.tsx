@@ -39,7 +39,7 @@ export interface HanagotchiApi {
     getPlantType: (name: string) => Promise<GetPlantTypeResponse>;
     getUser: (userId: number) => Promise<User>;
     getLastMeasurement: (plantId: number) => Promise<Measurement | null>;
-    patchUser: (user: UpdateUser) => Promise<void>;
+    patchUser: (user: Partial<UpdateUser>) => Promise<void>;
     getPlantTypes: () => Promise<GetPlantTypesResponse>;
     createPlant: (id_user: number, name: string, scientific_name: string) => Promise<Plant>;
     deletePlant: (plantId: number) => Promise<void>;
@@ -101,7 +101,12 @@ export class HanagotchiApiImpl implements HanagotchiApi {
 
     async getDevicePlants(params?: {id_plant?: number, limit?: number}): Promise<GetDevicePlantsResponse | null> {
         const { data, status } = await this.axiosInstance.get(`/measurements/device-plant`, {params});
-        if (status == 204) return null
+        if (status == 204) {
+            if (params?.id_plant) {
+                return null;
+            }
+            return []
+        }
         return GetDevicePlantsResponseSchema.parse(data);
     }
 
