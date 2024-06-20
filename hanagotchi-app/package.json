@@ -27,6 +27,7 @@
     "@types/react-native-snap-carousel": "^3.8.11",
     "axios": "^1.6.8",
     "expo": "~50.0.14",
+    "expo-build-properties": "~0.11.1",
     "expo-dev-client": "~3.3.11",
     "expo-font": "~11.10.3",
     "expo-image-picker": "~14.7.1",
@@ -62,7 +63,7 @@
     "text-encoding-polyfill": "^0.6.7",
     "zod": "^3.22.4",
     "zustand": "^4.5.2",
-    "expo-build-properties": "~0.11.1"
+    "expo-notifications": "~0.27.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
