@@ -69,7 +69,7 @@ const AddPlantScreen: React.FC<AddPlantProps> = ({ navigation }) => {
 
     return <SafeAreaView style={style.safeArea}>
         <ScrollView contentContainerStyle={{ paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
-            <View style={style.container}>
+        <View style={style.container}>
 
                 {isFetching ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{ justifyContent: "center", flexGrow: 1 }} /> :
                     <>

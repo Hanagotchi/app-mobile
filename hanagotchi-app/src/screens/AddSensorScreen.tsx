@@ -1,13 +1,13 @@
-import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native"
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamsList} from "../navigation/Navigator";
+import { ActivityIndicator, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamsList } from "../navigation/Navigator";
 import LoaderButton from "../components/LoaderButton";
-import React, {useEffect, useState} from "react";
-import {BACKGROUND_COLOR, BROWN_DARK, RED} from "../themes/globalThemes";
+import React, { useEffect, useState } from "react";
+import { BACKGROUND_COLOR, BROWN_DARK, RED } from "../themes/globalThemes";
 import TextInput from "../components/TextInput";
 import SelectBox from "../components/SelectBox";
-import {useHanagotchiApi} from "../hooks/useHanagotchiApi";
-import {useApiFetch} from "../hooks/useApiFetch";
+import { useHanagotchiApi } from "../hooks/useHanagotchiApi";
+import { useApiFetch } from "../hooks/useApiFetch";
 import { useSession } from "../hooks/useSession";
 import { AxiosError } from "axios";
 import { Text } from "react-native-paper";
@@ -21,7 +21,7 @@ interface SelectOption {
 
 type AddSensorProps = NativeStackScreenProps<RootStackParamsList, "AddSensor">;
 
-const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
+const AddSensorScreen: React.FC<AddSensorProps> = ({ navigation }) => {
     const api = useHanagotchiApi();
     const userId = useSession((state) => state.session?.userId)!;
     const [plantOptions, setPlantOptions] = useState<SelectOption[]>([]);
@@ -29,8 +29,8 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
     const [serialNumber, setSerialNumber] = useState("");
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string>("");
-    const {isFetching: isFetchingPlant, fetchedData: plants} = useApiFetch(
-        () => api.getPlants({id_user: userId}),
+    const { isFetching: isFetchingPlant, fetchedData: plants } = useApiFetch(
+        () => api.getPlants({ id_user: userId }),
         [{
             id: 0,
             id_user: 0,
@@ -38,7 +38,7 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
             scientific_name: "",
         }]
     );
-    const {isFetching: isFetchingDevices, fetchedData: devicePlants} = useApiFetch(
+    const { isFetching: isFetchingDevices, fetchedData: devicePlants } = useApiFetch(
         () => api.getDevicePlants(),
         [{
             id_user: 0,
@@ -88,14 +88,17 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
         }
     }, [devicePlants, plants]);
 
-    return <SafeAreaView style={style.container}>
-        {(isFetchingPlant || isFetchingDevices) ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{justifyContent: "center", flexGrow: 1}}/> :
+    return <SafeAreaView style={style.safeArea}>
+                <ScrollView contentContainerStyle={{ paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
+                <View style={style.container}>
+
+        {(isFetchingPlant || isFetchingDevices) ? <ActivityIndicator animating={true} color={BROWN_DARK} size={80} style={{ justifyContent: "center", flexGrow: 1 }} /> :
             <>
-                <TextInput 
-                    label={`NUMERO DE SERIE ${serialNumber.length}/${SERIAL_NUMBER_MAX_LENGTH} *`} 
-                    value={serialNumber} 
+                <TextInput
+                    label={`NUMERO DE SERIE ${serialNumber.length}/${SERIAL_NUMBER_MAX_LENGTH} *`}
+                    value={serialNumber}
                     maxLenght={SERIAL_NUMBER_MAX_LENGTH}
-                    onChangeText={(text) => setSerialNumber(text)} 
+                    onChangeText={(text) => setSerialNumber(text)}
                 />
                 {plantOptions.length > 0 && <SelectBox
                     label="PLANTA"
@@ -104,34 +107,42 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({navigation}) => {
                     save="key"
                     defaultOption={{ key: "---", value: "---" }}
                 />}
-                <Text style={style.errorText}>{errorMsg}</Text>
+                {errorMsg !== "" && <Text style={style.errorText}>{errorMsg}</Text>}
                 <View style={style.buttonContainer}>
+
+                    <Text style={{ ...style.wifiDescription, width: "80%", }}>
+                        <Text style={{ fontWeight: "bold", alignContent: "center" }}>{"¡Antes de registrar tu sensor no olvides tener conectado tu sensor a la red WiFi de tu hogar!\n\n"}</Text>
+                        <Text>{"Para conectarlo a la red WiFi de tu hogar, primero conéctate a la red hotspot WiFi que inicialmente genera tu sensor:\n\n"}</Text>
+                        <Text style={{ fontWeight: "bold" }}>{"WiFi SSID"}</Text>
+                        <Text>: Hanagotchi Fallback Hotspot</Text>
+                        <Text style={{ fontWeight: "bold" }}>{"\nWiFi Password"}</Text>
+                        <Text>: kOHXDFUYLE8K</Text>
+                        <Text>{"\n\nUna vez conectado, se te redirigirá a una página donde deberás seleccionar la red WiFi de tu hogar para que tu sensor se conecte a ella."}</Text>
+                    </Text>
+
                     <LoaderButton
                         mode="contained"
                         uppercase style={style.button}
                         onPress={() => createSensor()}
-                        labelStyle={{fontSize: 17}}
+                        labelStyle={{ fontSize: 17 }}
                         disabled={!isButtonEnabled}
                     >
                         Asociar
                     </LoaderButton>
                 </View>
-                <Text style={{ ...style.wifiDescription, width: "80%", }}>
-                    <Text style={{ fontWeight: "bold" }}>{"¡Antes de registrar tu sensor no olvides tener conectado tu sensor a la red WiFi de tu hogar!\n\n"}</Text>
-                    <Text>{"Para conectarlo a la red WiFi de tu hogar, primero conéctate a la red WiFi que inicialmente genera tu sensor:\n\n"}</Text>
-                    <Text style={{ fontWeight: "bold" }}>{"WiFi SSID"}</Text>
-                    <Text>: Hanagotchi Fallback Hotspot</Text>
-                    <Text style={{ fontWeight: "bold" }}>{"\nWiFi Password"}</Text>
-                    <Text>: kOHXDFUYLE8K</Text>
-                    <Text>{"\n\nUna vez conectado, se te redirigirá a una página donde deberás seleccionar la red WiFi de tu hogar para que tu sensor se conecte a ella."}</Text>
-                </Text>
+
             </>
         }
-
+</View>
+        </ScrollView>
     </SafeAreaView>
 }
 
 const style = StyleSheet.create({
+    safeArea: {
+        flexGrow: 1,
+        backgroundColor: BACKGROUND_COLOR,
+    },
     container: {
         flex: 1,
         alignItems: "center",
@@ -143,8 +154,11 @@ const style = StyleSheet.create({
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        position: "absolute",
-        bottom: 20,
+        gap: 30,
+
+        // separados los componentes
+
+
     },
     button: {
         borderRadius: 10,
@@ -173,7 +187,7 @@ const style = StyleSheet.create({
     wifiDescription: {
         fontSize: 15,
         fontFamily: "IBMPlexMono_Italic",
-        textAlign: 'left',
+        textAlign: 'center',
         color: '#4F4C4F',
     },
 })
