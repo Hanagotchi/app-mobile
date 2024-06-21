@@ -27,7 +27,7 @@ const DeletePlantScreen: React.FC<DeletePlantProps> = ({navigation}) => {
     const dialogRef = useRef<DialogRef>(null);
 
     const {isFetching, fetchedData: plants} = useApiFetch(
-        () => api.getPlants({id_user: userId}),
+        () => api.getPlants(),
         [{
             id: 0,
             id_user: 0,

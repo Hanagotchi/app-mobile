@@ -21,7 +21,7 @@ const LogDetailsScreen: React.FC<LogDetailsScreenProps> = ({route, navigation}) 
     const userId = useSession((state) => state.session?.userId);
     const api = useHanagotchiApi();
 
-    const {isFetching: isFetchingMyPlants, fetchedData: myPlants, error: plantsError} = useApiFetch(() => api.getPlants({id_user: userId}), []);
+    const {isFetching: isFetchingMyPlants, fetchedData: myPlants, error: plantsError} = useApiFetch(() => api.getPlants(), []);
 
     const {
         isFetching,

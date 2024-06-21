@@ -29,8 +29,8 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({ navigation }) => {
     const [serialNumber, setSerialNumber] = useState("");
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string>("");
-    const { isFetching: isFetchingPlant, fetchedData: plants } = useApiFetch(
-        () => api.getPlants({ id_user: userId }),
+    const {isFetching: isFetchingPlant, fetchedData: plants} = useApiFetch(
+        () => api.getPlants(),
         [{
             id: 0,
             id_user: 0,
@@ -110,15 +110,20 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({ navigation }) => {
                 {errorMsg !== "" && <Text style={style.errorText}>{errorMsg}</Text>}
                 <View style={style.buttonContainer}>
 
-                    <Text style={{ ...style.wifiDescription, width: "80%", }}>
-                        <Text style={{ fontWeight: "bold", alignContent: "center" }}>{"¡Antes de registrar tu sensor no olvides tener conectado tu sensor a la red WiFi de tu hogar!\n\n"}</Text>
-                        <Text>{"Para conectarlo a la red WiFi de tu hogar, primero conéctate a la red hotspot WiFi que inicialmente genera tu sensor:\n\n"}</Text>
-                        <Text style={{ fontWeight: "bold" }}>{"WiFi SSID"}</Text>
-                        <Text>: Hanagotchi Fallback Hotspot</Text>
-                        <Text style={{ fontWeight: "bold" }}>{"\nWiFi Password"}</Text>
-                        <Text>: kOHXDFUYLE8K</Text>
-                        <Text>{"\n\nUna vez conectado, se te redirigirá a una página donde deberás seleccionar la red WiFi de tu hogar para que tu sensor se conecte a ella."}</Text>
-                    </Text>
+                <Text style={{ ...style.wifiDescription, width: "80%", }}>
+                       <Text style={{ fontWeight: "bold", alignContent: "center" }}>{"¡Antes de registrar tu sensor es necesario configurarle su red WiFi!\n\n"}</Text>
+                       <Text>{"Para conectarlo a una red WiFi, primero necesitas conectarte a la red:\n\n"}</Text>
+                       <Text style={{ fontWeight: "bold" }}>{"WiFi SSID"}</Text>
+                       <Text>: Hanagotchi Fallback Hotspot</Text>
+                       <Text style={{ fontWeight: "bold" }}>{"\nWiFi Password"}</Text>
+                       <Text>: kOHXDFUYLE8K</Text>
+                       <Text>{"\n\nUna vez conectado, se te redirigirá a una página donde deberás seleccionar la red WiFi a la que deseas conectar el sensor."}</Text>
+                       <Text>{"\n\nSi esto demora o la redirección no sucede de forma automática, se puede abrir de forma manual. En un navegador ingresa la direccion"}</Text>
+                       <Text style={{ fontStyle: "italic" }}>{" 192.168.4.1 "}</Text>
+                       <Text>{"para seleccionar la red WiFi."}</Text>
+                   </Text>
+
+
 
                     <LoaderButton
                         mode="contained"

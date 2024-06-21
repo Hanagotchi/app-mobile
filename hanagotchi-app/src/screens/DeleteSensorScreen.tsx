@@ -27,7 +27,7 @@ const DeleteSensorScreen: React.FC<DeleteSensorProps> = ({navigation}) => {
     const dialogRef = useRef<DialogRef>(null);
     const [errorMsg, setErrorMsg] = useState<string>("");
     const {isFetching: isFetchingPlants, fetchedData: plants} = useApiFetch(
-        () => api.getPlants({id_user: userId}),
+        () => api.getPlants(),
         [{
             id: 0,
             id_user: 0,
