@@ -34,7 +34,7 @@ const EditLog: React.FC<EditLogProps> = ({initValues = defaultData, onSubmit, bu
     const [contentLen, setContentLen] = useState<number>(initValues.content.length);
     const id_user = useSession((state) => state.session?.userId)!;
     const api = useHanagotchiApi()
-    const {isFetching, fetchedData, error} = useApiFetch<GetPlantsResponse>(() => api.getPlants({id_user, limit: 1024}), []);
+    const {isFetching, fetchedData, error} = useApiFetch<GetPlantsResponse>(() => api.getPlants({limit: 1024}), []);
     const myPlants: SelectOption[] = useMemo(() => {
         return fetchedData.map(plant => ({
             key: plant.id,

@@ -10,7 +10,7 @@ export const useMyPlants = () => {
     const api = useHanagotchiApi();
 
     const {isFetching, fetchedData, error} = useFocusApiFetch<Plant[]>(
-        () => api.getPlants({id_user: userId}),
+        () => api.getPlants(),
         [],
     );
 
