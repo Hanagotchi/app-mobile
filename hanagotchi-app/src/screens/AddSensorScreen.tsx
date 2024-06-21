@@ -29,8 +29,8 @@ const AddSensorScreen: React.FC<AddSensorProps> = ({ navigation }) => {
     const [serialNumber, setSerialNumber] = useState("");
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string>("");
-    const { isFetching: isFetchingPlant, fetchedData: plants } = useApiFetch(
-        () => api.getPlants({ id_user: userId }),
+    const {isFetching: isFetchingPlant, fetchedData: plants} = useApiFetch(
+        () => api.getPlants(),
         [{
             id: 0,
             id_user: 0,
