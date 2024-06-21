@@ -18,8 +18,9 @@ import Carousel from 'react-native-snap-carousel';
 import { Plant } from '../models/Plant';
 import messaging from '@react-native-firebase/messaging';
 import NoPlantsHomeScreen from './NoPlantsHomeScreen';
+import * as Notifications from 'expo-notifications';
 
-
+messaging().setBackgroundMessageHandler(() => new Promise(() => {}));
 
 type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamsList, "Home">,
@@ -59,6 +60,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const previousPlant = () => carouselRef.current?.snapToPrev();
 
   const requestUserPermission = async () => {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    if (existingStatus !== 'granted') {
+       await Notifications.requestPermissionsAsync();
+    }
     const authStatus = await messaging().requestPermission();
     const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
