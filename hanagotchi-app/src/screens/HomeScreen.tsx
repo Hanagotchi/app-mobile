@@ -32,7 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const carouselRef = useRef<Carousel<Plant>>(null);
 
   const { isFetching, fetchedData: plants, error } = useFocusApiFetch(
-    () => api.getPlants({ id_user: userId }),
+    () => api.getPlants(),
     [{
       id: 0,
       id_user: 0,

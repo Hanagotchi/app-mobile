@@ -45,7 +45,7 @@ export interface HanagotchiApi {
     deletePlant: (plantId: number) => Promise<void>;
     getLogsByUser: (userId: number, params: { year: number, month?: number }) => Promise<GetLogsByUserResponse>;
     getLogById: (logId: number) => Promise<GetLogByIdResponse>;
-    getPlants: (params: { id_user?: number, limit?: number }) => Promise<GetPlantsResponse>;
+    getPlants: (params?: { limit?: number }) => Promise<GetPlantsResponse>;
     createLog: (log: CreateLog) => Promise<Log>;
     editLog: (logId: number, updateSet: PartialUpdateLog) => Promise<Log>;
     addPhotoToLog: (logId: number, body: { photo_link: string }) => Promise<Log>;
@@ -94,7 +94,7 @@ export class HanagotchiApiImpl implements HanagotchiApi {
         await this.axiosInstance.delete(`/plants/${plantId}`)
     }
 
-    async getPlants(params: { id_user?: number, limit?: number }): Promise<GetPlantsResponse> {
+    async getPlants(params?: { limit?: number }): Promise<GetPlantsResponse> {
         const { data } = await this.axiosInstance.get(`/plants`, { params });
         return GetPlantsResponseSchema.parse(data)
     }
