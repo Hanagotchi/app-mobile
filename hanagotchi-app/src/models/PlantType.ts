@@ -5,6 +5,7 @@ export const PlantTypeSchema = z.object({
     botanical_name: z.string(),
     common_name: z.string(),
     description: z.string(),
+    cares: z.string(),
     photo_link: z.string(),
 })
 

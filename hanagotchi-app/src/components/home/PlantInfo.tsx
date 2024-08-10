@@ -138,10 +138,7 @@ const PlantInfo: React.FC<PlantInfoProps> = ({plant, redirectToCreateLog, onChan
           title={plantType?.botanical_name ?? ''} 
           onDismiss={() => plantTypeDialogRef.current?.hideDialog()}
         >
-          <View style={style.modalView}>
-            <Text style={{...style.modalText, width: "53%",}}>{plantType!.description}</Text>
-            <Image source={{ uri: plantType!.photo_link }} style={style.imageDescription} />
-          </View>
+          <Text style={{...style.modalText}}>{plantType!.cares}</Text>
         </Dialog>
         <Dialog
           ref={plantInfoDialogRef} 
